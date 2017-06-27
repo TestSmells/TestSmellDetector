@@ -13,15 +13,15 @@ The below table specifies the types of smells that are detected by this tool alo
         <tr>
             <td>Assertion Roulette</td>
             <td>
-                <p>Multiple asserts in a test method without a descriptive message impacts readability as it’s not possible to understand the reason for an asserts failure </p>
-                <p>Caused By: Used to verify complex logic or iterate through a collection</p>
-                <p>Detection: Assert methods called from the body of a test method does not contain a explanation message</p>          
+                <p>Multiple asserts in a test method without a descriptive message impacts readability/understandability/maintainability as it’s not possible to understand the reason for an asserts failure </p>
+                <p>Caused By: Developer implementing the test method is aware of the purpose of the assert output</p>
+                <p>Detection: Assert methods called from the body of a test method do not contain a explanation message</p>          
             </td>
         </tr>
         <tr>
             <td>Conditional Test Logic (also known as 'Indented Test')</td>
             <td>
-                <p>Test methods should be simple and execute all statements. Conditions will alter the behavior of the test and expected output</p>
+                <p>Test methods should be simple and must execute all statements. Conditions will alter the behavior of the test and expected output</p>
                 <p>Caused By: Used to verify complex logic or iterate through a collection</p>
                 <p>Detection: Test method body contains one or more  loops, conditional statements (ternary operator, switch/case, if condition)</p>             
             </td>
