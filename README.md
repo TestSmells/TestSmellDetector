@@ -20,7 +20,11 @@ The below tables specifies the types of smells that are detected by this tool al
         </tr>
         <tr>
             <td>Constructor Initialization</td>
-            <td>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</td>
+            <td>
+                <p>Ideally, the test suite should not have a constructor. Initialization of fields should be in the setUP() method</p>
+                <p>Caused By: Developers are probably unware of the purpose of setUP() method</p>
+                <p>Detection: Class contains one or more constructors</p>             
+            </td>            
         </tr>
         <tr>
             <td>Default Test</td>
