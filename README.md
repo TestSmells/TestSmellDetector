@@ -76,7 +76,11 @@ The below tables specifies the types of smells that are detected by this tool al
         </tr> 
         <tr>
             <td>Verbose Test</td>
-            <td>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</td>
+             <td>
+                 <p>Simillar to the Long Methods code smell, a test method with large number of lines of code impacts readability and maintainability of the method</p>
+                 <p>Caused By: When deverlops fail to keep test methods simple and include too much information and functionality in the methods</p>
+                 <p>Detection: The number of statements in the body of a test method exceeeds a certain amount</p>
+             </td> 
         </tr>                                                             
         <tr>
             <td>Wait And See</td>
