@@ -11,6 +11,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/*
+This class checks if a test method is empty (i.e. the method does not contain statements in its body)
+If the the number of statements in the body is 0, then the method is smelly
+ */
 public class EmptyTest implements ITestSmell {
 
     List<ISmell> smellList;
