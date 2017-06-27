@@ -12,7 +12,11 @@ The below table specifies the types of smells that are detected by this tool alo
     <tbody>
         <tr>
             <td>Assertion Roulette</td>
-            <td>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</td>
+            <td>
+                <p>Multiple asserts in a test method without a descriptive message impacts readability as it’s not possible to understand the reason for an asserts failure </p>
+                <p>Caused By: Used to verify complex logic or iterate through a collection</p>
+                <p>Detection: Assert methods called from the body of a test method does not contain a explanation message</p>          
+            </td>
         </tr>
         <tr>
             <td>Conditional Test Logic (also known as 'Indented Test')</td>
