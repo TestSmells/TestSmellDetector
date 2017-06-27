@@ -29,11 +29,9 @@ The below tables specifies the types of smells that are detected by this tool.
         <tr>
             <td>Empty Test</td>
             <td>
-            A test method that contains an empty body.<br>
-            <small>
-                Caused By: Created for debugging purposes and then forgotten about or contains commented out code <br>
-                Detection: Test method body contains 0 statements
-            </small> 
+                <p>A test method that contains an empty body</p>
+                <p>Caused By: Created for debugging purposes and then forgotten about or contains commented out code</p>
+                <p>Detection: Test method body contains zero statements</p>             
             </td>
         </tr>
         <tr>
