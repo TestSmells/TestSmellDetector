@@ -56,7 +56,11 @@ The below table specifies the types of smells that are detected by this tool alo
         </tr>
         <tr>
             <td>General Fixture</td>
-            <td>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</td>
+            <td>
+                <p>A test setup/fixture method that initializes fields that are not accessed by test methods indicates that the fixture is too generalized. A drawback of it being too general is that unnecessary work is being done when a test method is run.</p>
+                <p>Caused By: The test fixture is implemented to support multiple tests, each having unique requirements</p>
+                <p>Detection: A field initialized in the setup() but not accessed in the body of a test method</p>             
+            </td>
         </tr>
         <tr>
             <td>Mystery Guest</td>
