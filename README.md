@@ -52,6 +52,7 @@ The below table specifies the types of smells that are detected by this tool alo
         </tr>
         <tr>
             <td>Exception Catching Throwing</td>
+            <td>
                 <p>Use Junit's exception handling to automatically pass/fail the test instead of writing custom exception handling code or throwing an exception</p>
                 <p>Caused By: A passing or failing of test method is dependent on the tested method throwing an exception</p>
                 <p>Detection: Class contains one or more constructors</p> 
