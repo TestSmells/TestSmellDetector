@@ -13,6 +13,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/*
+Use of Thread.sleep() in test methods can possibly lead to unexpected results as the processing time of tasks on different devices/machines can be different. Use mock objects instead
+This code marks a method as smelly if the method body calls Thread.sleep()
+ */
 public class ThreadSleep implements ITestSmell {
 
     List<ISmell> smellList;
