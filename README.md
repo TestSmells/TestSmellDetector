@@ -48,7 +48,11 @@ The below tables specifies the types of smells that are detected by this tool.
         </tr>
         <tr>
             <td>Print Statement</td>
-            <td>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</td>
+            <td>
+                <p>Test methods should not contain print statements as execution of unit tests is an automated process with little to no human intervention. Hence, print statements are redundant.</p>
+                <p>Caused By: Created for debugging purposes and then forgotten about</p>
+                <p>Detection: Test method body contains one or more  System.out.print(),println(),printf() or wite() statements</p>             
+            </td>
         </tr>
         <tr>
             <td>Redundant Assertion</td>
