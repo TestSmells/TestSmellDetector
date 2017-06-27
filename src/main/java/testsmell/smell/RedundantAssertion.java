@@ -12,6 +12,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/*
+If a test method contains an assert statement that explicitly returns a true or false, the method is marked as smelly
+ */
 public class RedundantAssertion implements ITestSmell {
 
     List<ISmell> smellList;
