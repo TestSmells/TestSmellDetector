@@ -76,7 +76,11 @@ The below table specifies the types of smells that are detected by this tool alo
         </tr>
         <tr>
             <td>Redundant Assertion</td>
-            <td>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</td>
+            <td>
+                <p>Test methods containing assert calls that are always true or always false</p>
+                <p>Caused By: Possibly done for debugging purposes and then forgotten to be removed or as a mistake</p>
+                <p>Detection: If a test method contains an assert call that explicitly returns a true or false (e.g. assertTrue(true) or assertFalse(false))</p>             
+            </td>            
         </tr> 
         <tr>
             <td>Sensitive Equality</td>
