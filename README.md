@@ -56,7 +56,11 @@ The below tables specifies the types of smells that are detected by this tool al
         </tr>
         <tr>
             <td>Mystery Guest</td>
-            <td>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</td>
+            <td>
+                <p>Use of external resources in test methods will result in stability and performance issues. Use mock objects in place of the external resources</p>
+                <p>Caused By: Developers not understanding the concept of mock objects or debugging code that was not removed</p>
+                <p>Detection: Test method body contains calls to external resources such as external storage, databases, etc.</p>             
+            </td>
         </tr>
         <tr>
             <td>Print Statement</td>
