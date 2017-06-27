@@ -1,7 +1,7 @@
 # Test Smell Detector
 
 ## Detected Smells
-The below tables specifies the types of smells that are detected by this tool. 
+The below tables specifies the types of smells that are detected by this tool along with a brief description of each smell and the detection strategy. 
 <table>
     <thead>
         <tr>
