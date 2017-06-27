@@ -1,7 +1,7 @@
 # Test Smell Detector
 
 ## Detected Smells
-The below tables specifies the types of smells that are detected by this tool along with a brief description of each smell and the detection strategy. 
+The below table specifies the types of smells that are detected by this tool along with a brief description of each smell and the detection strategy. 
 <table>
     <thead>
         <tr>
@@ -17,7 +17,7 @@ The below tables specifies the types of smells that are detected by this tool al
         <tr>
             <td>Conditional Test Logic (also known as 'Indented Test')</td>
             <td>
-                <p>Test methods should be simple and execute all statements. Conditions will alter the behaviour of the test and expected output</p>
+                <p>Test methods should be simple and execute all statements. Conditions will alter the behavior of the test and expected output</p>
                 <p>Caused By: Used to verify complex logic or iterate through a collection</p>
                 <p>Detection: Test method body contains one or more  loops, conditional statements (ternary operator, switch/case, if condition)</p>             
             </td>
@@ -34,7 +34,7 @@ The below tables specifies the types of smells that are detected by this tool al
             <td>Default Test</td>
             <td>
                 <p>By default Android Studio creates default test classes when a project is created. These classes are meant to serve as an example for developers when wring unit tests and should either be removed or renamed</p>
-                <p>Caused By: Developers do not write unit tests and hence these artifcats remain in the project or developers start adding test methods into these files and it soon becomes burdensome/risky to refactor</p>
+                <p>Caused By: Developers do not write unit tests and hence these artifacts remain in the project or developers start adding test methods into these files and it soon becomes burdensome/risky to refactor</p>
                 <p>Detection: The class name is ether 'ExampleUnitTest' or 'ExampleInstrumentedTest'</p>             
             </td>
         </tr>
@@ -67,7 +67,7 @@ The below tables specifies the types of smells that are detected by this tool al
             <td>
                 <p>Test methods should not contain print statements as execution of unit tests is an automated process with little to no human intervention. Hence, print statements are redundant.</p>
                 <p>Caused By: Created for debugging purposes and then forgotten about</p>
-                <p>Detection: Test method body contains one or more  System.out.print(),println(),printf() or wite() statements</p>             
+                <p>Detection: Test method body contains one or more  System.out.print(),println(),printf() or write() statements</p>             
             </td>
         </tr>
         <tr>
@@ -81,9 +81,9 @@ The below tables specifies the types of smells that are detected by this tool al
         <tr>
             <td>Verbose Test</td>
              <td>
-                 <p>Simillar to the Long Methods code smell, a test method with large number of lines of code impacts readability and maintainability of the method</p>
-                 <p>Caused By: When deverlops fail to keep test methods simple and include too much information and functionality in the methods</p>
-                 <p>Detection: The number of statements in the body of a test method exceeeds a certain amount</p>
+                 <p>Similar to the Long Methods code smell, a test method with large number of lines of code impacts readability and maintainability of the method</p>
+                 <p>Caused By: When developers fail to keep test methods simple and include too much information and functionality in the methods</p>
+                 <p>Detection: The number of statements in the body of a test method exceeds a certain amount</p>
              </td> 
         </tr>                                                             
         <tr>
@@ -91,7 +91,7 @@ The below tables specifies the types of smells that are detected by this tool al
             <td>
                 <p>Use of Thread.sleep() in test methods can possibly lead to unexpected results as the processing time of tasks on different devices/machines can be different. Use mock objects instead</p>
                 <p>Caused By: Used to simulate delays. When developers need the code to wait (i.e. simulate an external event) prior to continuing with the execution</p>
-                <p>Detection: Test method body contains one or more  Thread.sleep() statements</p>
+                <p>Detection: Test method body contains one or more Thread.sleep() statements</p>
             </td>             
         </tr> 
   </tbody>
