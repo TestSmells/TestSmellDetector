@@ -28,7 +28,13 @@ The below tables specifies the types of smells that are detected by this tool.
         </tr>
         <tr>
             <td>Empty Test</td>
-            <td>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</td>
+            <td>
+            A test method that contains an empty body.<br>
+            <small>
+                Caused By: Created for debugging purposes and then forgotten about or contains commented out code <br>
+                Detection: Test method body contains 0 statements
+            </small> 
+            </td>
         </tr>
         <tr>
             <td>Exception Catching Throwing</td>
