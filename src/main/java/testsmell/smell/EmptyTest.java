@@ -44,7 +44,7 @@ public class EmptyTest implements ITestSmell {
                 }
             }
 
-            methodSmell.setHasSmell(emptyCount > 1);
+            methodSmell.setHasSmell(emptyCount >= 1);
 
             map = new HashMap<>();
             map.put("EmptyCount", String.valueOf(emptyCount));
