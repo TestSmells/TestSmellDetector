@@ -80,7 +80,9 @@ The below tables specifies the types of smells that are detected by this tool al
         </tr>                                                             
         <tr>
             <td>Wait And See</td>
-            <td>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</td>
+                <p>Use of Thread.sleep() in test methods can possibly lead to unexpected results as the processing time of tasks on different devices/machines can be different. Use mock objects instead</p>
+                <p>Caused By: Used to simulate delays. When developers need the code to wait (i.e. simulate an external event) prior to continuing with the execution</p>
+                <p>Detection: Test method body contains one or more  Thread.sleep() statements</p>             
         </tr> 
   </tbody>
 </table>
