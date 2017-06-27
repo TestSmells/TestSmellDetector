@@ -15,8 +15,12 @@ The below tables specifies the types of smells that are detected by this tool al
             <td>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</td>
         </tr>
         <tr>
-            <td>Conditional Test Logic</td>
-            <td>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</td>
+            <td>Conditional Test Logic (also known as 'Indented Test')</td>
+            <td>
+                <p>Test methods should be simple and execute all statements. Conditions will alter the behaviour of the test and expected output</p>
+                <p>Caused By: Used to verify complex logic or iterate through a collection</p>
+                <p>Detection: Test method body contains one or more  loops, conditional statements (ternary operator, switch/case, if condition)</p>             
+            </td>
         </tr>
         <tr>
             <td>Constructor Initialization</td>
