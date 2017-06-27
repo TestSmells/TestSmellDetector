@@ -55,12 +55,12 @@ The below tables specifies the types of smells that are detected by this tool.
             <td>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</td>
         </tr> 
         <tr>
-            <td>Thread Sleep</td>
-            <td>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</td>
-        </tr> 
-        <tr>
             <td>Verbose Test</td>
             <td>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</td>
         </tr>                                                             
+        <tr>
+            <td>Wait And See</td>
+            <td>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</td>
+        </tr> 
   </tbody>
 </table>
