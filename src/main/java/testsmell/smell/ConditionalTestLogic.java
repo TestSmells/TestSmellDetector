@@ -13,6 +13,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/*
+This class check a test method for the existence of loops and conditional statements in the methods body
+ */
 public class ConditionalTestLogic implements ITestSmell {
     List<ISmell> smellList;
 
