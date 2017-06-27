@@ -84,7 +84,11 @@ The below table specifies the types of smells that are detected by this tool alo
         </tr> 
         <tr>
             <td>Sensitive Equality</td>
-            <td>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</td>
+            <td>
+                <p>Test methods verify objects by invoking the default toString() method of the object and comparing the output against an specific string. Changes to the implementation of toString() might results in a failure. The correct approach is to implement a custom method within the object to perform this comparison</p>
+                <p>Caused By: Possibly done for debugging purposes and then forgotten to be removed or as a mistake</p>
+                <p>Detection: If a test method contains an assert call that contains an invocation of toString()</p>             
+            </td> 
         </tr> 
         <tr>
             <td>Verbose Test</td>
