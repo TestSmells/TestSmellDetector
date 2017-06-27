@@ -24,7 +24,11 @@ The below tables specifies the types of smells that are detected by this tool al
         </tr>
         <tr>
             <td>Default Test</td>
-            <td>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</td>
+            <td>
+                <p>By default Android Studio creates default test classes when a project is created. These classes are meant to serve as an example for developers when wring unit tests and should either be removed or renamed</p>
+                <p>Caused By: Developers do not write unit tests and hence these artifcats remain in the project or developers start adding test methods into these files and it soon becomes burdensome/risky to refactor</p>
+                <p>Detection: The class name is ether 'ExampleUnitTest' or 'ExampleInstrumentedTest'</p>             
+            </td>
         </tr>
         <tr>
             <td>Empty Test</td>
