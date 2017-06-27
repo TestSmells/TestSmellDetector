@@ -17,7 +17,7 @@ import java.util.Map;
 Use of Thread.sleep() in test methods can possibly lead to unexpected results as the processing time of tasks on different devices/machines can be different. Use mock objects instead
 This code marks a method as smelly if the method body calls Thread.sleep()
  */
-public class ThreadSleep implements ITestSmell {
+public class WaitAndSee implements ITestSmell {
 
     List<ISmell> smellList;
 
@@ -25,7 +25,7 @@ public class ThreadSleep implements ITestSmell {
     public List<ISmell> runAnalysis(CompilationUnit cu) {
         smellList = new ArrayList<>();
 
-        ThreadSleep.ClassVisitor classVisitor = new ThreadSleep.ClassVisitor();
+        WaitAndSee.ClassVisitor classVisitor = new WaitAndSee.ClassVisitor();
         classVisitor.visit(cu, null);
 
         return smellList;
