@@ -11,6 +11,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/*
+If a test methods contains a statements that exceeds a certain threshold, the method is marked as smelly
+ */
 public class VerboseTest implements ITestSmell {
 
     List<ISmell> smellList;
