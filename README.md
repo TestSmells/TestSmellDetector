@@ -1,6 +1,6 @@
-#Test Smell Detector
+# Test Smell Detector
 
-##Detected Smells
+## Detected Smells
 The below tables specifies the types of smells that are detected by this tool. 
 <table>
     <thead>
