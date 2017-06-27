@@ -29,8 +29,8 @@ The below table specifies the types of smells that are detected by this tool alo
         <tr>
             <td>Constructor Initialization</td>
             <td>
-                <p>Ideally, the test suite should not have a constructor. Initialization of fields should be in the setUP() method</p>
-                <p>Caused By: Developers are probably unware of the purpose of setUP() method</p>
+                <p>Ideally, the test suite should not have a constructor. Initialization of fields should be in the setup() method</p>
+                <p>Caused By: Developers are probably unware of the purpose of setup() method</p>
                 <p>Detection: Class contains one or more constructors</p>             
             </td>            
         </tr>
@@ -63,13 +63,13 @@ The below table specifies the types of smells that are detected by this tool alo
             <td>
                 <p>A test setup/fixture method that initializes fields that are not accessed by test methods indicates that the fixture is too generalized. A drawback of it being too general is that unnecessary work is being done when a test method is run.</p>
                 <p>Caused By: The test fixture is implemented to support multiple tests, each having unique requirements</p>
-                <p>Detection: A field initialized in the setup() but not accessed in the body of a test method</p>             
+                <p>Detection: A field initialized in the setup() method but not accessed in the body of a test method</p>             
             </td>
         </tr>
         <tr>
             <td>Mystery Guest</td>
             <td>
-                <p>Use of external resources in test methods will result in stability and performance issues. Use mock objects in place of the external resources</p>
+                <p>Use of external resources in test methods will result in stability and performance issues. Use mock objects in place of external resources</p>
                 <p>Caused By: Developers not understanding the concept of mock objects or debugging code that was not removed</p>
                 <p>Detection: Test method body contains calls to external resources such as external storage, databases, etc.</p>             
             </td>
@@ -78,7 +78,7 @@ The below table specifies the types of smells that are detected by this tool alo
             <td>Print Statement</td>
             <td>
                 <p>Test methods should not contain print statements as execution of unit tests is an automated process with little to no human intervention. Hence, print statements are redundant.</p>
-                <p>Caused By: Created for debugging purposes and then forgotten about</p>
+                <p>Caused By: Created for debugging purposes and then forgotten</p>
                 <p>Detection: Test method body contains one or more  System.out.print(),println(),printf() or write() statements</p>             
             </td>
         </tr>
@@ -93,8 +93,8 @@ The below table specifies the types of smells that are detected by this tool alo
         <tr>
             <td>Sensitive Equality</td>
             <td>
-                <p>Test methods verify objects by invoking the default toString() method of the object and comparing the output against an specific string. Changes to the implementation of toString() might results in a failure. The correct approach is to implement a custom method within the object to perform this comparison</p>
-                <p>Caused By: Possibly done for debugging purposes and then forgotten to be removed or as a mistake</p>
+                <p>Test methods verify objects by invoking the default toString() method of the object and comparing the output against an specific string. Changes to the implementation of toString() might result in failure. The correct approach is to implement a custom method within the object to perform this comparison</p>
+                <p>Caused By: Developers using a simplistic, but not recommended means of string comparison </p>
                 <p>Detection: If a test method contains an assert call that contains an invocation of toString()</p>             
             </td> 
         </tr> 
