@@ -48,9 +48,12 @@ public class VerboseTest implements ITestSmell {
             if (n.getAnnotationByName("Test").isPresent() || n.getNameAsString().toLowerCase().startsWith("test")) {
                 currentMethod = n;
                 methodSmell = new MethodSmell(currentMethod.getNameAsString());
-                //get the total number of statements contained in the method
-                if (currentMethod.getBody().get().getStatements().size() >= MAX_STATEMENTS) {
-                    verboseCount++;
+                //make sure that the method is not abstract and has a body
+                if (!currentMethod.isAbstract() && currentMethod.getBody().isPresent()) {
+                    //get the total number of statements contained in the method
+                    if (currentMethod.getBody().get().getStatements().size() >= MAX_STATEMENTS) {
+                        verboseCount++;
+                    }
                 }
                 methodSmell.setHasSmell(verboseCount > 1);
 

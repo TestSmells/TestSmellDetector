@@ -47,9 +47,12 @@ public class EmptyTest implements ITestSmell {
             if (n.getAnnotationByName("Test").isPresent() || n.getNameAsString().toLowerCase().startsWith("test")) {
                 currentMethod = n;
                 methodSmell = new MethodSmell(currentMethod.getNameAsString());
-                //get the total number of statements contained in the method
-                if (currentMethod.getBody().get().getStatements().size() == 0) {
-                    emptyCount++;
+                //make sure that the method is not abstract and has a body
+                if (!currentMethod.isAbstract() && currentMethod.getBody().isPresent()) {
+                    //get the total number of statements contained in the method
+                    if(currentMethod.getBody().get().getStatements().size() == 0) {
+                        emptyCount++;
+                    }
                 }
 
                 methodSmell.setHasSmell(emptyCount >= 1);
