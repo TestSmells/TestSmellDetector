@@ -27,6 +27,11 @@ public class DefaultTest implements ITestSmell {
         return smellList;
     }
 
+    @Override
+    public String getSmellNameAsString() {
+        return "ConstructorInitialization";
+    }
+
     private class ClassVisitor extends VoidVisitorAdapter<Void> {
 
         @Override

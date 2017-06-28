@@ -26,6 +26,11 @@ public class SensitiveEquality implements ITestSmell {
         return smellList;
     }
 
+    @Override
+    public String getSmellNameAsString() {
+        return "SensitiveEquality";
+    }
+
     private class ClassVisitor extends VoidVisitorAdapter<Void> {
         private MethodDeclaration currentMethod = null;
         private int sensitiveCount =0;

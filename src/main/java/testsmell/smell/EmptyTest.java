@@ -29,6 +29,11 @@ public class EmptyTest implements ITestSmell {
         return smellList;
     }
 
+    @Override
+    public String getSmellNameAsString() {
+        return "EmptyTest";
+    }
+
     private class ClassVisitor extends VoidVisitorAdapter<Void> {
         private MethodDeclaration currentMethod = null;
         private int emptyCount = 0;
@@ -46,19 +51,19 @@ public class EmptyTest implements ITestSmell {
                 if (currentMethod.getBody().get().getStatements().size() == 0) {
                     emptyCount++;
                 }
+
+                methodSmell.setHasSmell(emptyCount >= 1);
+
+                map = new HashMap<>();
+                map.put("EmptyCount", String.valueOf(emptyCount));
+                methodSmell.setSmellData(map);
+
+                smellList.add(methodSmell);
+
+                //reset values for next method
+                currentMethod = null;
+                emptyCount = 0;
             }
-
-            methodSmell.setHasSmell(emptyCount >= 1);
-
-            map = new HashMap<>();
-            map.put("EmptyCount", String.valueOf(emptyCount));
-            methodSmell.setSmellData(map);
-
-            smellList.add(methodSmell);
-
-            //reset values for next method
-            currentMethod = null;
-            emptyCount = 0;
         }
     }
 }

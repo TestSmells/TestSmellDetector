@@ -39,7 +39,6 @@ public class GeneralFixture implements ITestSmell {
 
         //Proceed with general fixture analysis if setup method exists
         if (setupMethod != null) {
-            System.out.println(setupMethod.getNameAsString());
             //Get all fields that are initialized in the setup method
             //The following code block will identify the class level variables (i.e. fields) that are initialized in the setup method
             // TODO: There has to be a better way to do this identification/check!
@@ -68,6 +67,11 @@ public class GeneralFixture implements ITestSmell {
         }
 
         return smellList;
+    }
+
+    @Override
+    public String getSmellNameAsString() {
+        return "GeneralFixture";
     }
 
     private class ClassVisitor extends VoidVisitorAdapter<Void> {
@@ -126,7 +130,7 @@ public class GeneralFixture implements ITestSmell {
                 //check if the variable contained in the current test method is also contained in the setup method
                 if (setupFields.contains(n.getNameAsString())) {
                     fixtureCount++;
-                    System.out.println(currentMethod.getNameAsString() + " : " + n.getName().toString());
+                    //System.out.println(currentMethod.getNameAsString() + " : " + n.getName().toString());
                 }
             }
 

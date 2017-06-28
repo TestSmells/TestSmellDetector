@@ -29,6 +29,11 @@ public class VerboseTest implements ITestSmell {
         return smellList;
     }
 
+    @Override
+    public String getSmellNameAsString() {
+        return "VerboseTest";
+    }
+
     private class ClassVisitor extends VoidVisitorAdapter<Void> {
         final int MAX_STATEMENTS =   123;
         private MethodDeclaration currentMethod = null;
@@ -47,19 +52,18 @@ public class VerboseTest implements ITestSmell {
                 if (currentMethod.getBody().get().getStatements().size() >= MAX_STATEMENTS) {
                     verboseCount++;
                 }
+                methodSmell.setHasSmell(verboseCount > 1);
+
+                map = new HashMap<>();
+                map.put("VerboseCount", String.valueOf(verboseCount));
+                methodSmell.setSmellData(map);
+
+                smellList.add(methodSmell);
+
+                //reset values for next method
+                currentMethod = null;
+                verboseCount = 0;
             }
-
-            methodSmell.setHasSmell(verboseCount > 1);
-
-            map = new HashMap<>();
-            map.put("VerboseCount", String.valueOf(verboseCount));
-            methodSmell.setSmellData(map);
-
-            smellList.add(methodSmell);
-
-            //reset values for next method
-            currentMethod = null;
-            verboseCount = 0;
         }
     }
 }

@@ -23,6 +23,11 @@ public class MysteryGuest implements ITestSmell {
         return smellList;
     }
 
+    @Override
+    public String getSmellNameAsString() {
+        return "MysteryGuest";
+    }
+
     private class ClassVisitor extends VoidVisitorAdapter<Void> {
         private List<String> mysteryTypes = new ArrayList<>(
                 Arrays.asList(

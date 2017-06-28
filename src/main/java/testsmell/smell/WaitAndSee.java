@@ -31,6 +31,11 @@ public class WaitAndSee implements ITestSmell {
         return smellList;
     }
 
+    @Override
+    public String getSmellNameAsString() {
+        return "WaitAndSee";
+    }
+
     private class ClassVisitor extends VoidVisitorAdapter<Void> {
         private MethodDeclaration currentMethod = null;
         private int sleepCount =0;

@@ -7,4 +7,6 @@ import java.util.List;
 
 public interface ITestSmell{
    List<ISmell> runAnalysis(CompilationUnit cu);
+
+   String getSmellNameAsString();
 }

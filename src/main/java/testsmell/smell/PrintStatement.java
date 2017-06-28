@@ -32,6 +32,11 @@ public class PrintStatement implements ITestSmell {
         return smellList;
     }
 
+    @Override
+    public String getSmellNameAsString() {
+        return "PrintStatement";
+    }
+
     private class ClassVisitor extends VoidVisitorAdapter<Void> {
         private MethodDeclaration currentMethod = null;
         private int printCount =0;

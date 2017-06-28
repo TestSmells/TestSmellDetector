@@ -29,6 +29,11 @@ public class ConditionalTestLogic implements ITestSmell {
         return smellList;
     }
 
+    @Override
+    public String getSmellNameAsString() {
+        return "ConditionalTestLogic";
+    }
+
 
     private class ClassVisitor extends VoidVisitorAdapter<Void> {
         private MethodDeclaration currentMethod = null;

@@ -30,6 +30,11 @@ public class ExceptionCatchingThrowing implements ITestSmell  {
         return smellList;
     }
 
+    @Override
+    public String getSmellNameAsString() {
+        return "ExceptionCatchingThrowing";
+    }
+
     private class ClassVisitor extends VoidVisitorAdapter<Void> {
         private MethodDeclaration currentMethod = null;
         private int exceptionCount = 0;
