@@ -29,7 +29,7 @@ public class DefaultTest implements ITestSmell {
 
     @Override
     public String getSmellNameAsString() {
-        return "ConstructorInitialization";
+        return "DefaultTest";
     }
 
     private class ClassVisitor extends VoidVisitorAdapter<Void> {
