@@ -3,7 +3,6 @@ package testsmell;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.text.MessageFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
@@ -12,8 +11,8 @@ import java.util.List;
  */
 public class ResultsWriter {
 
-    String outputFile;
-    FileWriter writer;
+    private String outputFile;
+    private FileWriter writer;
 
     /**
      * Creates the file into which output it to be written into. Results from each file will be stored in a new file
@@ -44,8 +43,8 @@ public class ResultsWriter {
     }
 
     /**
-     *
-     * @param columnValues
+     * Writes column values into the CSV file
+     * @param columnValues the column values
      * @throws IOException
      */
     public void writeLine(List<String> columnValues) throws IOException {
