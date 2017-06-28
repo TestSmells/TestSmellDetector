@@ -50,7 +50,7 @@ public class TestSmellDetector {
      * @return list of smell names
      */
     public List<String> getTestSmellName() {
-        return testSmells.stream().map(p -> p.getSmellNameAsString()).collect(Collectors.toList());
+        return testSmells.stream().map(ITestSmell::getSmellNameAsString).collect(Collectors.toList());
     }
 
     /**
@@ -70,7 +70,7 @@ public class TestSmellDetector {
             analysisResult.put("FilePath", absoluteFilePath);
 
             for (ITestSmell smell : testSmells) {
-                if (smell.runAnalysis(compilationUnit).stream().filter(x -> x.isHasSmell()).collect(Collectors.toList()).size() >= 1) {
+                if (smell.runAnalysis(compilationUnit).stream().filter(ISmell::isHasSmell).collect(Collectors.toList()).size() >= 1) {
                     analysisResult.put(smell.getSmellNameAsString(), "true");
                 } else {
                     analysisResult.put(smell.getSmellNameAsString(), "false");
