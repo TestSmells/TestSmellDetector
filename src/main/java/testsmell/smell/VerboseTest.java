@@ -35,7 +35,7 @@ public class VerboseTest implements ITestSmell {
     }
 
     private class ClassVisitor extends VoidVisitorAdapter<Void> {
-        final int MAX_STATEMENTS =   123;
+        final int MAX_STATEMENTS = 123;
         private MethodDeclaration currentMethod = null;
         private int verboseCount = 0;
         ISmell methodSmell;
@@ -48,9 +48,14 @@ public class VerboseTest implements ITestSmell {
             if (n.getAnnotationByName("Test").isPresent() || n.getNameAsString().toLowerCase().startsWith("test")) {
                 currentMethod = n;
                 methodSmell = new MethodSmell(currentMethod.getNameAsString());
-                //get the total number of statements contained in the method
-                if (currentMethod.getBody().get().getStatements().size() >= MAX_STATEMENTS) {
-                    verboseCount++;
+                //method should not be abstract
+                if (!currentMethod.isAbstract()) {
+                    if (currentMethod.getBody().isPresent()) {
+                        //get the total number of statements contained in the method
+                        if (currentMethod.getBody().get().getStatements().size() >= MAX_STATEMENTS) {
+                            verboseCount++;
+                        }
+                    }
                 }
                 methodSmell.setHasSmell(verboseCount > 1);
 
