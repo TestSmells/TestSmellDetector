@@ -12,7 +12,7 @@ public class Main {
     public static void main(String[] args) throws IOException {
         TestSmellDetector testSmellDetector = TestSmellDetector.createTestSmellDetector();
 
-        BufferedReader in = new BufferedReader(new FileReader("G:\\Tools\\TestSmellDetector\\testFiles.csv"));
+        BufferedReader in = new BufferedReader(new FileReader("H:\\Tools\\TestSmellDetector\\TestFiles_tag.csv"));
         String str;
 
         ResultsWriter resultsWriter = ResultsWriter.createResultsWriter();
@@ -20,15 +20,21 @@ public class Main {
         List<String> columnValues = null;
 
         Map<String,String> data;
+        String[] filePath;
         while((str = in.readLine()) != null){
             data = testSmellDetector.detectSmells(str);
+            filePath = str.split("\\\\");
 
             if(columnNames==null){
                 columnNames = testSmellDetector.getTestSmellName();
-                columnNames.add(0,"FilePath");
+                columnNames.add(0,"App");
+                columnNames.add(1,"FilePath");
+                columnNames.add(2,"Version");
                 resultsWriter.writeColumnName(columnNames);
             }
 
+            data.put("App",filePath[3]);
+            data.put("Version",filePath[4]);
             columnValues = new ArrayList<>();
             for (String column: columnNames) {
                 columnValues.add(data.get(column));
@@ -37,13 +43,8 @@ public class Main {
 
 
         }
-
-
-
-
-        //testSmellDetector.detectSmells("C:\\Projects\\TestSmells_ExisitngTools\\samples\\ar.rulosoft.mimanganu\\app\\src\\androidTest\\java\\ar\\rulosoft\\mimanganu\\TestServers.java");
-        //testSmellDetector.detectSmells("C:\\Projects\\TestSmells\\HashOperationPresenterTest.java");
-
         System.out.println("end");
     }
+
+
 }
