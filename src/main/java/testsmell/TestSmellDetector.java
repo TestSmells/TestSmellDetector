@@ -2,6 +2,7 @@ package testsmell;
 
 import com.github.javaparser.JavaParser;
 import com.github.javaparser.ast.CompilationUnit;
+import org.apache.commons.lang3.StringUtils;
 import testsmell.smell.*;
 
 import java.io.FileInputStream;
@@ -14,7 +15,7 @@ import java.util.stream.Collectors;
 
 public class TestSmellDetector {
 
-    private List<ITestSmell> testSmells;
+    private List<AbstractSmell> testSmells;
 
     /**
      * Instantiates the various test smell analyzer classes and loads the objects into an List
@@ -39,6 +40,7 @@ public class TestSmellDetector {
 
     /**
      * Factory method that provides a new instance of the TestSmellDetector
+     *
      * @return new TestSmellDetector instance
      */
     public static TestSmellDetector createTestSmellDetector() {
@@ -47,38 +49,23 @@ public class TestSmellDetector {
 
     /**
      * Provides the names of the smells that are being checked for in the code
+     *
      * @return list of smell names
      */
-    public List<String> getTestSmellName() {
-        return testSmells.stream().map(ITestSmell::getSmellNameAsString).collect(Collectors.toList());
+    public List<String> getTestSmellNames() {
+        return testSmells.stream().map(AbstractSmell::getSmellName).collect(Collectors.toList());
     }
 
     /**
      * Loads the java source code file into an AST and then analyzes it for the existence of the different types of test smells
-     * @param absoluteFilePath  the name of the source code that is to be analyzed for test smells
-     * @return  a dictionary indicating if a smell occurs or not
-     * @throws IOException
      */
-    public Map<String, String> detectSmells(String absoluteFilePath) throws IOException {
-        Map<String, String> analysisResult = null;
-
-        if (absoluteFilePath.length() != 0) {
-            FileInputStream fileInputStream = new FileInputStream(absoluteFilePath);
-            CompilationUnit compilationUnit = JavaParser.parse(fileInputStream);
-
-            analysisResult = new HashMap<>();
-            analysisResult.put("FilePath", absoluteFilePath);
-
-            for (ITestSmell smell : testSmells) {
-                if (smell.runAnalysis(compilationUnit).stream().filter(ISmell::isHasSmell).collect(Collectors.toList()).size() >= 1) {
-                    analysisResult.put(smell.getSmellNameAsString(), "true");
-                } else {
-                    analysisResult.put(smell.getSmellNameAsString(), "false");
-                }
-            }
+    public TestFile detectSmells(TestFile testFile) throws IOException {
+        for (AbstractSmell smell : testSmells) {
+            smell.runAnalysis(testFile.getTestFilePath(), testFile.getProductionFilePath());
+            testFile.addSmell(smell);
         }
 
-        return analysisResult;
+        return testFile;
 
     }
 

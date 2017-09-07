@@ -1,73 +1,100 @@
 package testsmell.smell;
 
+import com.github.javaparser.JavaParser;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
-import testsmell.MethodSmell;
-import testsmell.ISmell;
+import testsmell.*;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/*
-This class checks if a test method is empty (i.e. the method does not contain statements in its body)
-If the the number of statements in the body is 0, then the method is smelly
+/**
+ * This class checks if a test method is empty (i.e. the method does not contain statements in its body)
+ * If the the number of statements in the body is 0, then the method is smelly
  */
-public class EmptyTest implements ITestSmell {
+public class EmptyTest extends AbstractSmell {
 
-    List<ISmell> smellList;
+    private List<SmellyElement> smellyElementList;
 
-    @Override
-    public List<ISmell> runAnalysis(CompilationUnit cu) {
-        smellList = new ArrayList<>();
-
-        EmptyTest.ClassVisitor classVisitor = new EmptyTest.ClassVisitor();
-        classVisitor.visit(cu, null);
-
-        return smellList;
+    public EmptyTest() {
+        smellyElementList = new ArrayList<>();
     }
 
+    /**
+     * Checks of 'Empty Test' smell
+     */
     @Override
-    public String getSmellNameAsString() {
+    public String getSmellName() {
         return "EmptyTest";
     }
 
-    private class ClassVisitor extends VoidVisitorAdapter<Void> {
-        private MethodDeclaration currentMethod = null;
-        private int emptyCount = 0;
-        ISmell methodSmell;
-        Map<String, String> map;
+    /**
+     * Returns true if any of the elements has a smell
+     */
+    @Override
+    public boolean getHasSmell() {
+        return smellyElementList.stream().filter(x -> x.getHasSmell()).count() >= 1;
+    }
 
-        // examine all methods in the test class
+    /**
+     * Analyze the test file for test methods that are empty (i.e. no method body)
+     */
+    @Override
+    public void runAnalysis(String testFilePath, String productionFilePath) {
+        FileInputStream testFileInputStream = null;
+        try {
+            testFileInputStream = new FileInputStream(testFilePath);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        CompilationUnit compilationUnit;
+        EmptyTest.ClassVisitor classVisitor;
+
+        assert testFileInputStream != null;
+        compilationUnit = JavaParser.parse(testFileInputStream);
+        classVisitor = new EmptyTest.ClassVisitor();
+        classVisitor.visit(compilationUnit, null);
+    }
+
+    /**
+     * Returns the set of analyzed elements (i.e. test methods)
+     */
+    @Override
+    public List<SmellyElement> getSmellyElements() {
+        return smellyElementList;
+    }
+
+    /**
+     * Visitor class
+     */
+    private class ClassVisitor extends VoidVisitorAdapter<Void> {
+        TestMethod testMethod;
+
+        /**
+         * The purpose of this method is to 'visit' all test methods in the test file
+         */
         @Override
         public void visit(MethodDeclaration n, Void arg) {
             //only analyze methods that either have a @test annotation (Junit 4) or the method name starts with 'test'
             if (n.getAnnotationByName("Test").isPresent() || n.getNameAsString().toLowerCase().startsWith("test")) {
-                currentMethod = n;
-                methodSmell = new MethodSmell(currentMethod.getNameAsString());
+                testMethod = new TestMethod(n.getNameAsString());
+                testMethod.setHasSmell(false); //default value is false (i.e. no smell)
                 //method should not be abstract
-                if(!currentMethod.isAbstract()){
-                    if(currentMethod.getBody().isPresent()) {
+                if (!n.isAbstract()) {
+                    if (n.getBody().isPresent()) {
                         //get the total number of statements contained in the method
-                        if (currentMethod.getBody().get().getStatements().size() == 0) {
-                            emptyCount++;
+                        if (n.getBody().get().getStatements().size() == 0) {
+                            testMethod.setHasSmell(true); //the method has no statements (i.e no body)
                         }
                     }
                 }
-
-                methodSmell.setHasSmell(emptyCount >= 1);
-
-                map = new HashMap<>();
-                map.put("EmptyCount", String.valueOf(emptyCount));
-                methodSmell.setSmellData(map);
-
-                smellList.add(methodSmell);
-
-                //reset values for next method
-                currentMethod = null;
-                emptyCount = 0;
+                smellyElementList.add(testMethod);
             }
         }
     }

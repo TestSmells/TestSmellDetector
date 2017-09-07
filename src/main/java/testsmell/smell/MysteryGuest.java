@@ -1,31 +1,68 @@
 package testsmell.smell;
 
+import com.github.javaparser.JavaParser;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.expr.AnnotationExpr;
 import com.github.javaparser.ast.expr.VariableDeclarationExpr;
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
-import testsmell.MethodSmell;
-import testsmell.ISmell;
+import testsmell.*;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.util.*;
 
-public class MysteryGuest implements ITestSmell {
-    List<ISmell> smellList;
+public class MysteryGuest extends AbstractSmell {
 
-    @Override
-    public List<ISmell> runAnalysis(CompilationUnit cu) {
-        smellList = new ArrayList<>();
+    private List<SmellyElement> smellyElementList;
 
-        MysteryGuest.ClassVisitor classVisitor = new MysteryGuest.ClassVisitor();
-        classVisitor.visit(cu, null);
-
-        return smellList;
+    public MysteryGuest() {
+        smellyElementList = new ArrayList<>();
     }
 
+    /**
+     * Checks of 'Mystery Guest' smell
+     */
     @Override
-    public String getSmellNameAsString() {
-        return "MysteryGuest";
+    public String getSmellName() {
+        return "Mystery Guest";
+    }
+
+    /**
+     * Returns true if any of the elements has a smell
+     */
+    @Override
+    public boolean getHasSmell() {
+        return smellyElementList.stream().filter(x -> x.getHasSmell()).count() >= 1;
+    }
+
+    /**
+     * Analyze the test file for test methods that use external resources
+     */
+    @Override
+    public void runAnalysis(String testFilePath, String productionFilePath) {
+        FileInputStream testFileInputStream = null;
+        try {
+            testFileInputStream = new FileInputStream(testFilePath);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        CompilationUnit compilationUnit;
+        MysteryGuest.ClassVisitor classVisitor;
+
+        assert testFileInputStream != null;
+        compilationUnit = JavaParser.parse(testFileInputStream);
+        classVisitor = new MysteryGuest.ClassVisitor();
+        classVisitor.visit(compilationUnit, null);
+    }
+
+    /**
+     * Returns the set of analyzed elements (i.e. test methods)
+     */
+    @Override
+    public List<SmellyElement> getSmellyElements() {
+        return smellyElementList;
     }
 
     private class ClassVisitor extends VoidVisitorAdapter<Void> {
@@ -71,8 +108,7 @@ public class MysteryGuest implements ITestSmell {
         */
         private MethodDeclaration currentMethod = null;
         private int mysteryCount = 0;
-        ISmell methodSmell;
-        Map<String, String> map;
+        TestMethod testMethod;
 
         // examine all methods in the test class
         @Override
@@ -80,16 +116,14 @@ public class MysteryGuest implements ITestSmell {
             //only analyze methods that either have a @test annotation (Junit 4) or the method name starts with 'test'
             if (n.getAnnotationByName("Test").isPresent() || n.getNameAsString().toLowerCase().startsWith("test")) {
                 currentMethod = n;
-                methodSmell = new MethodSmell(currentMethod.getNameAsString());
+                testMethod = new TestMethod(n.getNameAsString());
+                testMethod.setHasSmell(false); //default value is false (i.e. no smell)
                 super.visit(n, arg);
 
-                methodSmell.setHasSmell(mysteryCount > 0);
+                testMethod.setHasSmell(mysteryCount > 0);
+                testMethod.addDataItem("MysteryCount", String.valueOf(mysteryCount));
 
-                map = new HashMap<>();
-                map.put("MysteryCount", String.valueOf(mysteryCount));
-                methodSmell.setSmellData(map);
-
-                smellList.add(methodSmell);
+                smellyElementList.add(testMethod);
 
                 //reset values for next method
                 currentMethod = null;
@@ -128,8 +162,8 @@ public class MysteryGuest implements ITestSmell {
                     //check if the type variable encountered is part of the mystery type collection
                     if ((n.getVariable(0).getType().asString().equals(variableType))) {
                         //check if the variable has been mocked
-                        for (AnnotationExpr annotation:n.getAnnotations()) {
-                            if(annotation.getNameAsString().equals("Mock") || annotation.getNameAsString().equals("Spy"))
+                        for (AnnotationExpr annotation : n.getAnnotations()) {
+                            if (annotation.getNameAsString().equals("Mock") || annotation.getNameAsString().equals("Spy"))
                                 break;
                         }
                         // variable is not mocked, hence it's a smell

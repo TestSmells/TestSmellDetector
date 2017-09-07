@@ -1,45 +1,80 @@
 package testsmell.smell;
 
+import com.github.javaparser.JavaParser;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.expr.ConditionalExpr;
 import com.github.javaparser.ast.stmt.*;
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
-import testsmell.ISmell;
-import testsmell.MethodSmell;
+import testsmell.AbstractSmell;
+import testsmell.SmellyElement;
+import testsmell.TestMethod;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /*
 This class check a test method for the existence of loops and conditional statements in the methods body
  */
-public class ConditionalTestLogic implements ITestSmell {
-    List<ISmell> smellList;
+public class ConditionalTestLogic extends AbstractSmell {
+    private List<SmellyElement> smellyElementList;
 
-    @Override
-    public List<ISmell> runAnalysis(CompilationUnit cu) {
-        smellList = new ArrayList<>();
-
-        ConditionalTestLogic.ClassVisitor classVisitor = new ConditionalTestLogic.ClassVisitor();
-        classVisitor.visit(cu, null);
-
-        return smellList;
+    public ConditionalTestLogic() {
+        smellyElementList = new ArrayList<>();
     }
 
+    /**
+     * Checks of 'Conditional Test Logic' smell
+     */
     @Override
-    public String getSmellNameAsString() {
-        return "ConditionalTestLogic";
+    public String getSmellName() {
+        return "Conditional Test Logic";
+    }
+
+    /**
+     * Returns true if any of the elements has a smell
+     */
+    @Override
+    public boolean getHasSmell() {
+        return smellyElementList.stream().filter(x -> x.getHasSmell()).count() >= 1;
+    }
+
+    /**
+     * Analyze the test file for test methods that use conditional statements
+     */
+    @Override
+    public void runAnalysis(String testFilePath, String productionFilePath) {
+        FileInputStream testFileInputStream = null;
+        try {
+            testFileInputStream = new FileInputStream(testFilePath);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        CompilationUnit compilationUnit;
+        ConditionalTestLogic.ClassVisitor classVisitor;
+
+        assert testFileInputStream != null;
+        compilationUnit = JavaParser.parse(testFileInputStream);
+        classVisitor = new ConditionalTestLogic.ClassVisitor();
+        classVisitor.visit(compilationUnit, null);
+    }
+
+    /**
+     * Returns the set of analyzed elements (i.e. test methods)
+     */
+    @Override
+    public List<SmellyElement> getSmellyElements() {
+        return smellyElementList;
     }
 
 
     private class ClassVisitor extends VoidVisitorAdapter<Void> {
         private MethodDeclaration currentMethod = null;
-        private int conditionCount,ifCount,switchCount,forCount,foreachCount,whileCount  = 0;
-        ISmell methodSmell;
-        Map<String, String> map;
+        private int conditionCount, ifCount, switchCount, forCount, foreachCount, whileCount = 0;
+        TestMethod testMethod;
 
         // examine all methods in the test class
         @Override
@@ -47,30 +82,29 @@ public class ConditionalTestLogic implements ITestSmell {
             //only analyze methods that either have a @test annotation (Junit 4) or the method name starts with 'test'
             if (n.getAnnotationByName("Test").isPresent() || n.getNameAsString().toLowerCase().startsWith("test")) {
                 currentMethod = n;
-                methodSmell = new MethodSmell(currentMethod.getNameAsString());
+                testMethod = new TestMethod(n.getNameAsString());
+                testMethod.setHasSmell(false); //default value is false (i.e. no smell)
                 super.visit(n, arg);
 
-                methodSmell.setHasSmell(conditionCount > 0 | ifCount>0 | switchCount>0 | foreachCount>0 | forCount>0 | whileCount>0);
+                testMethod.setHasSmell(conditionCount > 0 | ifCount > 0 | switchCount > 0 | foreachCount > 0 | forCount > 0 | whileCount > 0);
 
-                map = new HashMap<>();
-                map.put("ConditionCount", String.valueOf(conditionCount));
-                map.put("IfCount", String.valueOf(ifCount));
-                map.put("SwitchCount", String.valueOf(switchCount));
-                map.put("ForeachCount", String.valueOf(foreachCount));
-                map.put("ForCount", String.valueOf(forCount));
-                map.put("WhileCount", String.valueOf(whileCount));
-                methodSmell.setSmellData(map);
+                testMethod.addDataItem("ConditionCount", String.valueOf(conditionCount));
+                testMethod.addDataItem("IfCount", String.valueOf(ifCount));
+                testMethod.addDataItem("SwitchCount", String.valueOf(switchCount));
+                testMethod.addDataItem("ForeachCount", String.valueOf(foreachCount));
+                testMethod.addDataItem("ForCount", String.valueOf(forCount));
+                testMethod.addDataItem("WhileCount", String.valueOf(whileCount));
 
-                smellList.add(methodSmell);
+                smellyElementList.add(testMethod);
 
                 //reset values for next method
                 currentMethod = null;
                 conditionCount = 0;
-                ifCount=0;
-                switchCount=0;
-                forCount=0;
-                foreachCount=0;
-                whileCount=0;
+                ifCount = 0;
+                switchCount = 0;
+                forCount = 0;
+                foreachCount = 0;
+                whileCount = 0;
             }
         }
 
@@ -87,7 +121,7 @@ public class ConditionalTestLogic implements ITestSmell {
         public void visit(SwitchStmt n, Void arg) {
 
             super.visit(n, arg);
-            if(currentMethod != null) {
+            if (currentMethod != null) {
                 switchCount++;
             }
         }
@@ -96,7 +130,7 @@ public class ConditionalTestLogic implements ITestSmell {
         public void visit(ConditionalExpr n, Void arg) {
 
             super.visit(n, arg);
-            if(currentMethod!=null){
+            if (currentMethod != null) {
                 conditionCount++;
             }
         }
@@ -105,7 +139,7 @@ public class ConditionalTestLogic implements ITestSmell {
         public void visit(ForStmt n, Void arg) {
 
             super.visit(n, arg);
-            if(currentMethod!=null){
+            if (currentMethod != null) {
                 forCount++;
             }
         }
@@ -113,7 +147,7 @@ public class ConditionalTestLogic implements ITestSmell {
         @Override
         public void visit(ForeachStmt n, Void arg) {
             super.visit(n, arg);
-            if(currentMethod!=null){
+            if (currentMethod != null) {
                 foreachCount++;
             }
         }
@@ -121,7 +155,7 @@ public class ConditionalTestLogic implements ITestSmell {
         @Override
         public void visit(WhileStmt n, Void arg) {
             super.visit(n, arg);
-            if(currentMethod !=null){
+            if (currentMethod != null) {
                 whileCount++;
             }
         }

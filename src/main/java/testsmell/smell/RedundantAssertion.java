@@ -1,12 +1,14 @@
 package testsmell.smell;
 
+import com.github.javaparser.JavaParser;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.expr.*;
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
-import testsmell.ISmell;
-import testsmell.MethodSmell;
+import testsmell.*;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -15,31 +17,63 @@ import java.util.Map;
 /*
 If a test method contains an assert statement that explicitly returns a true or false, the method is marked as smelly
  */
-public class RedundantAssertion implements ITestSmell {
+public class RedundantAssertion extends AbstractSmell {
 
-    List<ISmell> smellList;
+    private List<SmellyElement> smellyElementList;
 
-    @Override
-    public List<ISmell> runAnalysis(CompilationUnit cu) {
-        smellList = new ArrayList<>();
-
-        RedundantAssertion.ClassVisitor classVisitor = new RedundantAssertion.ClassVisitor();
-        classVisitor.visit(cu, null);
-
-        return smellList;
+    public RedundantAssertion() {
+        smellyElementList = new ArrayList<>();
     }
 
+    /**
+     * Checks of 'Redundant Assertion' smell
+     */
     @Override
-    public String getSmellNameAsString() {
-        return "RedundantAssertion";
+    public String getSmellName() {
+        return "Redundant Assertion";
+    }
+
+    /**
+     * Returns true if any of the elements has a smell
+     */
+    @Override
+    public boolean getHasSmell() {
+        return smellyElementList.stream().filter(x -> x.getHasSmell()).count() >= 1;
+    }
+
+    /**
+     * Analyze the test file for test methods for multiple assert statements
+     */
+    @Override
+    public void runAnalysis(String testFilePath, String productionFilePath) {
+        FileInputStream testFileInputStream = null;
+        try {
+            testFileInputStream = new FileInputStream(testFilePath);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        CompilationUnit compilationUnit;
+        RedundantAssertion.ClassVisitor classVisitor;
+
+        assert testFileInputStream != null;
+        compilationUnit = JavaParser.parse(testFileInputStream);
+        classVisitor = new RedundantAssertion.ClassVisitor();
+        classVisitor.visit(compilationUnit, null);
+    }
+
+    /**
+     * Returns the set of analyzed elements (i.e. test methods)
+     */
+    @Override
+    public List<SmellyElement> getSmellyElements() {
+        return smellyElementList;
     }
 
     private class ClassVisitor extends VoidVisitorAdapter<Void> {
         private MethodDeclaration currentMethod = null;
         private int redundantCount = 0;
-        ISmell methodSmell;
-        Map<String, String> map;
-
+        TestMethod testMethod;
 
         // examine all methods in the test class
         @Override
@@ -47,16 +81,14 @@ public class RedundantAssertion implements ITestSmell {
             //only analyze methods that either have a @test annotation (Junit 4) or the method name starts with 'test'
             if (n.getAnnotationByName("Test").isPresent() || n.getNameAsString().toLowerCase().startsWith("test")) {
                 currentMethod = n;
-                methodSmell = new MethodSmell(currentMethod.getNameAsString());
+                testMethod = new TestMethod(n.getNameAsString());
+                testMethod.setHasSmell(false); //default value is false (i.e. no smell)
                 super.visit(n, arg);
 
-                methodSmell.setHasSmell(redundantCount >= 1);
+                testMethod.setHasSmell(redundantCount >= 1);
+                testMethod.addDataItem("RedundantCount", String.valueOf(redundantCount));
 
-                map = new HashMap<>();
-                map.put("RedundantCount", String.valueOf(redundantCount));
-                methodSmell.setSmellData(map);
-
-                smellList.add(methodSmell);
+                smellyElementList.add(testMethod);
 
                 //reset values for next method
                 currentMethod = null;

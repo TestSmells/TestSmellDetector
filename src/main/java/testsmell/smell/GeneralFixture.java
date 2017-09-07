@@ -1,5 +1,6 @@
 package testsmell.smell;
 
+import com.github.javaparser.JavaParser;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.BodyDeclaration;
@@ -11,31 +12,61 @@ import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.ExpressionStmt;
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
-import testsmell.ISmell;
-import testsmell.MethodSmell;
+import testsmell.*;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class GeneralFixture implements ITestSmell {
+public class GeneralFixture extends AbstractSmell {
 
-    List<ISmell> smellList;
+    private List<SmellyElement> smellyElementList;
     List<MethodDeclaration> methodList;
     MethodDeclaration setupMethod;
     List<FieldDeclaration> fieldList;
     List<String> setupFields;
 
-    @Override
-    public List<ISmell> runAnalysis(CompilationUnit cu) {
-        smellList = new ArrayList<>();
+    public GeneralFixture() {
+        smellyElementList = new ArrayList<>();
         methodList = new ArrayList<>();
         fieldList = new ArrayList<>();
         setupFields = new ArrayList<>();
+    }
 
-        GeneralFixture.ClassVisitor classVisitor = new GeneralFixture.ClassVisitor();
-        //This call will populate the list of test methods and identify the setup method [visit(ClassOrInterfaceDeclaration n)]
-        classVisitor.visit(cu, null);
+    /**
+     * Checks of 'General Fixture' smell
+     */
+    @Override
+    public String getSmellName() {
+        return "General Fixture";
+    }
+
+    /**
+     * Returns true if any of the elements has a smell
+     */
+    @Override
+    public boolean getHasSmell() {
+        return smellyElementList.stream().filter(x -> x.getHasSmell()).count() >= 1;
+    }
+
+    @Override
+    public void runAnalysis(String testFilePath, String productionFilePath) {
+        FileInputStream testFileInputStream = null;
+        try {
+            testFileInputStream = new FileInputStream(testFilePath);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        CompilationUnit compilationUnit;
+        GeneralFixture.ClassVisitor classVisitor;
+
+        assert testFileInputStream != null;
+        compilationUnit = JavaParser.parse(testFileInputStream);
+        classVisitor = new GeneralFixture.ClassVisitor();
+        classVisitor.visit(compilationUnit, null); //This call will populate the list of test methods and identify the setup method [visit(ClassOrInterfaceDeclaration n)]
 
         //Proceed with general fixture analysis if setup method exists
         if (setupMethod != null) {
@@ -65,19 +96,21 @@ public class GeneralFixture implements ITestSmell {
             //This call will visit each test method to identify the list of variables the method contains [visit(MethodDeclaration n)]
             classVisitor.visit(method, null);
         }
-
-        return smellList;
     }
 
+    /**
+     * Returns the set of analyzed elements (i.e. test methods)
+     */
     @Override
-    public String getSmellNameAsString() {
-        return "GeneralFixture";
+    public List<SmellyElement> getSmellyElements() {
+        return smellyElementList;
     }
+
 
     private class ClassVisitor extends VoidVisitorAdapter<Void> {
         private MethodDeclaration methodDeclaration = null;
         private MethodDeclaration currentMethod = null;
-        ISmell methodSmell;
+        TestMethod testMethod;
         private int fixtureCount = 0;
 
         @Override
@@ -115,9 +148,9 @@ public class GeneralFixture implements ITestSmell {
                 //call visit(NameExpr) for current method
                 super.visit(n, arg);
 
-                methodSmell = new MethodSmell(n.getNameAsString());
-                methodSmell.setHasSmell(fixtureCount != setupFields.size());
-                smellList.add(methodSmell);
+                testMethod = new TestMethod(n.getNameAsString());
+                testMethod.setHasSmell(fixtureCount != setupFields.size());
+                smellyElementList.add(testMethod);
 
                 fixtureCount = 0;
                 currentMethod = null;

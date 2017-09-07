@@ -1,58 +1,92 @@
 package testsmell.smell;
 
+import com.github.javaparser.JavaParser;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
-import testsmell.MethodSmell;
-import testsmell.ISmell;
+import testsmell.AbstractSmell;
+import testsmell.SmellyElement;
+import testsmell.TestMethod;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-public class SensitiveEquality implements ITestSmell {
-    List<ISmell> smellList;
+public class SensitiveEquality extends AbstractSmell {
 
-    @Override
-    public List<ISmell> runAnalysis(CompilationUnit cu) {
-        smellList = new ArrayList<>();
+    private List<SmellyElement> smellyElementList;
 
-        SensitiveEquality.ClassVisitor classVisitor = new SensitiveEquality.ClassVisitor();
-        classVisitor.visit(cu,null);
-
-        return smellList;
+    public SensitiveEquality() {
+        smellyElementList = new ArrayList<>();
     }
 
+    /**
+     * Checks of 'Sensitive Equality' smell
+     */
     @Override
-    public String getSmellNameAsString() {
-        return "SensitiveEquality";
+    public String getSmellName() {
+        return "Sensitive Equality";
+    }
+
+    /**
+     * Returns true if any of the elements has a smell
+     */
+    @Override
+    public boolean getHasSmell() {
+        return smellyElementList.stream().filter(x -> x.getHasSmell()).count() >= 1;
+    }
+
+    /**
+     * Analyze the test file for test methods the 'Sensitive Equality' smell
+     */
+    @Override
+    public void runAnalysis(String testFilePath, String productionFilePath) {
+        FileInputStream testFileInputStream = null;
+        try {
+            testFileInputStream = new FileInputStream(testFilePath);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        CompilationUnit compilationUnit;
+        SensitiveEquality.ClassVisitor classVisitor;
+
+        assert testFileInputStream != null;
+        compilationUnit = JavaParser.parse(testFileInputStream);
+        classVisitor = new SensitiveEquality.ClassVisitor();
+        classVisitor.visit(compilationUnit, null);
+    }
+
+    /**
+     * Returns the set of analyzed elements (i.e. test methods)
+     */
+    @Override
+    public List<SmellyElement> getSmellyElements() {
+        return smellyElementList;
     }
 
     private class ClassVisitor extends VoidVisitorAdapter<Void> {
         private MethodDeclaration currentMethod = null;
-        private int sensitiveCount =0;
-        ISmell methodSmell;
-        Map<String, String> map;
+        private int sensitiveCount = 0;
+        TestMethod testMethod;
 
         // examine all methods in the test class
         @Override
         public void visit(MethodDeclaration n, Void arg) {
             //only analyze methods that either have a @test annotation (Junit 4) or the method name starts with 'test'
-            if(n.getAnnotationByName("Test").isPresent() || n.getNameAsString().toLowerCase().startsWith("test") ){
+            if (n.getAnnotationByName("Test").isPresent() || n.getNameAsString().toLowerCase().startsWith("test")) {
                 currentMethod = n;
-                methodSmell = new MethodSmell(currentMethod.getNameAsString());
+                testMethod = new TestMethod(n.getNameAsString());
+                testMethod.setHasSmell(false); //default value is false (i.e. no smell)
                 super.visit(n, arg);
 
-                methodSmell.setHasSmell(sensitiveCount > 0);
+                testMethod.setHasSmell(sensitiveCount >= 1);
+                testMethod.addDataItem("SensitiveCount", String.valueOf(sensitiveCount));
 
-                map = new HashMap<>();
-                map.put("SensitiveCount", String.valueOf(sensitiveCount));
-                methodSmell.setSmellData(map);
-
-                smellList.add(methodSmell);
+                smellyElementList.add(testMethod);
 
                 //reset values for next method
                 currentMethod = null;
@@ -64,21 +98,21 @@ public class SensitiveEquality implements ITestSmell {
         @Override
         public void visit(MethodCallExpr n, Void arg) {
             super.visit(n, arg);
-            if (currentMethod != null){
+            if (currentMethod != null) {
                 // if the name of a method being called start with 'assert'
-                if(n.getNameAsString().startsWith(("assert")) ){
+                if (n.getNameAsString().startsWith(("assert"))) {
                     // assert methods that contain toString
-                    for (Expression argument: n.getArguments()) {
-                        if(argument.toString().contains("toString")){
+                    for (Expression argument : n.getArguments()) {
+                        if (argument.toString().contains("toString")) {
                             sensitiveCount++;
                         }
                     }
                 }
                 // if the name of a method being called is 'fail'
-                else if(n.getNameAsString().equals("fail")){
+                else if (n.getNameAsString().equals("fail")) {
                     // fail methods that contain toString
-                    for (Expression argument: n.getArguments()) {
-                        if(argument.toString().contains("toString")){
+                    for (Expression argument : n.getArguments()) {
+                        if (argument.toString().contains("toString")) {
                             sensitiveCount++;
                         }
                     }

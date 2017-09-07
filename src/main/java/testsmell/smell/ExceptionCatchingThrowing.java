@@ -1,45 +1,81 @@
 package testsmell.smell;
 
+import com.github.javaparser.JavaParser;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.stmt.CatchClause;
 import com.github.javaparser.ast.stmt.ThrowStmt;
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
-import testsmell.ISmell;
-import testsmell.MethodSmell;
+import testsmell.AbstractSmell;
+import testsmell.SmellyElement;
+import testsmell.TestMethod;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /*
 This class checks if test methods in the class either catch or throw exceptions. Use Junit's exception handling to automatically pass/fail the test
 If this code detects the existence of a catch block or a throw statement in the methods body, the method is marked as smelly
  */
-public class ExceptionCatchingThrowing implements ITestSmell  {
-    List<ISmell> smellList;
+public class ExceptionCatchingThrowing extends AbstractSmell {
 
-    @Override
-    public List<ISmell> runAnalysis(CompilationUnit cu) {
-        smellList = new ArrayList<>();
+    private List<SmellyElement> smellyElementList;
 
-        ExceptionCatchingThrowing.ClassVisitor classVisitor = new ExceptionCatchingThrowing.ClassVisitor();
-        classVisitor.visit(cu, null);
-
-        return smellList;
+    public ExceptionCatchingThrowing() {
+        smellyElementList = new ArrayList<>();
     }
 
+    /**
+     * Checks of 'Exception Catching Throwing' smell
+     */
     @Override
-    public String getSmellNameAsString() {
-        return "ExceptionCatchingThrowing";
+    public String getSmellName() {
+        return "Exception Catching Throwing";
+    }
+
+    /**
+     * Returns true if any of the elements has a smell
+     */
+    @Override
+    public boolean getHasSmell() {
+        return smellyElementList.stream().filter(x -> x.getHasSmell()).count() >= 1;
+    }
+
+    /**
+     * Analyze the test file for test methods that have exception handling
+     */
+    @Override
+    public void runAnalysis(String testFilePath, String productionFilePath) {
+        FileInputStream testFileInputStream = null;
+        try {
+            testFileInputStream = new FileInputStream(testFilePath);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        CompilationUnit compilationUnit;
+        ExceptionCatchingThrowing.ClassVisitor classVisitor;
+
+        assert testFileInputStream != null;
+        compilationUnit = JavaParser.parse(testFileInputStream);
+        classVisitor = new ExceptionCatchingThrowing.ClassVisitor();
+        classVisitor.visit(compilationUnit, null);
+    }
+
+    /**
+     * Returns the set of analyzed elements (i.e. test methods)
+     */
+    @Override
+    public List<SmellyElement> getSmellyElements() {
+        return smellyElementList;
     }
 
     private class ClassVisitor extends VoidVisitorAdapter<Void> {
         private MethodDeclaration currentMethod = null;
         private int exceptionCount = 0;
-        ISmell methodSmell;
-        Map<String, String> map;
+        TestMethod testMethod;
 
 
         // examine all methods in the test class
@@ -48,16 +84,14 @@ public class ExceptionCatchingThrowing implements ITestSmell  {
             //only analyze methods that either have a @test annotation (Junit 4) or the method name starts with 'test'
             if (n.getAnnotationByName("Test").isPresent() || n.getNameAsString().toLowerCase().startsWith("test")) {
                 currentMethod = n;
-                methodSmell = new MethodSmell(currentMethod.getNameAsString());
+                testMethod = new TestMethod(n.getNameAsString());
+                testMethod.setHasSmell(false); //default value is false (i.e. no smell)
                 super.visit(n, arg);
 
-                methodSmell.setHasSmell(exceptionCount >= 1);
+                testMethod.setHasSmell(exceptionCount >= 1);
+                testMethod.addDataItem("ExceptionCount", String.valueOf(exceptionCount));
 
-                map = new HashMap<>();
-                map.put("ExceptionCount", String.valueOf(exceptionCount));
-                methodSmell.setSmellData(map);
-
-                smellList.add(methodSmell);
+                smellyElementList.add(testMethod);
 
                 //reset values for next method
                 currentMethod = null;
@@ -70,7 +104,7 @@ public class ExceptionCatchingThrowing implements ITestSmell  {
         public void visit(ThrowStmt n, Void arg) {
             super.visit(n, arg);
 
-            if(currentMethod!=null){
+            if (currentMethod != null) {
                 exceptionCount++;
             }
         }
@@ -79,7 +113,7 @@ public class ExceptionCatchingThrowing implements ITestSmell  {
         public void visit(CatchClause n, Void arg) {
             super.visit(n, arg);
 
-            if(currentMethod!=null){
+            if (currentMethod != null) {
                 exceptionCount++;
             }
         }

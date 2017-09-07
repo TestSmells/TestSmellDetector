@@ -1,45 +1,79 @@
 package testsmell.smell;
 
+import com.github.javaparser.JavaParser;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
-import testsmell.ISmell;
-import testsmell.MethodSmell;
+import testsmell.AbstractSmell;
+import testsmell.SmellyElement;
+import testsmell.TestMethod;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /*
 If a test methods contains a statements that exceeds a certain threshold, the method is marked as smelly
  */
-public class VerboseTest implements ITestSmell {
+public class VerboseTest extends AbstractSmell {
 
-    List<ISmell> smellList;
+    private List<SmellyElement> smellyElementList;
 
-
-    @Override
-    public List<ISmell> runAnalysis(CompilationUnit cu) {
-        smellList = new ArrayList<>();
-
-        VerboseTest.ClassVisitor classVisitor = new VerboseTest.ClassVisitor();
-        classVisitor.visit(cu, null);
-
-        return smellList;
+    public VerboseTest() {
+        smellyElementList = new ArrayList<>();
     }
 
+    /**
+     * Checks of 'Verbose Test' smell
+     */
     @Override
-    public String getSmellNameAsString() {
-        return "VerboseTest";
+    public String getSmellName() {
+        return "Verbose Test";
+    }
+
+    /**
+     * Returns true if any of the elements has a smell
+     */
+    @Override
+    public boolean getHasSmell() {
+        return smellyElementList.stream().filter(x -> x.getHasSmell()).count() >= 1;
+    }
+
+    /**
+     * Analyze the test file for test methods for the 'Verbose Test' smell
+     */
+    @Override
+    public void runAnalysis(String testFilePath, String productionFilePath) {
+        FileInputStream testFileInputStream = null;
+        try {
+            testFileInputStream = new FileInputStream(testFilePath);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        CompilationUnit compilationUnit;
+        VerboseTest.ClassVisitor classVisitor;
+
+        assert testFileInputStream != null;
+        compilationUnit = JavaParser.parse(testFileInputStream);
+        classVisitor = new VerboseTest.ClassVisitor();
+        classVisitor.visit(compilationUnit, null);
+    }
+
+    /**
+     * Returns the set of analyzed elements (i.e. test methods)
+     */
+    @Override
+    public List<SmellyElement> getSmellyElements() {
+        return smellyElementList;
     }
 
     private class ClassVisitor extends VoidVisitorAdapter<Void> {
         final int MAX_STATEMENTS = 123;
         private MethodDeclaration currentMethod = null;
         private int verboseCount = 0;
-        ISmell methodSmell;
-        Map<String, String> map;
+        TestMethod testMethod;
 
         // examine all methods in the test class
         @Override
@@ -47,7 +81,9 @@ public class VerboseTest implements ITestSmell {
             //only analyze methods that either have a @test annotation (Junit 4) or the method name starts with 'test'
             if (n.getAnnotationByName("Test").isPresent() || n.getNameAsString().toLowerCase().startsWith("test")) {
                 currentMethod = n;
-                methodSmell = new MethodSmell(currentMethod.getNameAsString());
+                testMethod = new TestMethod(n.getNameAsString());
+                testMethod.setHasSmell(false); //default value is false (i.e. no smell)
+
                 //method should not be abstract
                 if (!currentMethod.isAbstract()) {
                     if (currentMethod.getBody().isPresent()) {
@@ -57,13 +93,10 @@ public class VerboseTest implements ITestSmell {
                         }
                     }
                 }
-                methodSmell.setHasSmell(verboseCount > 1);
+                testMethod.setHasSmell(verboseCount >= 1);
+                testMethod.addDataItem("VerboseCount", String.valueOf(verboseCount));
 
-                map = new HashMap<>();
-                map.put("VerboseCount", String.valueOf(verboseCount));
-                methodSmell.setSmellData(map);
-
-                smellList.add(methodSmell);
+                smellyElementList.add(testMethod);
 
                 //reset values for next method
                 currentMethod = null;
