@@ -52,12 +52,12 @@ public class GeneralFixture extends AbstractSmell {
     }
 
     @Override
-    public void runAnalysis(String testFilePath, String productionFilePath) {
+    public void runAnalysis(String testFilePath, String productionFilePath) throws FileNotFoundException {
         FileInputStream testFileInputStream = null;
         try {
             testFileInputStream = new FileInputStream(testFilePath);
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
+            throw e;
         }
 
         CompilationUnit compilationUnit;

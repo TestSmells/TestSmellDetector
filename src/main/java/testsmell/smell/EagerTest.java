@@ -50,14 +50,14 @@ public class EagerTest extends AbstractSmell {
      * @param productionFilePath the absolute path of the production file (that corresponds to the test file)
      */
     @Override
-    public void runAnalysis(String testFilePath, String productionFilePath) {
+    public void runAnalysis(String testFilePath, String productionFilePath) throws FileNotFoundException {
         FileInputStream testFileInputStream = null;
         FileInputStream productionFileInputStream = null;
         try {
             testFileInputStream = new FileInputStream(testFilePath);
             productionFileInputStream = new FileInputStream(productionFilePath);
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
+            throw e;
         }
 
         CompilationUnit compilationUnit;

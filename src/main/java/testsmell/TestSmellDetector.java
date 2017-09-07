@@ -6,6 +6,7 @@ import org.apache.commons.lang3.StringUtils;
 import testsmell.smell.*;
 
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -36,6 +37,7 @@ public class TestSmellDetector {
         testSmells.add(new SensitiveEquality());
         testSmells.add(new VerboseTest());
         testSmells.add(new WaitAndSee());
+        testSmells.add(new EagerTest());
     }
 
     /**
@@ -61,7 +63,13 @@ public class TestSmellDetector {
      */
     public TestFile detectSmells(TestFile testFile) throws IOException {
         for (AbstractSmell smell : testSmells) {
-            smell.runAnalysis(testFile.getTestFilePath(), testFile.getProductionFilePath());
+            try {
+                smell.runAnalysis(testFile.getTestFilePath(), testFile.getProductionFilePath());
+            }
+            catch (FileNotFoundException e) {
+                testFile.addSmell(null);
+                continue;
+            }
             testFile.addSmell(smell);
         }
 

@@ -47,12 +47,12 @@ public class WaitAndSee extends AbstractSmell {
      * Analyze the test file for test methods that use Thread.sleep()
      */
     @Override
-    public void runAnalysis(String testFilePath, String productionFilePath) {
+    public void runAnalysis(String testFilePath, String productionFilePath) throws FileNotFoundException {
         FileInputStream testFileInputStream = null;
         try {
             testFileInputStream = new FileInputStream(testFilePath);
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
+            throw e;
         }
 
         CompilationUnit compilationUnit;

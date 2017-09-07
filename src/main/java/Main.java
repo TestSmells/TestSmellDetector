@@ -63,7 +63,12 @@ public class Main {
             columnValues.add(file.getTestFilePath());
             columnValues.add(file.getProductionFilePath());
             for (AbstractSmell smell : file.getTestSmells()) {
-                columnValues.add(String.valueOf(smell.getHasSmell()));
+                try {
+                    columnValues.add(String.valueOf(smell.getHasSmell()));
+                }
+                catch (NullPointerException e){
+                    columnValues.add("");
+                }
             }
             resultsWriter.writeLine(columnValues);
         }
