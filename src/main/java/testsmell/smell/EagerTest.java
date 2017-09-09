@@ -121,7 +121,7 @@ public class EagerTest extends AbstractSmell {
                     super.visit(n, arg);
 
                     testMethod.setHasSmell(eagerCount > 1); //the method has a smell if there is more than 1 call to production methods
-                    System.out.println(n.getNameAsString() + ";" + eagerCount);
+                    //System.out.println(n.getNameAsString() + ";" + eagerCount);
 
                     smellyElementList.add(testMethod);
 
