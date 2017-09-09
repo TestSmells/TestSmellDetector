@@ -16,7 +16,7 @@ public class Main {
         /*
           Read the input file and build the TestFile objects
          */
-        BufferedReader in = new BufferedReader(new FileReader("C:\\Projects\\TestSmells\\testing\\allTests.txt"));
+        BufferedReader in = new BufferedReader(new FileReader("H:\\Tools\\TestSmellDetector\\files.csv"));
         String str;
 
         String[] lineItem;
@@ -52,17 +52,20 @@ public class Main {
 
         /*
           Iterate through all test files to detect smells and then write the output
-         */
+        */
+        TestFile tempFile;
         for (TestFile file : testFiles) {
+            System.out.println("Processing: "+file.getTestFilePath());
+
             //detect smells
-            file = testSmellDetector.detectSmells(file);
+            tempFile = testSmellDetector.detectSmells(file);
 
             //write output
             columnValues = new ArrayList<>();
             columnValues.add(file.getApp());
             columnValues.add(file.getTestFilePath());
             columnValues.add(file.getProductionFilePath());
-            for (AbstractSmell smell : file.getTestSmells()) {
+            for (AbstractSmell smell : tempFile.getTestSmells()) {
                 try {
                     columnValues.add(String.valueOf(smell.getHasSmell()));
                 }
