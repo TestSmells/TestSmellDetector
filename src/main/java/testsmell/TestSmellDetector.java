@@ -62,9 +62,19 @@ public class TestSmellDetector {
      * Loads the java source code file into an AST and then analyzes it for the existence of the different types of test smells
      */
     public TestFile detectSmells(TestFile testFile) throws IOException {
-        CompilationUnit testFileCompilationUnit, productionFileCompilationUnit;
-        testFileCompilationUnit = JavaParser.parse(testFile.getTestFilePath());
-        productionFileCompilationUnit = JavaParser.parse(testFile.getProductionFilePath());
+        CompilationUnit testFileCompilationUnit=null, productionFileCompilationUnit=null;
+        FileInputStream testFileInputStream, productionFileInputStream;
+
+        if(!StringUtils.isEmpty(testFile.getTestFilePath())) {
+            testFileInputStream = new FileInputStream(testFile.getTestFilePath());
+            testFileCompilationUnit = JavaParser.parse(testFileInputStream);
+        }
+
+        if(!StringUtils.isEmpty(testFile.getProductionFilePath())){
+            productionFileInputStream = new FileInputStream(testFile.getProductionFilePath());
+            productionFileCompilationUnit = JavaParser.parse(productionFileInputStream);
+        }
+
 
         for (AbstractSmell smell : testSmells) {
             try {
