@@ -27,12 +27,6 @@
             <version>3.2.4</version>
         </dependency>
         <dependency>
-            <groupId>com.github.javaparser</groupId>
-            <artifactId>java-symbol-solver-core</artifactId>
-            <version>0.6.0</version>
-        </dependency>
-
-        <dependency>
             <groupId>com.opencsv</groupId>
             <artifactId>opencsv</artifactId>
             <version>3.9</version>
