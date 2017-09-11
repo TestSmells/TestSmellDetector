@@ -45,31 +45,17 @@ public class EagerTest extends AbstractSmell {
 
     /**
      * Analyze the test file for test methods that exhibit the 'Eager Test' smell
-     *
-     * @param testFilePath       The absolute path of the test file
-     * @param productionFilePath the absolute path of the production file (that corresponds to the test file)
      */
     @Override
-    public void runAnalysis(String testFilePath, String productionFilePath) throws FileNotFoundException {
-        FileInputStream testFileInputStream = null;
-        FileInputStream productionFileInputStream = null;
-        try {
-            testFileInputStream = new FileInputStream(testFilePath);
-            productionFileInputStream = new FileInputStream(productionFilePath);
-        } catch (FileNotFoundException e) {
-            throw e;
-        }
+    public void runAnalysis(CompilationUnit testFileCompilationUnit,CompilationUnit productionFileCompilationUnit) throws FileNotFoundException {
 
-        CompilationUnit compilationUnit;
         EagerTest.ClassVisitor classVisitor;
 
-        compilationUnit = JavaParser.parse(productionFileInputStream);
         classVisitor = new EagerTest.ClassVisitor(PRODUCTION_FILE);
-        classVisitor.visit(compilationUnit, null);
+        classVisitor.visit(productionFileCompilationUnit, null);
 
-        compilationUnit = JavaParser.parse(testFileInputStream);
         classVisitor = new EagerTest.ClassVisitor(TEST_FILE);
-        classVisitor.visit(compilationUnit, null);
+        classVisitor.visit(testFileCompilationUnit, null);
 
     }
 

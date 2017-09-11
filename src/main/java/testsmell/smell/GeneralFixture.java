@@ -52,21 +52,10 @@ public class GeneralFixture extends AbstractSmell {
     }
 
     @Override
-    public void runAnalysis(String testFilePath, String productionFilePath) throws FileNotFoundException {
-        FileInputStream testFileInputStream = null;
-        try {
-            testFileInputStream = new FileInputStream(testFilePath);
-        } catch (FileNotFoundException e) {
-            throw e;
-        }
-
-        CompilationUnit compilationUnit;
+    public void runAnalysis(CompilationUnit testFileCompilationUnit,CompilationUnit productionFileCompilationUnit) throws FileNotFoundException {
         GeneralFixture.ClassVisitor classVisitor;
-
-        assert testFileInputStream != null;
-        compilationUnit = JavaParser.parse(testFileInputStream);
         classVisitor = new GeneralFixture.ClassVisitor();
-        classVisitor.visit(compilationUnit, null); //This call will populate the list of test methods and identify the setup method [visit(ClassOrInterfaceDeclaration n)]
+        classVisitor.visit(testFileCompilationUnit, null); //This call will populate the list of test methods and identify the setup method [visit(ClassOrInterfaceDeclaration n)]
 
         //Proceed with general fixture analysis if setup method exists
         if (setupMethod != null) {
