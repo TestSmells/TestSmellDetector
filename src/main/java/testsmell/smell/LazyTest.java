@@ -106,7 +106,6 @@ public class LazyTest extends AbstractSmell {
     private class ClassVisitor extends VoidVisitorAdapter<Void> {
         private MethodDeclaration currentMethod = null;
         TestMethod testMethod;
-       // private int lazyCount = 0;
         private List<String> productionVariables = new ArrayList<>();
         private String fileType;
 
@@ -137,13 +136,8 @@ public class LazyTest extends AbstractSmell {
                     testMethod.setHasSmell(false); //default value is false (i.e. no smell)
                     super.visit(n, arg);
 
-                   // testMethod.setHasSmell(lazyCount >= 1); //TODO//the method has a smell if there is more than 1 call to production methods
-
-                    //smellyElementList.add(testMethod);
-
                     //reset values for next method
                     currentMethod = null;
-                    //lazyCount = 0;
                     productionVariables = new ArrayList<>();
                 }
 
