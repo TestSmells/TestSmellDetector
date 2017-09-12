@@ -38,6 +38,7 @@ public class TestSmellDetector {
         testSmells.add(new VerboseTest());
         testSmells.add(new WaitAndSee());
         testSmells.add(new EagerTest());
+        testSmells.add(new LazyTest());
     }
 
     /**
