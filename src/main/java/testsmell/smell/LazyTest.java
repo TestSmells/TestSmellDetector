@@ -2,6 +2,7 @@ package testsmell.smell;
 
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
+import com.github.javaparser.ast.body.EnumDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
@@ -115,6 +116,14 @@ public class LazyTest extends AbstractSmell {
 
         @Override
         public void visit(ClassOrInterfaceDeclaration n, Void arg) {
+            if (Objects.equals(fileType, PRODUCTION_FILE)) {
+                productionClassName = n.getNameAsString();
+            }
+            super.visit(n, arg);
+        }
+
+        @Override
+        public void visit(EnumDeclaration n, Void arg) {
             if (Objects.equals(fileType, PRODUCTION_FILE)) {
                 productionClassName = n.getNameAsString();
             }
