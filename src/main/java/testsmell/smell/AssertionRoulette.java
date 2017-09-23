@@ -1,16 +1,13 @@
 package testsmell.smell;
 
-import com.github.javaparser.JavaParser;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
-import org.apache.commons.lang3.StringUtils;
 import testsmell.AbstractSmell;
 import testsmell.SmellyElement;
 import testsmell.TestMethod;
 
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
@@ -60,6 +57,7 @@ public class AssertionRoulette extends AbstractSmell {
 
     private class ClassVisitor extends VoidVisitorAdapter<Void> {
         private MethodDeclaration currentMethod = null;
+        private int assertMessageCount = 0;
         private int assertCount = 0;
         TestMethod testMethod;
 
@@ -73,14 +71,21 @@ public class AssertionRoulette extends AbstractSmell {
                 testMethod.setHasSmell(false); //default value is false (i.e. no smell)
                 super.visit(n, arg);
 
-                testMethod.setHasSmell(assertCount > 1);
-                testMethod.addDataItem("AssertCount", String.valueOf(assertCount));
+
+                // if there is only 1 assert statement in the method, then a explanation message is not needed
+                if(assertCount==1)
+                    testMethod.setHasSmell(false);
+                else if(assertCount >=2 && assertMessageCount >=1) //if there is more than one assert statement, then all the asserts need to have an explanation message
+                    testMethod.setHasSmell(true);
+
+                testMethod.addDataItem("AssertCount", String.valueOf(assertMessageCount));
 
                 smellyElementList.add(testMethod);
 
                 //reset values for next method
                 currentMethod = null;
-                assertCount = 0;
+                assertCount=0;
+                assertMessageCount = 0;
             }
         }
 
@@ -91,16 +96,18 @@ public class AssertionRoulette extends AbstractSmell {
             if (currentMethod != null) {
                 // if the name of a method being called start with 'assert'
                 if (n.getNameAsString().startsWith(("assert"))) {
+                    assertCount++;
                     // assert methods that do not contain a message
                     if (n.getArguments().size() < 3) {
-                        assertCount++;
+                        assertMessageCount++;
                     }
                 }
                 // if the name of a method being called is 'fail'
                 else if (n.getNameAsString().equals("fail")) {
+                    assertCount++;
                     // fail method does not contain a message
                     if (n.getArguments().size() < 1) {
-                        assertCount++;
+                        assertMessageCount++;
                     }
                 }
 
