@@ -9,9 +9,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 public class TestSmellDetector {
@@ -21,8 +19,11 @@ public class TestSmellDetector {
     /**
      * Instantiates the various test smell analyzer classes and loads the objects into an List
      */
-    private TestSmellDetector() {
+    public TestSmellDetector() {
+        initializeSmells();
+    }
 
+    private void initializeSmells(){
         testSmells = new ArrayList<>();
         testSmells.add(new AssertionRoulette());
         testSmells.add(new ConditionalTestLogic());
@@ -76,7 +77,7 @@ public class TestSmellDetector {
             productionFileCompilationUnit = JavaParser.parse(productionFileInputStream);
         }
 
-
+        initializeSmells();
         for (AbstractSmell smell : testSmells) {
             try {
                 smell.runAnalysis(testFileCompilationUnit, productionFileCompilationUnit);
