@@ -1,10 +1,9 @@
 package testsmell;
 
-import testsmell.smell.EagerTest;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 public class TestFile {
     private String app, testFilePath, productionFilePath;
@@ -41,4 +40,26 @@ public class TestFile {
         testSmells.add(smell);
     }
 
+    public String getRelativeTestFilePath() {
+        String[] splitString = testFilePath.split("\\\\");
+        StringBuilder stringBuilder = new StringBuilder();
+        for (int i = 0; i < 5; i++) {
+            stringBuilder.append(splitString[i] + "\\");
+        }
+        return testFilePath.substring(stringBuilder.toString().length()).replace("\\", "/");
+    }
+
+    public String getRelativeProductionFilePath() {
+        if (!StringUtils.isEmpty(productionFilePath)) {
+            String[] splitString = productionFilePath.split("\\\\");
+            StringBuilder stringBuilder = new StringBuilder();
+            for (int i = 0; i < 5; i++) {
+                stringBuilder.append(splitString[i] + "\\");
+            }
+            return productionFilePath.substring(stringBuilder.toString().length()).replace("\\", "/");
+        } else {
+            return "";
+
+        }
+    }
 }
