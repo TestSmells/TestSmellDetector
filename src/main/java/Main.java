@@ -16,7 +16,7 @@ public class Main {
         /*
           Read the input file and build the TestFile objects
          */
-        BufferedReader in = new BufferedReader(new FileReader("H:\\Tools\\TestSmellDetector\\files.csv"));
+        BufferedReader in = new BufferedReader(new FileReader("C:\\Projects\\TestSmells\\testing\\allTests.txt"));
         String str;
 
         String[] lineItem;
@@ -48,6 +48,8 @@ public class Main {
         columnNames.add(0, "App");
         columnNames.add(1, "TestFilePath");
         columnNames.add(2, "ProductionFilePath");
+        columnNames.add(3, "RelativeTestFilePath");
+        columnNames.add(4, "RelativeProductionFilePath");
         resultsWriter.writeColumnName(columnNames);
 
         /*
@@ -65,6 +67,8 @@ public class Main {
             columnValues.add(file.getApp());
             columnValues.add(file.getTestFilePath());
             columnValues.add(file.getProductionFilePath());
+            columnValues.add(file.getRelativeTestFilePath());
+            columnValues.add(file.getRelativeProductionFilePath());
             for (AbstractSmell smell : tempFile.getTestSmells()) {
                 try {
                     columnValues.add(String.valueOf(smell.getHasSmell()));
