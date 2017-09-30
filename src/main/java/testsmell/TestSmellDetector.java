@@ -40,6 +40,7 @@ public class TestSmellDetector {
         testSmells.add(new WaitAndSee());
         testSmells.add(new EagerTest());
         testSmells.add(new LazyTest());
+        testSmells.add(new WhichAssert());
     }
 
     /**
