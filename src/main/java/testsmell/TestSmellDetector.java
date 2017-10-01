@@ -41,6 +41,7 @@ public class TestSmellDetector {
         testSmells.add(new EagerTest());
         testSmells.add(new LazyTest());
         testSmells.add(new LazyAssert());
+        testSmells.add(new UnknownTest());
     }
 
     /**
