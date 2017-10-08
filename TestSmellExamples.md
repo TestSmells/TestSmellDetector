@@ -1,5 +1,9 @@
 # Test Smell Examples
 
+Provided below are examples of test smells that were detected in open source Android projects.
+
+ 
+
 #### Lazy Test
 
 ##### Source
