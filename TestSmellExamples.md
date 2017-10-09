@@ -367,11 +367,11 @@ The test method, `testTrue()`, will always pass as since the assert statement co
 
 ##### Source
 
-App: [com.mendhak.gpslogger](https://github.com/mendhak/gpslogger.git)
+App: [com.liveplayergames.finneypoker](https://github.com/liveplayergames/UFP)
 
-Test File: [OpenGTSManagerTest.java](https://github.com/mendhak/gpslogger/blob/ccee8ed7e5edb9d4847a502cf8c5d205b57338a6/gpslogger/src/test/java/com/mendhak/gpslogger/senders/opengts/OpenGTSManagerTest.java)
+Test File: [RLPTest.java](https://github.com/liveplayergames/UFP/blob/master/android/ethereumj-core/src/test/java/org/ethereum/util/RLPTest.java)
 
-Production File: [OpenGTSManager.java](https://github.com/mendhak/gpslogger/blob/73aa0f0d5b61e97ec452008ad927781acd3a2d43/gpslogger/src/main/java/com/mendhak/gpslogger/senders/opengts/OpenGTSManager.java)
+Production File: [RLP.java](https://github.com/liveplayergames/UFP/blob/master/android/ethereumj-core/src/main/java/org/ethereum/util/RLP.java)
 
 ##### Rationale
 
@@ -380,16 +380,21 @@ Use of the default value returned by an objects `toString()` method, to perform 
 ##### Code Snippet
 
 ```java
-    @Test
-    public void getUrl_BasicLocation() throws Exception {
+        @Test
+    public void test1() throws UnknownHostException {
 
-        Location loc = MockLocations.builder("GPS", 51.3579941, -0.1952438).withTime(1457205869949l).withAccuracy(20).build();
-        SerializableLocation sloc = new SerializableLocation(loc);
+        String peersPacket = "F8 4E 11 F8 4B C5 36 81 " +
+                "CC 0A 29 82 76 5F B8 40 D8 D6 0C 25 80 FA 79 5C " +
+                "FC 03 13 EF DE BA 86 9D 21 94 E7 9E 7C B2 B5 22 " +
+                "F7 82 FF A0 39 2C BB AB 8D 1B AC 30 12 08 B1 37 " +
+                "E0 DE 49 98 33 4F 3B CF 73 FA 11 7E F2 13 F8 74 " +
+                "17 08 9F EA F8 4C 21 B0";
 
-        PreferenceHelper pm = mock(PreferenceHelper.class);
-        OpenGTSManager client = new OpenGTSManager(pm);
-        URL url = new URL("http://example.com:9001/?id=99&dev=99&acct=ACCT&batt=0&code=0xF020&alt=0.0&gprmc=$GPRMC,192429,A,5121.47965,N,011.71463,W,0.000000,0.000000,050316,,*02");
-        assertThat("URL Generated from basic location",  OpenGTSManager.getUrl("99","ACCT",sloc,"http","","example.com",9001).toString() , is(url.toString()));
+        byte[] payload = Hex.decode(peersPacket);
+
+        byte[] ip = decodeIP4Bytes(payload, 5);
+
+        assertEquals(InetAddress.getByAddress(ip).toString(), ("/54.204.10.41"));
     }
 ```
 
