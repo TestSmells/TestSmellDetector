@@ -267,3 +267,42 @@ The setup/fixture method initializes a total of 6 fields (variables). However, t
 	}
 ```
 
+
+
+#### Mystery Guest
+
+##### Source
+
+App: [com.gmail.walles.johan.batterylogger](https://github.com/walles/batterylogger)
+
+Test File: [SystemStateTest.java](https://github.com/walles/batterylogger/blob/11d81ee721fc12ad324f4a04e265b0ff8c553736/src/androidTest/java/com/gmail/walles/johan/batterylogger/SystemStateTest.java)
+
+Production File: [SystemState.java](https://github.com/walles/batterylogger/blob/0f1a8e8d36ab474930bb2e060e1e319753ef01a3/src/main/java/com/gmail/walles/johan/batterylogger/SystemState.java)
+
+##### Rationale
+
+As part of the test, the test method, `testPersistence()`, creates a File (tempFile) in a specific directory and then utilizes this file in the test process. 
+
+##### Code Snippet
+
+```java
+    public void testPersistence() throws Exception {
+        File tempFile = File.createTempFile("systemstate-", ".txt");
+        try {
+            SystemState a = new SystemState(then, 27, false, bootTimestamp);
+            a.addInstalledApp("a.b.c", "ABC", "1.2.3");
+
+            a.writeToFile(tempFile);
+            SystemState b = SystemState.readFromFile(tempFile);
+
+            assertEquals(a, b);
+        } finally {
+            //noinspection ConstantConditions
+            if (tempFile != null) {
+                //noinspection ResultOfMethodCallIgnored
+                tempFile.delete();
+            }
+        }
+    }
+```
+
