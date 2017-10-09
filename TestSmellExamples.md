@@ -169,3 +169,101 @@ The test method, `testCredGetFullSampleV1()`, contains only comments (i.e. no ex
     }
 ```
 
+
+
+#### Exception Catching & Throwing
+
+##### Source
+
+App: [ch.hgdev.toposuite](https://github.com/hgdev-ch/toposuite-android.git)
+
+Test File: [AbrissTest.java](https://github.com/hgdev-ch/toposuite-android/blob/2d76131d26871392ebf2a2c9ac3657592a9549f3/app/src/androidTest/java/ch/hgdev/toposuite/test/calculation/AbrissTest.java)
+
+Production File: [Abriss.java](https://github.com/hgdev-ch/toposuite-android/blob/88d6ca54ba3d42b35e8bea157102d984498eae62/app/src/main/java/ch/hgdev/toposuite/calculation/Abriss.java)
+
+##### Rationale
+
+In this example, the developer fails the test when a specific exception occurs. Ideally, the developer should split this test method into multiple test methods that (1) knowingly generate the exception and (2) do not generate the exception. The developer should utilize the `@Test expected` attribute in JUnit 4 to fail the test when the exception occurs instead of explicitly catching  or throwing the exception.
+
+##### Code Snippet
+
+```java
+       @Test
+    public void realCase() {
+        Point p34 = new Point("34", 556506.667, 172513.91, 620.34, true);
+        Point p45 = new Point("45", 556495.16, 172493.912, 623.37, true);
+        Point p47 = new Point("47", 556612.21, 172489.274, 0.0, true);
+        Abriss a = new Abriss(p34, false);
+        a.removeDAO(CalculationsDataSource.getInstance());
+        a.getMeasures().add(new Measure(p45, 0.0, 91.6892, 23.277, 1.63));
+        a.getMeasures().add(new Measure(p47, 281.3521, 100.0471, 108.384, 1.63));
+
+        try {
+            a.compute();
+        } catch (CalculationException e) {
+            Assert.fail(e.getMessage());
+        }
+
+        // test intermediate values with point 45
+        Assert.assertEquals("233.2405",
+                this.df4.format(a.getResults().get(0).getUnknownOrientation()));
+        Assert.assertEquals("233.2435",
+                this.df4.format(a.getResults().get(0).getOrientedDirection()));
+        Assert.assertEquals("-0.1", this.df1.format(
+                a.getResults().get(0).getErrTrans()));
+
+        // test intermediate values with point 47
+        Assert.assertEquals("233.2466",
+                this.df4.format(a.getResults().get(1).getUnknownOrientation()));
+        Assert.assertEquals("114.5956",
+                this.df4.format(a.getResults().get(1).getOrientedDirection()));
+        Assert.assertEquals("0.5", this.df1.format(
+                a.getResults().get(1).getErrTrans()));
+
+        // test final results
+        Assert.assertEquals("233.2435", this.df4.format(a.getMean()));
+        Assert.assertEquals("43", this.df0.format(a.getMSE()));
+        Assert.assertEquals("30", this.df0.format(a.getMeanErrComp()));
+    }
+```
+
+
+
+#### General Fixture
+
+##### Source
+
+App: [at.bitfire.cadroid](https://github.com/bitfireAT/cadroid.git)
+
+Test File: [CertificateInfoTest.java](https://github.com/bitfireAT/cadroid/blob/84cecaf2691dffe6eb1f5c300d9fe52b21d7b536/app/src/androidTest/java/at/bitfire/cadroid/test/CertificateInfoTest.java)
+
+Production File: [CertificateInfo.java](https://github.com/bitfireAT/cadroid/blob/84cecaf2691dffe6eb1f5c300d9fe52b21d7b536/app/src/main/java/at/bitfire/cadroid/CertificateInfo.java)
+
+##### Rationale
+
+The setup/fixture method initializes a total of 6 fields (variables). However, the test method, `testIsCA()`, only utilizes 4 fields.
+
+##### Code Snippet
+
+```java
+	protected void setUp() throws Exception {
+		assetManager = getInstrumentation().getContext().getAssets();
+		certificateFactory = CertificateFactory.getInstance("X.509");
+		
+		infoDebianTestCA = loadCertificateInfo("DebianTestCA.pem");
+		infoDebianTestNoCA = loadCertificateInfo("DebianTestNoCA.pem");
+		infoGTECyberTrust = loadCertificateInfo("GTECyberTrustGlobalRoot.pem");
+		
+		// user-submitted test cases
+		infoMehlMX = loadCertificateInfo("mehl.mx.pem");
+	}
+
+	public void testIsCA() {
+		assertTrue(infoDebianTestCA.isCA());
+		assertFalse(infoDebianTestNoCA.isCA());
+		assertNull(infoGTECyberTrust.isCA());
+		
+		assertFalse(infoMehlMX.isCA());
+	}
+```
+
