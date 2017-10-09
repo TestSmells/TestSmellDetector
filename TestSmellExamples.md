@@ -361,3 +361,35 @@ The test method, `testTrue()`, will always pass as since the assert statement co
     }
 ```
 
+
+
+#### Sensitive Equality
+
+##### Source
+
+App: [com.mendhak.gpslogger](https://github.com/mendhak/gpslogger.git)
+
+Test File: [OpenGTSManagerTest.java](https://github.com/mendhak/gpslogger/blob/ccee8ed7e5edb9d4847a502cf8c5d205b57338a6/gpslogger/src/test/java/com/mendhak/gpslogger/senders/opengts/OpenGTSManagerTest.java)
+
+Production File: [OpenGTSManager.java](https://github.com/mendhak/gpslogger/blob/73aa0f0d5b61e97ec452008ad927781acd3a2d43/gpslogger/src/main/java/com/mendhak/gpslogger/senders/opengts/OpenGTSManager.java)
+
+##### Rationale
+
+Use of the default value returned by an objects `toString()` method, to perform string comparisons, runs the risk of failure in the future due to changes in the objects implementation of the `toString()` method.   
+
+##### Code Snippet
+
+```java
+    @Test
+    public void getUrl_BasicLocation() throws Exception {
+
+        Location loc = MockLocations.builder("GPS", 51.3579941, -0.1952438).withTime(1457205869949l).withAccuracy(20).build();
+        SerializableLocation sloc = new SerializableLocation(loc);
+
+        PreferenceHelper pm = mock(PreferenceHelper.class);
+        OpenGTSManager client = new OpenGTSManager(pm);
+        URL url = new URL("http://example.com:9001/?id=99&dev=99&acct=ACCT&batt=0&code=0xF020&alt=0.0&gprmc=$GPRMC,192429,A,5121.47965,N,011.71463,W,0.000000,0.000000,050316,,*02");
+        assertThat("URL Generated from basic location",  OpenGTSManager.getUrl("99","ACCT",sloc,"http","","example.com",9001).toString() , is(url.toString()));
+    }
+```
+
