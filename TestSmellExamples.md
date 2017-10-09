@@ -306,3 +306,33 @@ As part of the test, the test method, `testPersistence()`, creates a File (tempF
     }
 ```
 
+
+
+#### Print Statement (Redundant Print)
+
+##### Source
+
+App: [org.hwyl.sexytopo](https://github.com/richsmith/sexytopo)
+
+Test File: [Space3DTransformerTest.java](https://github.com/richsmith/sexytopo/blob/80cd8bbda23fba569ed470d80ed99e6bcbec5159/app/src/test/java/org/hwyl/sexytopo/control/util/Space3DTransformerTest.java)
+
+Production File: [Space3DTransformer.java](https://github.com/richsmith/sexytopo/blob/3569ca475ce93cd6a5d4c1f8c0a6053ea1edcd20/app/src/main/java/org/hwyl/sexytopo/control/util/Space3DTransformer.java)
+
+##### Rationale
+
+The test method, `testTransform10mNEUAndBack()`, contains a statement that prints the value of a variable to the console. This is a redundant statement that might have been added by a developer, for debugging purposes, at the time of writing the test method. 
+
+##### Code Snippet
+
+```java
+    @Test
+    public void testTransform10mNEUAndBack() {
+        Leg northEastAndUp10M = new Leg(10, 45, 45);
+        Coord3D result = transformer.transform(Coord3D.ORIGIN, northEastAndUp10M);
+        System.out.println("result = " + result);
+        Leg reverse = new Leg(10, 225, -45);
+        result = transformer.transform(result, reverse);
+        assertEquals(Coord3D.ORIGIN, result);
+    }
+```
+
