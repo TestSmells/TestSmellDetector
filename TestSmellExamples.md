@@ -336,3 +336,28 @@ The test method, `testTransform10mNEUAndBack()`, contains a statement that print
     }
 ```
 
+
+
+#### Redundant Assertion
+
+##### Source
+
+App: [com.litmus.worldscope](https://github.com/nus-mtp/worldscope)
+
+Test File: [LoginActivityTest.java](https://github.com/nus-mtp/worldscope/blob/41770e12e0780b57ad80a48c2a4cd07f57aadfa6/client/android/WorldScope/app/src/androidTest/java/com/litmus/worldscope/LoginActivityTest.java)
+
+Production File: [LoginActivity.java](https://github.com/nus-mtp/worldscope/blob/8856e25896f2794e4f247af395138a435532e8d3/client/android/WorldScope/app/src/main/java/com/litmus/worldscope/LoginActivity.java)
+
+##### Rationale
+
+The test method, `testTrue()`, will always pass as since the assert statement compares a Boolean value of true against another Boolean value of true. 
+
+##### Code Snippet
+
+```java
+    @Test
+    public void testTrue() {
+        assertEquals(true, true);
+    }
+```
+
