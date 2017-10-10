@@ -454,3 +454,32 @@ The developer causes an artificial delay in test execution using `Thread.sleep()
 	}
 ```
 
+
+
+#### Eager Test
+
+##### Source
+
+App: [com.mendhak.gpslogger](https://github.com/mendhak/gpslogger.git)
+
+Test File: [NmeaSentenceTest.java](https://github.com/mendhak/gpslogger/blob/d3252604b204e0995254c6f40599de470bacd76b/gpslogger/src/test/java/com/mendhak/gpslogger/loggers/nmea/NmeaSentenceTest.java)
+
+Production File: [NmeaSentence.java](https://github.com/mendhak/gpslogger/blob/d3252604b204e0995254c6f40599de470bacd76b/gpslogger/src/main/java/com/mendhak/gpslogger/loggers/nmea/NmeaSentence.java)
+
+##### Rationale
+
+In this test method, `NmeaSentence_GPGSA_ReadValidValues()`, the developer calls multiple methods of the production class. Testing multiple methods of the production class in a single test method causes confusion as to what exactly the test method is testing.
+
+##### Code Snippet
+
+```java
+    @Test
+    public void NmeaSentence_GPGSA_ReadValidValues(){
+
+        NmeaSentence nmeaSentence = new NmeaSentence("$GPGSA,A,3,04,05,,09,12,,,24,,,,,2.5,1.3,2.1*39");
+        assertThat("GPGSA - read PDOP", nmeaSentence.getLatestPdop(), is("2.5"));
+        assertThat("GPGSA - read HDOP", nmeaSentence.getLatestHdop(), is("1.3"));
+        assertThat("GPGSA - read VDOP", nmeaSentence.getLatestVdop(), is("2.1"));
+    }
+```
+
