@@ -485,4 +485,57 @@ Both test methods, `testDecrypt()` and `testEncrypt()`, call the same SUT method
 
 
 
+#### Lazy Assert (or should this be eager assert?)
+
+##### Source
+
+App: [org.openbmap](https://github.com/wish7code/openbmap)
+
+Test File: [XmlSanitizerTest.java](https://github.com/openbmap/radiocells-scanner-android/blob/d6353829f786180ec5ba548ed2adf747e816f735/android/app/src/test/java/org/openbmap/utils/XmlSanitizerTest.java)
+
+Production File: [XmlSanitizerTest.java](https://github.com/openbmap/radiocells-scanner-android/blob/6fa8a018b668286037b1a75ee555f410ee4c4314/android/app/src/test/java/XmlSanitizerTest.java)
+
+##### Rationale
+
+In this test method, `testXmlSanitizer()`, the developer tests 'Exclamation mark is valid', 'Frützbüx is invalid' and 'Minus is valid' multiple times in the same test method. 
+
+##### Code Snippet
+
+```java
+    @Test
+    public void testXmlSanitizer() {
+        boolean valid = XmlSanitizer.isValid("Fritzbox");
+        assertEquals("Fritzbox is valid", true, valid);
+        System.out.println("Pure ASCII test - passed");
+
+        valid = XmlSanitizer.isValid("Fritz Box");
+        assertEquals("Spaces are valid", true, valid);
+        System.out.println("Spaces test - passed");
+
+        valid = XmlSanitizer.isValid("Frützbüx");
+        assertEquals("Frützbüx is invalid", false, valid);
+        System.out.println("No ASCII test - passed");
+
+        valid = XmlSanitizer.isValid("Fritz!box");
+        assertEquals("Exclamation mark is valid", true, valid);
+        System.out.println("Exclamation mark test - passed");
+
+        valid = XmlSanitizer.isValid("Fritz.box");
+        assertEquals("Exclamation mark is valid", true, valid);
+        System.out.println("Dot test - passed");
+
+        valid = XmlSanitizer.isValid("Fritz-box");
+        assertEquals("Minus is valid", true, valid);
+        System.out.println("Minus test - passed");
+
+        valid = XmlSanitizer.isValid("Fritz-box");
+        assertEquals("Minus is valid", true, valid);
+        System.out.println("Minus test - passed");
+    }
+```
+
+
+
+#### 
+
 #### 
