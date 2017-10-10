@@ -536,6 +536,37 @@ In this test method, `testXmlSanitizer()`, the developer tests 'Exclamation mark
 
 
 
+#### Unknown Test
+
+##### Source
+
+App: [de.ktran.anno1404warenrechner](https://github.com/tran-khoa/ANNO1404-Warenrechner-App)
+
+Test File: [LogicTest.java](https://github.com/tran-khoa/ANNO1404-Warenrechner-App/blob/de926bdca597d645e6ae27d563d7b350381a5a1a/app/src/test/java/de/ktran/anno1404warenrechner/data/LogicTest.java)
+
+Production File: [Logic.java](https://github.com/tran-khoa/ANNO1404-Warenrechner-App/blob/88335b7d711b70291526fa15f0ab52fa48801611/app/src/main/java/de/ktran/anno1404warenrechner/data/Logic.java)
+
+##### Rationale
+
+This test method, `testChainDependencies()`, hence the purpose of this test is not known. 
+
+##### Code Snippet
+
+```java
+    @Test
+    public void testChainDependencies() throws Exception {
+        final Game game = Game.newGame(0, "");
+        game.setOtherGoods(ProductionBuilding.TOOLMAKERS_WORKSHOP, 1);
+
+        final Logic logic = new Logic(game);
+
+        List<BuildingAlternative> res = logic.calculateChainWithDependencies(Goods.TOOLS);
+        System.out.println(res.toString());
+    }
+```
+
+
+
 #### 
 
 #### 
