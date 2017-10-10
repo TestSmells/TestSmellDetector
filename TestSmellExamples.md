@@ -4,48 +4,6 @@ Provided below are examples of test smells that were detected in open source And
 
  
 
-#### Lazy Test
-
-##### Source
-
-App: [com.github.marmalade.aRevelation](https://github.com/MarmaladeSky/aRevelation)
-
-Test File: [CryptographerTest.java](https://github.com/MarmaladeSky/aRevelation/blob/950309c589d55b3fc8c879d548bae2224d558668/src/test/java/com/github/marmaladesky/tests/CryptographerTest.java)
-
-Production File: [Cryptographer.java](https://github.com/MarmaladeSky/aRevelation/blob/bd06e012072a805386fbf222c479024b15dc13c0/src/main/java/com/github/marmaladesky/Cryptographer.java)
-
-##### Rationale
-
-Both test methods, `testDecrypt()` and `testEncrypt()`, call the same SUT method, `Cryptographer.decrypt()`
-
-##### Code Snippet
-
-```java
-    @Test
-    public void testDecrypt() throws Exception {
-            FileInputStream file = new FileInputStream(ENCRYPTED_DATA_FILE_4_14);
-            byte[] enfileData = new byte[file.available()];
-            FileInputStream input = new FileInputStream(DECRYPTED_DATA_FILE_4_14);
-            byte[] fileData = new byte[input.available()];
-            input.read(fileData);
-            input.close();
-            file.read(enfileData);
-            file.close();
-            String expectedResult = new String(fileData, "UTF-8");
-            assertEquals("Testing simple decrypt",expectedResult, Cryptographer.decrypt(enfileData, "test"));
-    }
-
-    @Test
-    public void testEncrypt() throws Exception {
-            String xml = readFileAsString(DECRYPTED_DATA_FILE_4_14);
-            byte[] encrypted = Cryptographer.encrypt(xml, "test");
-            String decrypt = Cryptographer.decrypt(encrypted, "test");
-            assertEquals(xml, decrypt);
-    }
-```
-
-
-
 #### Assertion Roulette
 
 ##### Source
@@ -483,3 +441,48 @@ In this test method, `NmeaSentence_GPGSA_ReadValidValues()`, the developer calls
     }
 ```
 
+
+
+#### Lazy Test
+
+##### Source
+
+App: [com.github.marmalade.aRevelation](https://github.com/MarmaladeSky/aRevelation)
+
+Test File: [CryptographerTest.java](https://github.com/MarmaladeSky/aRevelation/blob/950309c589d55b3fc8c879d548bae2224d558668/src/test/java/com/github/marmaladesky/tests/CryptographerTest.java)
+
+Production File: [Cryptographer.java](https://github.com/MarmaladeSky/aRevelation/blob/bd06e012072a805386fbf222c479024b15dc13c0/src/main/java/com/github/marmaladesky/Cryptographer.java)
+
+##### Rationale
+
+Both test methods, `testDecrypt()` and `testEncrypt()`, call the same SUT method, `Cryptographer.decrypt()`
+
+##### Code Snippet
+
+```java
+    @Test
+    public void testDecrypt() throws Exception {
+            FileInputStream file = new FileInputStream(ENCRYPTED_DATA_FILE_4_14);
+            byte[] enfileData = new byte[file.available()];
+            FileInputStream input = new FileInputStream(DECRYPTED_DATA_FILE_4_14);
+            byte[] fileData = new byte[input.available()];
+            input.read(fileData);
+            input.close();
+            file.read(enfileData);
+            file.close();
+            String expectedResult = new String(fileData, "UTF-8");
+            assertEquals("Testing simple decrypt",expectedResult, Cryptographer.decrypt(enfileData, "test"));
+    }
+
+    @Test
+    public void testEncrypt() throws Exception {
+            String xml = readFileAsString(DECRYPTED_DATA_FILE_4_14);
+            byte[] encrypted = Cryptographer.encrypt(xml, "test");
+            String decrypt = Cryptographer.decrypt(encrypted, "test");
+            assertEquals(xml, decrypt);
+    }
+```
+
+
+
+#### 
