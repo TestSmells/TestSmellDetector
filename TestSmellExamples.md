@@ -398,3 +398,23 @@ Use of the default value returned by an objects `toString()` method, to perform 
     }
 ```
 
+
+
+#### Verbose Test (Long Test)
+
+##### Source
+
+App: [com.pcinpact](https://github.com/AnaelMobilia/NextINpact-Unofficial)
+
+Test File: [ParseurHTMLTest.java](https://github.com/AnaelMobilia/NextINpact-Unofficial/blob/17bddc784330e0d859f8615fa6b4dbfe74ddcaaa/app/src/test/java/com/pcinpact/parseur/ParseurHTMLTest.java)
+
+Production File: [ParseurHTML.java](https://github.com/AnaelMobilia/NextINpact-Unofficial/blob/ba0081774a9462fb5c514754bfc478460403f180/app/src/main/java/com/pcinpact/parseur/ParseurHTML.java)
+
+##### Rationale
+
+In this example, the test method, `testGetListeArticles()`, has over 300 executable statements. Such methods not only increase test complexity, but also have a negative impact on code maintenance.
+
+
+
+
+
