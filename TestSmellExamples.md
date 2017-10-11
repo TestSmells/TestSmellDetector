@@ -2,9 +2,43 @@
 
 Provided below are examples of test smells that were detected in open source Android projects.
 
- [Assertion Roulette](#assertion-roulette)
+- [Assertion Roulette](#assertion-roulette)
 
+- [Conditional Test Logic](#conditional-test-logic)
 
+- [Eager Test](#eager-test)
+
+- [Empty Test](#empty-test)
+
+- [Exception Catching & Throwing](#exception-catching--throwing)
+
+- [General Fixture](#general-fixture)
+
+- [Lazy Assert (or should this be eager assert?)](#lazy-assert-or-should-this-be-eager-assert)
+
+- [Lazy Test](#lazy-test)
+
+- [Mystery Guest](#mystery-guest)
+
+- [Print Statement (Redundant Print)](#print-statement-redundant-print)
+
+- [Redundant Assertion](#redundant-assertion)
+
+- [Sensitive Equality](#sensitive-equality)
+
+- [Unknown Test](#unknown-test)
+
+- [Verbose Test (Long Test)](#verbose-test-long-test)
+
+- [Wait And See](#wait-and-see)
+
+- TODO: Default Test
+
+- TODO: Constructor Initialization
+
+  ------
+
+  ​
 
 #### Assertion Roulette
 
