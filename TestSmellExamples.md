@@ -37,7 +37,7 @@ The `assertThat()` method is called 3 times within the test method. Each assert 
     }
 ```
 
-***[↑](#test-smell-examples)***
+***[[↑]](#test-smell-examples)***
 
 #### Conditional Test Logic
 
