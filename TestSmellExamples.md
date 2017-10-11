@@ -136,7 +136,7 @@ The test method, `linkedListTest1()`, contains multiple `for` loop statements (i
   }
 ```
 
-
+**[*[↑](#test-smell-examples)*]**
 
 #### Empty Test
 
@@ -163,7 +163,7 @@ The test method, `testCredGetFullSampleV1()`, contains only comments (i.e. no ex
     }
 ```
 
-
+**[*[↑](#test-smell-examples)*]**
 
 #### Exception Catching & Throwing
 
@@ -221,7 +221,7 @@ In this example, the developer fails the test when a specific exception occurs. 
     }
 ```
 
-
+**[*[↑](#test-smell-examples)*]**
 
 #### General Fixture
 
@@ -261,7 +261,7 @@ The setup/fixture method initializes a total of 6 fields (variables). However, t
 	}
 ```
 
-
+**[*[↑](#test-smell-examples)*]**
 
 #### Mystery Guest
 
@@ -300,7 +300,7 @@ As part of the test, the test method, `testPersistence()`, creates a File (tempF
     }
 ```
 
-
+**[*[↑](#test-smell-examples)*]**
 
 #### Print Statement (Redundant Print)
 
@@ -330,7 +330,7 @@ The test method, `testTransform10mNEUAndBack()`, contains a statement that print
     }
 ```
 
-
+**[*[↑](#test-smell-examples)*]**
 
 #### Redundant Assertion
 
@@ -355,7 +355,7 @@ The test method, `testTrue()`, will always pass as since the assert statement co
     }
 ```
 
-
+**[*[↑](#test-smell-examples)*]**
 
 #### Sensitive Equality
 
@@ -392,7 +392,7 @@ Use of the default value returned by an objects `toString()` method, to perform 
     }
 ```
 
-
+**[*[↑](#test-smell-examples)*]**
 
 #### Verbose Test (Long Test)
 
@@ -408,7 +408,7 @@ Production File: [ParseurHTML.java](https://github.com/AnaelMobilia/NextINpact-U
 
 In this example, the test method, `testGetListeArticles()`, has over 300 executable statements. Such methods not only increase test complexity, but also have a negative impact on code maintenance.
 
-
+**[*[↑](#test-smell-examples)*]**
 
 #### Wait And See
 
@@ -448,7 +448,7 @@ The developer causes an artificial delay in test execution using `Thread.sleep()
 	}
 ```
 
-
+**[*[↑](#test-smell-examples)*]**
 
 #### Eager Test
 
@@ -477,7 +477,7 @@ In this test method, `NmeaSentence_GPGSA_ReadValidValues()`, the developer calls
     }
 ```
 
-
+**[*[↑](#test-smell-examples)*]**
 
 #### Lazy Test
 
@@ -519,7 +519,7 @@ Both test methods, `testDecrypt()` and `testEncrypt()`, call the same SUT method
     }
 ```
 
-
+**[*[↑](#test-smell-examples)*]**
 
 #### Lazy Assert (or should this be eager assert?)
 
@@ -570,7 +570,7 @@ In this test method, `testXmlSanitizer()`, the developer tests 'Exclamation mark
     }
 ```
 
-
+**[*[↑](#test-smell-examples)*]**
 
 #### Unknown Test
 
@@ -601,7 +601,7 @@ This test method, `testChainDependencies()`, hence the purpose of this test is n
     }
 ```
 
-
+**[*[↑](#test-smell-examples)*]**
 
 #### 
 
