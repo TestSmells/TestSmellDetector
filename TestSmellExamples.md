@@ -2,7 +2,7 @@
 
 Provided below are examples of test smells that were detected in open source Android projects.
 
- [Assertion Roulette](#Assertion-Roulette)
+ [Assertion Roulette](#assertion-roulette)
 
 
 
@@ -37,7 +37,7 @@ The `assertThat()` method is called 3 times within the test method. Each assert 
     }
 ```
 
-<div style="text-align: right"> ↑ </div>
+***[↑](#test-smell-examples)***
 
 #### Conditional Test Logic
 
