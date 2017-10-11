@@ -50,10 +50,6 @@ Test File: [GitAsyncTaskTest.java](https://github.com/rtyley/agit/blob/fc99d8eaa
 
 Production File: [GitAsyncTask.java](https://github.com/rtyley/agit/blob/e42190e0f31f3d28086616f782e7f31422e9d229/agit/src/main/java/com/madgag/agit/operations/GitAsyncTask.java)
 
-##### Rationale
-
-The `assertThat()` method is called 3 times within the test method. Each assert statement checks for a different condition, but the developer does not provide a explanation message for each assert statement. Hence, if one of the assert statements were to fail, identifying the cause of the failure is not straightforward. 
-
 ##### Code Snippet
 
 ```java
@@ -71,6 +67,10 @@ The `assertThat()` method is called 3 times within the test method. Each assert 
     }
 ```
 
+##### Rationale
+
+The `assertThat()` method is called 3 times within the test method. Each assert statement checks for a different condition, but the developer does not provide a explanation message for each assert statement. Hence, if one of the assert statements were to fail, identifying the cause of the failure is not straightforward. 
+
 **[*[↑](#test-smell-examples)*]**
 
 #### Conditional Test Logic
@@ -82,10 +82,6 @@ App: [btools.routingapp](https://github.com/abrensch/brouter)
 Test File: [LinkedListContainerTest.java](https://github.com/abrensch/brouter/blob/ccf6641bad1c8c0b50b3021aa9a75588f846df7f/brouter-codec/src/test/java/btools/codec/LinkedListContainerTest.java)
 
 Production File: [LinkedListContainer.java](https://github.com/abrensch/brouter/blob/ccf6641bad1c8c0b50b3021aa9a75588f846df7f/brouter-codec/src/main/java/btools/codec/LinkedListContainer.java)
-
-##### Rationale
-
-The test method, `linkedListTest1()`, contains multiple `for` loop statements (i.e. control flow statements). This increases the complexity of the test method and hence has a negative impact on maintenance of the test. 
 
 ##### Code Snippet
 
@@ -136,6 +132,10 @@ The test method, `linkedListTest1()`, contains multiple `for` loop statements (i
   }
 ```
 
+##### Rationale
+
+The test method, `linkedListTest1()`, contains multiple `for` loop statements (i.e. control flow statements). This increases the complexity of the test method and hence has a negative impact on maintenance of the test. 
+
 **[*[↑](#test-smell-examples)*]**
 
 #### Empty Test
@@ -148,10 +148,6 @@ Test File: [LastPassParserTest.java](https://github.com/activems/clipcaster/blob
 
 Production File: [LastPassParser.java](https://github.com/activems/clipcaster/blob/38398d1d047a4064a7017ca8f0d0f3ff0782560c/app/src/main/java/com/actisec/clipcaster/parser/LastPassParser.java)
 
-##### Rationale
-
-The test method, `testCredGetFullSampleV1()`, contains only comments (i.e. no executable statements). A test method without executable statements will be marked as passing when executed. 
-
 ##### Code Snippet
 
 ```java
@@ -162,6 +158,10 @@ The test method, `testCredGetFullSampleV1()`, contains only comments (i.e. no ex
 
     }
 ```
+
+##### Rationale
+
+The test method, `testCredGetFullSampleV1()`, contains only comments (i.e. no executable statements). A test method without executable statements will be marked as passing when executed. 
 
 **[*[↑](#test-smell-examples)*]**
 
@@ -174,10 +174,6 @@ App: [ch.hgdev.toposuite](https://github.com/hgdev-ch/toposuite-android.git)
 Test File: [AbrissTest.java](https://github.com/hgdev-ch/toposuite-android/blob/2d76131d26871392ebf2a2c9ac3657592a9549f3/app/src/androidTest/java/ch/hgdev/toposuite/test/calculation/AbrissTest.java)
 
 Production File: [Abriss.java](https://github.com/hgdev-ch/toposuite-android/blob/88d6ca54ba3d42b35e8bea157102d984498eae62/app/src/main/java/ch/hgdev/toposuite/calculation/Abriss.java)
-
-##### Rationale
-
-In this example, the developer fails the test when a specific exception occurs. Ideally, the developer should split this test method into multiple test methods that (1) knowingly generate the exception and (2) do not generate the exception. The developer should utilize the `@Test expected` attribute in JUnit 4 to fail the test when the exception occurs instead of explicitly catching  or throwing the exception.
 
 ##### Code Snippet
 
@@ -221,6 +217,10 @@ In this example, the developer fails the test when a specific exception occurs. 
     }
 ```
 
+##### Rationale
+
+In this example, the developer fails the test when a specific exception occurs. Ideally, the developer should split this test method into multiple test methods that (1) knowingly generate the exception and (2) do not generate the exception. The developer should utilize the `@Test expected` attribute in JUnit 4 to fail the test when the exception occurs instead of explicitly catching  or throwing the exception.
+
 **[*[↑](#test-smell-examples)*]**
 
 #### General Fixture
@@ -232,10 +232,6 @@ App: [at.bitfire.cadroid](https://github.com/bitfireAT/cadroid.git)
 Test File: [CertificateInfoTest.java](https://github.com/bitfireAT/cadroid/blob/84cecaf2691dffe6eb1f5c300d9fe52b21d7b536/app/src/androidTest/java/at/bitfire/cadroid/test/CertificateInfoTest.java)
 
 Production File: [CertificateInfo.java](https://github.com/bitfireAT/cadroid/blob/84cecaf2691dffe6eb1f5c300d9fe52b21d7b536/app/src/main/java/at/bitfire/cadroid/CertificateInfo.java)
-
-##### Rationale
-
-The setup/fixture method initializes a total of 6 fields (variables). However, the test method, `testIsCA()`, only utilizes 4 fields.
 
 ##### Code Snippet
 
@@ -261,6 +257,10 @@ The setup/fixture method initializes a total of 6 fields (variables). However, t
 	}
 ```
 
+##### Rationale
+
+The setup/fixture method initializes a total of 6 fields (variables). However, the test method, `testIsCA()`, only utilizes 4 fields.
+
 **[*[↑](#test-smell-examples)*]**
 
 #### Mystery Guest
@@ -272,10 +272,6 @@ App: [com.gmail.walles.johan.batterylogger](https://github.com/walles/batterylog
 Test File: [SystemStateTest.java](https://github.com/walles/batterylogger/blob/11d81ee721fc12ad324f4a04e265b0ff8c553736/src/androidTest/java/com/gmail/walles/johan/batterylogger/SystemStateTest.java)
 
 Production File: [SystemState.java](https://github.com/walles/batterylogger/blob/0f1a8e8d36ab474930bb2e060e1e319753ef01a3/src/main/java/com/gmail/walles/johan/batterylogger/SystemState.java)
-
-##### Rationale
-
-As part of the test, the test method, `testPersistence()`, creates a File (tempFile) in a specific directory and then utilizes this file in the test process. 
 
 ##### Code Snippet
 
@@ -300,6 +296,10 @@ As part of the test, the test method, `testPersistence()`, creates a File (tempF
     }
 ```
 
+##### Rationale
+
+As part of the test, the test method, `testPersistence()`, creates a File (tempFile) in a specific directory and then utilizes this file in the test process. 
+
 **[*[↑](#test-smell-examples)*]**
 
 #### Print Statement (Redundant Print)
@@ -311,10 +311,6 @@ App: [org.hwyl.sexytopo](https://github.com/richsmith/sexytopo)
 Test File: [Space3DTransformerTest.java](https://github.com/richsmith/sexytopo/blob/80cd8bbda23fba569ed470d80ed99e6bcbec5159/app/src/test/java/org/hwyl/sexytopo/control/util/Space3DTransformerTest.java)
 
 Production File: [Space3DTransformer.java](https://github.com/richsmith/sexytopo/blob/3569ca475ce93cd6a5d4c1f8c0a6053ea1edcd20/app/src/main/java/org/hwyl/sexytopo/control/util/Space3DTransformer.java)
-
-##### Rationale
-
-The test method, `testTransform10mNEUAndBack()`, contains a statement that prints the value of a variable to the console. This is a redundant statement that might have been added by a developer, for debugging purposes, at the time of writing the test method. 
 
 ##### Code Snippet
 
@@ -330,6 +326,10 @@ The test method, `testTransform10mNEUAndBack()`, contains a statement that print
     }
 ```
 
+##### Rationale
+
+The test method, `testTransform10mNEUAndBack()`, contains a statement that prints the value of a variable to the console. This is a redundant statement that might have been added by a developer, for debugging purposes, at the time of writing the test method. 
+
 **[*[↑](#test-smell-examples)*]**
 
 #### Redundant Assertion
@@ -342,10 +342,6 @@ Test File: [LoginActivityTest.java](https://github.com/nus-mtp/worldscope/blob/4
 
 Production File: [LoginActivity.java](https://github.com/nus-mtp/worldscope/blob/8856e25896f2794e4f247af395138a435532e8d3/client/android/WorldScope/app/src/main/java/com/litmus/worldscope/LoginActivity.java)
 
-##### Rationale
-
-The test method, `testTrue()`, will always pass as since the assert statement compares a Boolean value of true against another Boolean value of true. 
-
 ##### Code Snippet
 
 ```java
@@ -354,6 +350,10 @@ The test method, `testTrue()`, will always pass as since the assert statement co
         assertEquals(true, true);
     }
 ```
+
+##### Rationale
+
+The test method, `testTrue()`, will always pass as since the assert statement compares a Boolean value of true against another Boolean value of true. 
 
 **[*[↑](#test-smell-examples)*]**
 
@@ -366,10 +366,6 @@ App: [com.liveplayergames.finneypoker](https://github.com/liveplayergames/UFP)
 Test File: [RLPTest.java](https://github.com/liveplayergames/UFP/blob/master/android/ethereumj-core/src/test/java/org/ethereum/util/RLPTest.java)
 
 Production File: [RLP.java](https://github.com/liveplayergames/UFP/blob/master/android/ethereumj-core/src/main/java/org/ethereum/util/RLP.java)
-
-##### Rationale
-
-Use of the default value returned by an objects `toString()` method, to perform string comparisons, runs the risk of failure in the future due to changes in the objects implementation of the `toString()` method.   
 
 ##### Code Snippet
 
@@ -391,6 +387,10 @@ Use of the default value returned by an objects `toString()` method, to perform 
         assertEquals(InetAddress.getByAddress(ip).toString(), ("/54.204.10.41"));
     }
 ```
+
+##### Rationale
+
+Use of the default value returned by an objects `toString()` method, to perform string comparisons, runs the risk of failure in the future due to changes in the objects implementation of the `toString()` method.   
 
 **[*[↑](#test-smell-examples)*]**
 
@@ -420,10 +420,6 @@ Test File: [ResultActivityTest.java](https://github.com/mvysny/aedict/blob/a28dc
 
 Production File: [ResultActivity.java](https://github.com/mvysny/aedict/blob/7ad8f6b132d678d39eff57a25cbbdcca68e3e228/aedict-apk/src/main/java/sk/baka/aedict/ResultActivity.java)
 
-##### Rationale
-
-The developer causes an artificial delay in test execution using `Thread.sleep()`. Without comments, it is assumed that the developer performs the delay to stimulate an actual activity (i.e. searching).
-
 ##### Code Snippet
 
 ```java
@@ -448,6 +444,10 @@ The developer causes an artificial delay in test execution using `Thread.sleep()
 	}
 ```
 
+##### Rationale
+
+The developer causes an artificial delay in test execution using `Thread.sleep()`. Without comments, it is assumed that the developer performs the delay to stimulate an actual activity (i.e. searching).
+
 **[*[↑](#test-smell-examples)*]**
 
 #### Eager Test
@@ -459,10 +459,6 @@ App: [com.mendhak.gpslogger](https://github.com/mendhak/gpslogger.git)
 Test File: [NmeaSentenceTest.java](https://github.com/mendhak/gpslogger/blob/d3252604b204e0995254c6f40599de470bacd76b/gpslogger/src/test/java/com/mendhak/gpslogger/loggers/nmea/NmeaSentenceTest.java)
 
 Production File: [NmeaSentence.java](https://github.com/mendhak/gpslogger/blob/d3252604b204e0995254c6f40599de470bacd76b/gpslogger/src/main/java/com/mendhak/gpslogger/loggers/nmea/NmeaSentence.java)
-
-##### Rationale
-
-In this test method, `NmeaSentence_GPGSA_ReadValidValues()`, the developer calls multiple methods of the production class. Testing multiple methods of the production class in a single test method causes confusion as to what exactly the test method is testing.
 
 ##### Code Snippet
 
@@ -477,6 +473,10 @@ In this test method, `NmeaSentence_GPGSA_ReadValidValues()`, the developer calls
     }
 ```
 
+##### Rationale
+
+In this test method, `NmeaSentence_GPGSA_ReadValidValues()`, the developer calls multiple methods of the production class. Testing multiple methods of the production class in a single test method causes confusion as to what exactly the test method is testing.
+
 **[*[↑](#test-smell-examples)*]**
 
 #### Lazy Test
@@ -488,10 +488,6 @@ App: [com.github.marmalade.aRevelation](https://github.com/MarmaladeSky/aRevelat
 Test File: [CryptographerTest.java](https://github.com/MarmaladeSky/aRevelation/blob/950309c589d55b3fc8c879d548bae2224d558668/src/test/java/com/github/marmaladesky/tests/CryptographerTest.java)
 
 Production File: [Cryptographer.java](https://github.com/MarmaladeSky/aRevelation/blob/bd06e012072a805386fbf222c479024b15dc13c0/src/main/java/com/github/marmaladesky/Cryptographer.java)
-
-##### Rationale
-
-Both test methods, `testDecrypt()` and `testEncrypt()`, call the same SUT method, `Cryptographer.decrypt()`
 
 ##### Code Snippet
 
@@ -519,6 +515,10 @@ Both test methods, `testDecrypt()` and `testEncrypt()`, call the same SUT method
     }
 ```
 
+##### Rationale
+
+Both test methods, `testDecrypt()` and `testEncrypt()`, call the same SUT method, `Cryptographer.decrypt()`
+
 **[*[↑](#test-smell-examples)*]**
 
 #### Lazy Assert (or should this be eager assert?)
@@ -530,10 +530,6 @@ App: [org.openbmap](https://github.com/wish7code/openbmap)
 Test File: [XmlSanitizerTest.java](https://github.com/openbmap/radiocells-scanner-android/blob/d6353829f786180ec5ba548ed2adf747e816f735/android/app/src/test/java/org/openbmap/utils/XmlSanitizerTest.java)
 
 Production File: [XmlSanitizerTest.java](https://github.com/openbmap/radiocells-scanner-android/blob/6fa8a018b668286037b1a75ee555f410ee4c4314/android/app/src/test/java/XmlSanitizerTest.java)
-
-##### Rationale
-
-In this test method, `testXmlSanitizer()`, the developer tests 'Exclamation mark is valid', 'Frützbüx is invalid' and 'Minus is valid' multiple times in the same test method. 
 
 ##### Code Snippet
 
@@ -570,6 +566,10 @@ In this test method, `testXmlSanitizer()`, the developer tests 'Exclamation mark
     }
 ```
 
+##### Rationale
+
+In this test method, `testXmlSanitizer()`, the developer tests 'Exclamation mark is valid', 'Frützbüx is invalid' and 'Minus is valid' multiple times in the same test method. 
+
 **[*[↑](#test-smell-examples)*]**
 
 #### Unknown Test
@@ -581,10 +581,6 @@ App: [de.ktran.anno1404warenrechner](https://github.com/tran-khoa/ANNO1404-Waren
 Test File: [LogicTest.java](https://github.com/tran-khoa/ANNO1404-Warenrechner-App/blob/de926bdca597d645e6ae27d563d7b350381a5a1a/app/src/test/java/de/ktran/anno1404warenrechner/data/LogicTest.java)
 
 Production File: [Logic.java](https://github.com/tran-khoa/ANNO1404-Warenrechner-App/blob/88335b7d711b70291526fa15f0ab52fa48801611/app/src/main/java/de/ktran/anno1404warenrechner/data/Logic.java)
-
-##### Rationale
-
-This test method, `testChainDependencies()`, hence the purpose of this test is not known. 
 
 ##### Code Snippet
 
@@ -600,6 +596,10 @@ This test method, `testChainDependencies()`, hence the purpose of this test is n
         System.out.println(res.toString());
     }
 ```
+
+##### Rationale
+
+This test method, `testChainDependencies()`, hence the purpose of this test is not known. 
 
 **[*[↑](#test-smell-examples)*]**
 
