@@ -6,7 +6,10 @@ import testsmell.TestSmellDetector;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class Main {
@@ -46,17 +49,23 @@ public class Main {
 
         columnNames = testSmellDetector.getTestSmellNames();
         columnNames.add(0, "App");
-        columnNames.add(1, "TestFilePath");
-        columnNames.add(2, "ProductionFilePath");
-        columnNames.add(3, "RelativeTestFilePath");
-        columnNames.add(4, "RelativeProductionFilePath");
+        columnNames.add(1, "Version");
+        columnNames.add(2, "TestFilePath");
+        columnNames.add(3, "ProductionFilePath");
+        columnNames.add(4, "RelativeTestFilePath");
+        columnNames.add(5, "RelativeProductionFilePath");
+
         resultsWriter.writeColumnName(columnNames);
 
         /*
           Iterate through all test files to detect smells and then write the output
         */
         TestFile tempFile;
+        DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+        Date date;
         for (TestFile file : testFiles) {
+            date = new Date();
+            System.out.println(dateFormat.format(date) + " Processing: "+file.getTestFilePath());
             System.out.println("Processing: "+file.getTestFilePath());
 
             //detect smells
@@ -65,6 +74,7 @@ public class Main {
             //write output
             columnValues = new ArrayList<>();
             columnValues.add(file.getApp());
+            columnValues.add(file.getTagName());
             columnValues.add(file.getTestFilePath());
             columnValues.add(file.getProductionFilePath());
             columnValues.add(file.getRelativeTestFilePath());

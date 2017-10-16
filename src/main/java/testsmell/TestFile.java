@@ -40,6 +40,10 @@ public class TestFile {
         testSmells.add(smell);
     }
 
+    public String getTagName(){
+        return testFilePath.split("\\\\")[4];
+    }
+
     public String getTestFileName(){
         int lastIndex = testFilePath.lastIndexOf("\\");
         return testFilePath.substring(lastIndex+1,testFilePath.length());
