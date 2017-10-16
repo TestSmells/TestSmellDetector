@@ -177,10 +177,12 @@ public class EagerTest extends AbstractSmell {
          * This method is utilized to obtain the scope of a chained method statement
          */
         private void getFinalScope(MethodCallExpr n) {
-            if ((n.getScope().get() instanceof MethodCallExpr)) {
-                getFinalScope((MethodCallExpr) n.getScope().get());
-            } else if ((n.getScope().get() instanceof NameExpr)) {
-                tempNameExpr = ((NameExpr) n.getScope().get());
+            if(n.getScope().isPresent()) {
+                if ((n.getScope().get() instanceof MethodCallExpr)) {
+                    getFinalScope((MethodCallExpr) n.getScope().get());
+                } else if ((n.getScope().get() instanceof NameExpr)) {
+                    tempNameExpr = ((NameExpr) n.getScope().get());
+                }
             }
         }
 
