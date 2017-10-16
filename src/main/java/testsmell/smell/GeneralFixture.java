@@ -52,7 +52,7 @@ public class GeneralFixture extends AbstractSmell {
     }
 
     @Override
-    public void runAnalysis(CompilationUnit testFileCompilationUnit,CompilationUnit productionFileCompilationUnit) throws FileNotFoundException {
+    public void runAnalysis(CompilationUnit testFileCompilationUnit,CompilationUnit productionFileCompilationUnit, String testFileName, String productionFileName) throws FileNotFoundException {
         GeneralFixture.ClassVisitor classVisitor;
         classVisitor = new GeneralFixture.ClassVisitor();
         classVisitor.visit(testFileCompilationUnit, null); //This call will populate the list of test methods and identify the setup method [visit(ClassOrInterfaceDeclaration n)]

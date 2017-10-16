@@ -45,7 +45,7 @@ public class UnknownTest  extends AbstractSmell {
      * Analyze the test file for test methods that do not have assert statement or exceptions
      */
     @Override
-    public void runAnalysis(CompilationUnit testFileCompilationUnit, CompilationUnit productionFileCompilationUnit) throws FileNotFoundException {
+    public void runAnalysis(CompilationUnit testFileCompilationUnit, CompilationUnit productionFileCompilationUnit, String testFileName, String productionFileName) throws FileNotFoundException {
         UnknownTest.ClassVisitor classVisitor;
         classVisitor = new UnknownTest.ClassVisitor();
         classVisitor.visit(testFileCompilationUnit, null);

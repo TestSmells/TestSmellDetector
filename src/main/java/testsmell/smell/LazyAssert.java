@@ -39,7 +39,7 @@ public class LazyAssert extends AbstractSmell {
      * Analyze the test file for test methods that have multiple assert statements with the same explanation message
      */
     @Override
-    public void runAnalysis(CompilationUnit testFileCompilationUnit,CompilationUnit productionFileCompilationUnit) throws FileNotFoundException {
+    public void runAnalysis(CompilationUnit testFileCompilationUnit,CompilationUnit productionFileCompilationUnit, String testFileName, String productionFileName) throws FileNotFoundException {
         LazyAssert.ClassVisitor classVisitor;
         classVisitor = new LazyAssert.ClassVisitor();
         classVisitor.visit(testFileCompilationUnit, null);

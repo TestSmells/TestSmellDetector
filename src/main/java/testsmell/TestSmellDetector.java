@@ -82,7 +82,7 @@ public class TestSmellDetector {
         initializeSmells();
         for (AbstractSmell smell : testSmells) {
             try {
-                smell.runAnalysis(testFileCompilationUnit, productionFileCompilationUnit);
+                smell.runAnalysis(testFileCompilationUnit, productionFileCompilationUnit,testFile.getTestFileNameWithoutExtension(),testFile.getProductionFileNameWithoutExtension());
             } catch (FileNotFoundException e) {
                 testFile.addSmell(null);
                 continue;

@@ -40,7 +40,7 @@ public class AssertionRoulette extends AbstractSmell {
      * Analyze the test file for test methods for multiple assert statements without an explanation/message
      */
     @Override
-    public void runAnalysis(CompilationUnit testFileCompilationUnit,CompilationUnit productionFileCompilationUnit) throws FileNotFoundException {
+    public void runAnalysis(CompilationUnit testFileCompilationUnit,CompilationUnit productionFileCompilationUnit, String testFileName, String productionFileName) throws FileNotFoundException {
         AssertionRoulette.ClassVisitor classVisitor;
         classVisitor = new AssertionRoulette.ClassVisitor();
         classVisitor.visit(testFileCompilationUnit, null);

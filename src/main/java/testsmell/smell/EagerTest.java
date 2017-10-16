@@ -46,7 +46,7 @@ public class EagerTest extends AbstractSmell {
      * Analyze the test file for test methods that exhibit the 'Eager Test' smell
      */
     @Override
-    public void runAnalysis(CompilationUnit testFileCompilationUnit, CompilationUnit productionFileCompilationUnit) throws FileNotFoundException {
+    public void runAnalysis(CompilationUnit testFileCompilationUnit, CompilationUnit productionFileCompilationUnit, String testFileName, String productionFileName) throws FileNotFoundException {
 
         if (productionFileCompilationUnit == null)
             throw new FileNotFoundException();

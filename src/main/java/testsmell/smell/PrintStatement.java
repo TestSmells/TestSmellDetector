@@ -48,7 +48,7 @@ public class PrintStatement extends AbstractSmell {
      * Analyze the test file for test methods that print output to the console
      */
     @Override
-    public void runAnalysis(CompilationUnit testFileCompilationUnit,CompilationUnit productionFileCompilationUnit) throws FileNotFoundException {
+    public void runAnalysis(CompilationUnit testFileCompilationUnit,CompilationUnit productionFileCompilationUnit, String testFileName, String productionFileName) throws FileNotFoundException {
         PrintStatement.ClassVisitor classVisitor;
         classVisitor = new PrintStatement.ClassVisitor();
         classVisitor.visit(testFileCompilationUnit, null);

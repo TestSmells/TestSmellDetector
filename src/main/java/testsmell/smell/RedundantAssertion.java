@@ -45,7 +45,7 @@ public class RedundantAssertion extends AbstractSmell {
      * Analyze the test file for test methods for multiple assert statements
      */
     @Override
-    public void runAnalysis(CompilationUnit testFileCompilationUnit,CompilationUnit productionFileCompilationUnit) throws FileNotFoundException {
+    public void runAnalysis(CompilationUnit testFileCompilationUnit,CompilationUnit productionFileCompilationUnit, String testFileName, String productionFileName) throws FileNotFoundException {
         RedundantAssertion.ClassVisitor classVisitor;
         classVisitor = new RedundantAssertion.ClassVisitor();
         classVisitor.visit(testFileCompilationUnit, null);

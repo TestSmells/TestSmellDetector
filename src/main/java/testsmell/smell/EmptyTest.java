@@ -45,7 +45,7 @@ public class EmptyTest extends AbstractSmell {
      * Analyze the test file for test methods that are empty (i.e. no method body)
      */
     @Override
-    public void runAnalysis(CompilationUnit testFileCompilationUnit,CompilationUnit productionFileCompilationUnit) throws FileNotFoundException {
+    public void runAnalysis(CompilationUnit testFileCompilationUnit,CompilationUnit productionFileCompilationUnit, String testFileName, String productionFileName) throws FileNotFoundException {
         EmptyTest.ClassVisitor classVisitor;
         classVisitor = new EmptyTest.ClassVisitor();
         classVisitor.visit(testFileCompilationUnit, null);
