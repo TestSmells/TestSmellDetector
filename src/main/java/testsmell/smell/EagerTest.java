@@ -1,6 +1,5 @@
 package testsmell.smell;
 
-import com.github.javaparser.JavaParser;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.EnumDeclaration;
@@ -11,7 +10,6 @@ import com.github.javaparser.ast.expr.VariableDeclarationExpr;
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
 import testsmell.*;
 
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
@@ -48,9 +46,9 @@ public class EagerTest extends AbstractSmell {
      * Analyze the test file for test methods that exhibit the 'Eager Test' smell
      */
     @Override
-    public void runAnalysis(CompilationUnit testFileCompilationUnit,CompilationUnit productionFileCompilationUnit) throws FileNotFoundException {
+    public void runAnalysis(CompilationUnit testFileCompilationUnit, CompilationUnit productionFileCompilationUnit) throws FileNotFoundException {
 
-        if(productionFileCompilationUnit == null)
+        if (productionFileCompilationUnit == null)
             throw new FileNotFoundException();
 
         EagerTest.ClassVisitor classVisitor;
@@ -143,15 +141,24 @@ public class EagerTest extends AbstractSmell {
          */
         @Override
         public void visit(MethodCallExpr n, Void arg) {
-            super.visit(n, arg);
+            NameExpr nameExpr = null;
             if (currentMethod != null) {
                 if (n.getScope().isPresent()) {
+                    //this if statement checks if the method is chained and gets the final scope
+                    if ((n.getScope().get() instanceof MethodCallExpr)) {
+                        getFinalScope(n);
+                        nameExpr = tempNameExpr;
+                    }
                     if (n.getScope().get() instanceof NameExpr) {
+                        nameExpr = (NameExpr) n.getScope().get();
+                    }
+
+                    if (nameExpr != null) {
                         //checks if the scope of the method being called is either of production class (e.g. static method)
                         //or
                         ///if the scope matches a variable which, in turn, is of type of the production class
-                        if (((NameExpr) n.getScope().get()).getNameAsString().equals(productionClassName) ||
-                                productionVariables.contains(((NameExpr) n.getScope().get()).getNameAsString())) {
+                        if (nameExpr.getNameAsString().equals(productionClassName) ||
+                                productionVariables.contains(nameExpr.getNameAsString())) {
                             if (!calledMethods.contains(n.getNameAsString())) {
                                 eagerCount++;
                                 calledMethods.add(n.getNameAsString());
@@ -160,6 +167,20 @@ public class EagerTest extends AbstractSmell {
                         }
                     }
                 }
+            }
+            super.visit(n, arg);
+        }
+
+        private NameExpr tempNameExpr;
+
+        /**
+         * This method is utilized to obtain the scope of a chained method statement
+         */
+        private void getFinalScope(MethodCallExpr n) {
+            if ((n.getScope().get() instanceof MethodCallExpr)) {
+                getFinalScope((MethodCallExpr) n.getScope().get());
+            } else if ((n.getScope().get() instanceof NameExpr)) {
+                tempNameExpr = ((NameExpr) n.getScope().get());
             }
         }
 
