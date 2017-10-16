@@ -40,6 +40,30 @@ public class TestFile {
         testSmells.add(smell);
     }
 
+    public String getTestFileName(){
+        int lastIndex = testFilePath.lastIndexOf("\\");
+        return testFilePath.substring(lastIndex+1,testFilePath.length());
+    }
+
+    public String getTestFileNameWithoutExtension(){
+        int lastIndex = getTestFileName().lastIndexOf(".");
+        return getTestFileName().substring(0,lastIndex);
+    }
+
+    public String getProductionFileNameWithoutExtension(){
+        int lastIndex = getProductionFileName().lastIndexOf(".");
+        if(lastIndex==-1)
+            return "";
+        return getProductionFileName().substring(0,lastIndex);
+    }
+
+    public String getProductionFileName(){
+        int lastIndex = productionFilePath.lastIndexOf("\\");
+        if(lastIndex==-1)
+            return "";
+        return productionFilePath.substring(lastIndex+1,productionFilePath.length());
+    }
+
     public String getRelativeTestFilePath() {
         String[] splitString = testFilePath.split("\\\\");
         StringBuilder stringBuilder = new StringBuilder();
