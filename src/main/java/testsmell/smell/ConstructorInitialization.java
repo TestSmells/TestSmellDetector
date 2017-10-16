@@ -2,6 +2,7 @@ package testsmell.smell;
 
 import com.github.javaparser.JavaParser;
 import com.github.javaparser.ast.CompilationUnit;
+import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.ConstructorDeclaration;
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
 import testsmell.*;
@@ -10,6 +11,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 
 /*
@@ -19,6 +21,7 @@ If this code detects the existence of a constructor, it sets the class as smelly
 public class ConstructorInitialization extends AbstractSmell {
 
     private List<SmellyElement> smellyElementList;
+    private String testFileName;
 
     public ConstructorInitialization() {
         smellyElementList = new ArrayList<>();
@@ -44,7 +47,8 @@ public class ConstructorInitialization extends AbstractSmell {
      * Analyze the test file for Constructor Initialization smell
      */
     @Override
-    public void runAnalysis(CompilationUnit testFileCompilationUnit,CompilationUnit productionFileCompilationUnit) throws FileNotFoundException {
+    public void runAnalysis(CompilationUnit testFileCompilationUnit,CompilationUnit productionFileCompilationUnit, String testFileName, String productionFileName) throws FileNotFoundException {
+        this.testFileName = testFileName;
         ConstructorInitialization.ClassVisitor classVisitor;
         classVisitor = new ConstructorInitialization.ClassVisitor();
         classVisitor.visit(testFileCompilationUnit, null);
@@ -62,11 +66,15 @@ public class ConstructorInitialization extends AbstractSmell {
     private class ClassVisitor extends VoidVisitorAdapter<Void> {
         TestClass testClass;
 
+
         @Override
         public void visit(ConstructorDeclaration n, Void arg) {
-            testClass = new TestClass(n.getNameAsString());
-            testClass.setHasSmell(true);
-            smellyElementList.add(testClass);
+            // This check is needed to handle java files that have multiple classes
+            if(n.getNameAsString().equals(testFileName)) {
+                testClass = new TestClass(n.getNameAsString());
+                testClass.setHasSmell(true);
+                smellyElementList.add(testClass);
+            }
         }
     }
 }
