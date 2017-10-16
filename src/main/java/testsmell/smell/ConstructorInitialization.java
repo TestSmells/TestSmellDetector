@@ -2,8 +2,10 @@ package testsmell.smell;
 
 import com.github.javaparser.JavaParser;
 import com.github.javaparser.ast.CompilationUnit;
+import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.ConstructorDeclaration;
+import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
 import testsmell.*;
 
@@ -65,15 +67,26 @@ public class ConstructorInitialization extends AbstractSmell {
 
     private class ClassVisitor extends VoidVisitorAdapter<Void> {
         TestClass testClass;
+        boolean constructorAllowed=false;
 
+        @Override
+        public void visit(ClassOrInterfaceDeclaration n, Void arg) {
+            for(int i=0;i<n.getExtendedTypes().size();i++){
+                ClassOrInterfaceType node = n.getExtendedTypes().get(i);
+                constructorAllowed = node.getNameAsString().equals("ActivityInstrumentationTestCase2");
+            }
+            super.visit(n, arg);
+        }
 
         @Override
         public void visit(ConstructorDeclaration n, Void arg) {
             // This check is needed to handle java files that have multiple classes
             if(n.getNameAsString().equals(testFileName)) {
-                testClass = new TestClass(n.getNameAsString());
-                testClass.setHasSmell(true);
-                smellyElementList.add(testClass);
+                if(!constructorAllowed) {
+                    testClass = new TestClass(n.getNameAsString());
+                    testClass.setHasSmell(true);
+                    smellyElementList.add(testClass);
+                }
             }
         }
     }
