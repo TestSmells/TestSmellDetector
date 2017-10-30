@@ -117,8 +117,8 @@ The below table specifies the types of smells that are detected by this tool alo
         <tr>
             <td>Duplicate Assert</td>
             <td>
-                <p>This smell occurs when a test method tests for the same condition/value multiple times within the same test method. A single assertion statement should suffice since the results will be the same.</p>
-                <p>Caused By: Developers performing debugging activities or an accidental copy-paste of code would give rise to this smell</p>
+                <p>This smell occurs when a test method tests for the same condition multiple times within the same test method. If the test method needs to test the same condition using different values, a new test method should be utilized; the name of the test method should be an indication of the test being performed.</p>
+                <p>Caused By: Possible situations that would give rise to this smell include: (1) developers grouping multiple conditions to test a single method, (2) developers performing debugging activities and (3) an accidental copy-paste of code.</p>
                 <p>Detection: Test method contains duplicate assert statements</p>
             </td>             
         </tr> 
