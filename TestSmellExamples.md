@@ -14,7 +14,7 @@ Provided below are examples of test smells that were detected in open source And
 
 - [General Fixture](#general-fixture)
 
-- [Lazy Assert (or should this be eager assert?)](#lazy-assert-or-should-this-be-eager-assert)
+- [Duplicate Assert](#duplicate-assert)
 
 - [Lazy Test](#lazy-test)
 
@@ -521,7 +521,7 @@ Both test methods, `testDecrypt()` and `testEncrypt()`, call the same SUT method
 
 **[*[↑](#test-smell-examples)*]**
 
-#### Lazy Assert (or should this be eager assert?)
+#### Duplicate Assert
 
 ##### Source
 
