@@ -34,7 +34,7 @@ Provided below are examples of test smells that were detected in open source And
 
 - TODO: Default Test (com.app.missednotificationsreminder / app/src/test/java/com/app/missednotificationsreminder/ExampleUnitTest.java)
 
-- TODO: Constructor Initialization (cgeo.geocaching / G:\Android\Apps\cgeo.geocaching\cgeo\tests\src\cgeo\geocaching\location\UTMPointConversionTest.java)
+- TODO: Constructor Initialization (org.briarproject.briar.beta / bramble-core/src/test/java/org/briarproject/bramble/crypto/TagEncodingTest.java)
 
   ------
 
