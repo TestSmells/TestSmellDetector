@@ -32,9 +32,9 @@ Provided below are examples of test smells that were detected in open source And
 
 - [Wait And See](#wait-and-see)
 
-- TODO: Default Test
+- TODO: Default Test (com.app.missednotificationsreminder / app/src/test/java/com/app/missednotificationsreminder/ExampleUnitTest.java)
 
-- TODO: Constructor Initialization
+- TODO: Constructor Initialization (cgeo.geocaching / G:\Android\Apps\cgeo.geocaching\cgeo\tests\src\cgeo\geocaching\location\UTMPointConversionTest.java)
 
   ------
 
