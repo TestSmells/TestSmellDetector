@@ -4,7 +4,7 @@ Provided below are examples of test smells that were detected in open source And
 
 - [Assertion Roulette](#assertion-roulette)
 
-- [Conditional Test Logic](#conditional-test-logic)
+- [Conditional Test Logic](#conditional-test-logic) TODO: update to com.dalthed.tucan / EventScraperTest.java
 
 - [Eager Test](#eager-test)
 
