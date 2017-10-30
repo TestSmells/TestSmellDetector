@@ -114,5 +114,13 @@ The below table specifies the types of smells that are detected by this tool alo
                 <p>Detection: Test method body contains one or more Thread.sleep() statements</p>
             </td>             
         </tr> 
+        <tr>
+            <td>Duplicate Assert</td>
+            <td>
+                <p>This smell occurs when a test method tests for the same condition/value multiple times within the same test method. A single assertion statement should suffice since the results will be the same.</p>
+                <p>Caused By: Developers performing debugging activities or an accidental copy-paste of code would give rise to this smell</p>
+                <p>Detection: Test method contains duplicate assert statements</p>
+            </td>             
+        </tr> 
   </tbody>
 </table>
