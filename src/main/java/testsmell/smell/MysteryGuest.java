@@ -12,6 +12,13 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.*;
 
+/**
+ When a test uses external resources, such as a file containing test data, the test is no longer self contained.
+ Consequently, there is not enough information to understand the tested functionality, making it hard to use that test as documentation.
+ Moreover, using external resources introduces hidden dependencies: if some force changes or deletes such a resource, tests start failing.
+ Chances for this increase when more tests use the same resource.
+ A. van Deursen, L. Moonen, A. Bergh, G. Kok, “Refactoring Test Code”, Technical Report, CWI, 2001.
+ */
 public class MysteryGuest extends AbstractSmell {
 
     private List<SmellyElement> smellyElementList;
