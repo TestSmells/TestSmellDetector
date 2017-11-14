@@ -12,6 +12,11 @@ import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ "Guess what's wrong?" This smell comes from having a number of assertions in a test method that have no explanation.
+ If one of the assertions fails, you do not know which one it is.
+ A. van Deursen, L. Moonen, A. Bergh, G. Kok, “Refactoring Test Code”, Technical Report, CWI, 2001.
+ */
 public class AssertionRoulette extends AbstractSmell {
 
     private List<SmellyElement> smellyElementList;
@@ -75,7 +80,7 @@ public class AssertionRoulette extends AbstractSmell {
                 // if there is only 1 assert statement in the method, then a explanation message is not needed
                 if(assertCount==1)
                     testMethod.setHasSmell(false);
-                else if(assertCount >=2 && assertMessageCount >=1) //if there is more than one assert statement, then all the asserts need to have an explanation message
+                else if(assertCount != assertMessageCount ) //if there is more than one assert statement, then all the asserts need to have an explanation message
                     testMethod.setHasSmell(true);
 
                 testMethod.addDataItem("AssertCount", String.valueOf(assertMessageCount));
@@ -94,14 +99,30 @@ public class AssertionRoulette extends AbstractSmell {
         public void visit(MethodCallExpr n, Void arg) {
             super.visit(n, arg);
             if (currentMethod != null) {
-                // if the name of a method being called start with 'assert'
-                if (n.getNameAsString().startsWith(("assert"))) {
+                // if the name of a method being called is an assertion and has 3 parameters
+                if (n.getNameAsString().startsWith(("assertArrayEquals")) ||
+                        n.getNameAsString().startsWith(("assertEquals")) ||
+                        n.getNameAsString().startsWith(("assertNotSame"))||
+                        n.getNameAsString().startsWith(("assertSame")) ||
+                        n.getNameAsString().startsWith(("assertThat"))) {
                     assertCount++;
                     // assert methods that do not contain a message
                     if (n.getArguments().size() < 3) {
                         assertMessageCount++;
                     }
                 }
+                // if the name of a method being called is an assertion and has 2 parameters
+                else if (n.getNameAsString().equals("assertFalse")||
+                        n.getNameAsString().equals("assertNotNull") ||
+                        n.getNameAsString().equals("assertNull") ||
+                        n.getNameAsString().equals("assertTrue")) {
+                    assertCount++;
+                    // assert methods that do not contain a message
+                    if (n.getArguments().size() < 2) {
+                        assertMessageCount++;
+                    }
+                }
+
                 // if the name of a method being called is 'fail'
                 else if (n.getNameAsString().equals("fail")) {
                     assertCount++;
