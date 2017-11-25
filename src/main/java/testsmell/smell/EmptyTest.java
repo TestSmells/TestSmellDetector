@@ -70,20 +70,22 @@ public class EmptyTest extends AbstractSmell {
          */
         @Override
         public void visit(MethodDeclaration n, Void arg) {
-            //only analyze methods that either have a @test annotation (Junit 4) or the method name starts with 'test'
-            if (n.getAnnotationByName("Test").isPresent() || n.getNameAsString().toLowerCase().startsWith("test")) {
-                testMethod = new TestMethod(n.getNameAsString());
-                testMethod.setHasSmell(false); //default value is false (i.e. no smell)
-                //method should not be abstract
-                if (!n.isAbstract()) {
-                    if (n.getBody().isPresent()) {
-                        //get the total number of statements contained in the method
-                        if (n.getBody().get().getStatements().size() == 0) {
-                            testMethod.setHasSmell(true); //the method has no statements (i.e no body)
+            if (!n.getAnnotationByName("Ignore").isPresent()) {
+                //only analyze methods that either have a @test annotation (Junit 4) or the method name starts with 'test'
+                if (n.getAnnotationByName("Test").isPresent() || n.getNameAsString().toLowerCase().startsWith("test")) {
+                    testMethod = new TestMethod(n.getNameAsString());
+                    testMethod.setHasSmell(false); //default value is false (i.e. no smell)
+                    //method should not be abstract
+                    if (!n.isAbstract()) {
+                        if (n.getBody().isPresent()) {
+                            //get the total number of statements contained in the method
+                            if (n.getBody().get().getStatements().size() == 0) {
+                                testMethod.setHasSmell(true); //the method has no statements (i.e no body)
+                            }
                         }
                     }
+                    smellyElementList.add(testMethod);
                 }
-                smellyElementList.add(testMethod);
             }
         }
     }

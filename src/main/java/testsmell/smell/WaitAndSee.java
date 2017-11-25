@@ -69,21 +69,23 @@ public class WaitAndSee extends AbstractSmell {
         // examine all methods in the test class
         @Override
         public void visit(MethodDeclaration n, Void arg) {
-            //only analyze methods that either have a @test annotation (Junit 4) or the method name starts with 'test'
-            if (n.getAnnotationByName("Test").isPresent() || n.getNameAsString().toLowerCase().startsWith("test")) {
-                currentMethod = n;
-                testMethod = new TestMethod(n.getNameAsString());
-                testMethod.setHasSmell(false); //default value is false (i.e. no smell)
-                super.visit(n, arg);
+            if (!n.getAnnotationByName("Ignore").isPresent()) {
+                //only analyze methods that either have a @test annotation (Junit 4) or the method name starts with 'test'
+                if (n.getAnnotationByName("Test").isPresent() || n.getNameAsString().toLowerCase().startsWith("test")) {
+                    currentMethod = n;
+                    testMethod = new TestMethod(n.getNameAsString());
+                    testMethod.setHasSmell(false); //default value is false (i.e. no smell)
+                    super.visit(n, arg);
 
-                testMethod.setHasSmell(sleepCount >= 1);
-                testMethod.addDataItem("ThreadSleepCount", String.valueOf(sleepCount));
+                    testMethod.setHasSmell(sleepCount >= 1);
+                    testMethod.addDataItem("ThreadSleepCount", String.valueOf(sleepCount));
 
-                smellyElementList.add(testMethod);
+                    smellyElementList.add(testMethod);
 
-                //reset values for next method
-                currentMethod = null;
-                sleepCount = 0;
+                    //reset values for next method
+                    currentMethod = null;
+                    sleepCount = 0;
+                }
             }
         }
 

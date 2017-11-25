@@ -130,19 +130,21 @@ public class GeneralFixture extends AbstractSmell {
         // examine all methods in the test class
         @Override
         public void visit(MethodDeclaration n, Void arg) {
-            //only analyze methods that either have a @test annotation (Junit 4) or the method name starts with 'test'
-            if (n.getAnnotationByName("Test").isPresent() || n.getNameAsString().toLowerCase().startsWith("test")) {
-                currentMethod = n;
+            if (!n.getAnnotationByName("Ignore").isPresent()) {
+                //only analyze methods that either have a @test annotation (Junit 4) or the method name starts with 'test'
+                if (n.getAnnotationByName("Test").isPresent() || n.getNameAsString().toLowerCase().startsWith("test")) {
+                    currentMethod = n;
 
-                //call visit(NameExpr) for current method
-                super.visit(n, arg);
+                    //call visit(NameExpr) for current method
+                    super.visit(n, arg);
 
-                testMethod = new TestMethod(n.getNameAsString());
-                testMethod.setHasSmell(fixtureCount != setupFields.size());
-                smellyElementList.add(testMethod);
+                    testMethod = new TestMethod(n.getNameAsString());
+                    testMethod.setHasSmell(fixtureCount != setupFields.size());
+                    smellyElementList.add(testMethod);
 
-                fixtureCount = 0;
-                currentMethod = null;
+                    fixtureCount = 0;
+                    currentMethod = null;
+                }
             }
         }
 

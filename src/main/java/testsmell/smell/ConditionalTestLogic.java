@@ -68,32 +68,34 @@ public class ConditionalTestLogic extends AbstractSmell {
         // examine all methods in the test class
         @Override
         public void visit(MethodDeclaration n, Void arg) {
-            //only analyze methods that either have a @test annotation (Junit 4) or the method name starts with 'test'
-            if (n.getAnnotationByName("Test").isPresent() || n.getNameAsString().toLowerCase().startsWith("test")) {
-                currentMethod = n;
-                testMethod = new TestMethod(n.getNameAsString());
-                testMethod.setHasSmell(false); //default value is false (i.e. no smell)
-                super.visit(n, arg);
+            if (!n.getAnnotationByName("Ignore").isPresent()) {
+                //only analyze methods that either have a @test annotation (Junit 4) or the method name starts with 'test'
+                if (n.getAnnotationByName("Test").isPresent() || n.getNameAsString().toLowerCase().startsWith("test")) {
+                    currentMethod = n;
+                    testMethod = new TestMethod(n.getNameAsString());
+                    testMethod.setHasSmell(false); //default value is false (i.e. no smell)
+                    super.visit(n, arg);
 
-                testMethod.setHasSmell(conditionCount > 0 | ifCount > 0 | switchCount > 0 | foreachCount > 0 | forCount > 0 | whileCount > 0);
+                    testMethod.setHasSmell(conditionCount > 0 | ifCount > 0 | switchCount > 0 | foreachCount > 0 | forCount > 0 | whileCount > 0);
 
-                testMethod.addDataItem("ConditionCount", String.valueOf(conditionCount));
-                testMethod.addDataItem("IfCount", String.valueOf(ifCount));
-                testMethod.addDataItem("SwitchCount", String.valueOf(switchCount));
-                testMethod.addDataItem("ForeachCount", String.valueOf(foreachCount));
-                testMethod.addDataItem("ForCount", String.valueOf(forCount));
-                testMethod.addDataItem("WhileCount", String.valueOf(whileCount));
+                    testMethod.addDataItem("ConditionCount", String.valueOf(conditionCount));
+                    testMethod.addDataItem("IfCount", String.valueOf(ifCount));
+                    testMethod.addDataItem("SwitchCount", String.valueOf(switchCount));
+                    testMethod.addDataItem("ForeachCount", String.valueOf(foreachCount));
+                    testMethod.addDataItem("ForCount", String.valueOf(forCount));
+                    testMethod.addDataItem("WhileCount", String.valueOf(whileCount));
 
-                smellyElementList.add(testMethod);
+                    smellyElementList.add(testMethod);
 
-                //reset values for next method
-                currentMethod = null;
-                conditionCount = 0;
-                ifCount = 0;
-                switchCount = 0;
-                forCount = 0;
-                foreachCount = 0;
-                whileCount = 0;
+                    //reset values for next method
+                    currentMethod = null;
+                    conditionCount = 0;
+                    ifCount = 0;
+                    switchCount = 0;
+                    forCount = 0;
+                    foreachCount = 0;
+                    whileCount = 0;
+                }
             }
         }
 

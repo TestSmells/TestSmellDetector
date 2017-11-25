@@ -62,24 +62,26 @@ public class LazyAssert extends AbstractSmell {
         // examine all methods in the test class
         @Override
         public void visit(MethodDeclaration n, Void arg) {
-            //only analyze methods that either have a @test annotation (Junit 4) or the method name starts with 'test'
-            if (n.getAnnotationByName("Test").isPresent() || n.getNameAsString().toLowerCase().startsWith("test")) {
-                currentMethod = n;
-                testMethod = new TestMethod(n.getNameAsString());
-                testMethod.setHasSmell(false); //default value is false (i.e. no smell)
-                super.visit(n, arg);
+            if (!n.getAnnotationByName("Ignore").isPresent()) {
+                //only analyze methods that either have a @test annotation (Junit 4) or the method name starts with 'test'
+                if (n.getAnnotationByName("Test").isPresent() || n.getNameAsString().toLowerCase().startsWith("test")) {
+                    currentMethod = n;
+                    testMethod = new TestMethod(n.getNameAsString());
+                    testMethod.setHasSmell(false); //default value is false (i.e. no smell)
+                    super.visit(n, arg);
 
-                // if there are duplicate messages, then the smell exists
-                Set<String> set = new HashSet<String>(assertMessage);
-                if(set.size() < assertMessage.size()){
-                    testMethod.setHasSmell(true);
+                    // if there are duplicate messages, then the smell exists
+                    Set<String> set = new HashSet<String>(assertMessage);
+                    if (set.size() < assertMessage.size()) {
+                        testMethod.setHasSmell(true);
+                    }
+
+                    smellyElementList.add(testMethod);
+
+                    //reset values for next method
+                    currentMethod = null;
+                    assertMessage = new ArrayList<>();
                 }
-
-                smellyElementList.add(testMethod);
-
-                //reset values for next method
-                currentMethod = null;
-                assertMessage = new ArrayList<>();
             }
         }
 
