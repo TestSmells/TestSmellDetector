@@ -62,7 +62,7 @@ public class AssertionRoulette extends AbstractSmell {
 
     private class ClassVisitor extends VoidVisitorAdapter<Void> {
         private MethodDeclaration currentMethod = null;
-        private int assertMessageCount = 0;
+        private int assertNoMessageCount = 0;
         private int assertCount = 0;
         TestMethod testMethod;
 
@@ -80,17 +80,17 @@ public class AssertionRoulette extends AbstractSmell {
                 // if there is only 1 assert statement in the method, then a explanation message is not needed
                 if(assertCount==1)
                     testMethod.setHasSmell(false);
-                else if(assertCount != assertMessageCount ) //if there is more than one assert statement, then all the asserts need to have an explanation message
+                else if(assertNoMessageCount >=1) //if there is more than one assert statement, then all the asserts need to have an explanation message
                     testMethod.setHasSmell(true);
 
-                testMethod.addDataItem("AssertCount", String.valueOf(assertMessageCount));
+                testMethod.addDataItem("AssertCount", String.valueOf(assertNoMessageCount));
 
                 smellyElementList.add(testMethod);
 
                 //reset values for next method
                 currentMethod = null;
                 assertCount=0;
-                assertMessageCount = 0;
+                assertNoMessageCount = 0;
             }
         }
 
@@ -108,7 +108,7 @@ public class AssertionRoulette extends AbstractSmell {
                     assertCount++;
                     // assert methods that do not contain a message
                     if (n.getArguments().size() < 3) {
-                        assertMessageCount++;
+                        assertNoMessageCount++;
                     }
                 }
                 // if the name of a method being called is an assertion and has 2 parameters
@@ -119,7 +119,7 @@ public class AssertionRoulette extends AbstractSmell {
                     assertCount++;
                     // assert methods that do not contain a message
                     if (n.getArguments().size() < 2) {
-                        assertMessageCount++;
+                        assertNoMessageCount++;
                     }
                 }
 
@@ -128,7 +128,7 @@ public class AssertionRoulette extends AbstractSmell {
                     assertCount++;
                     // fail method does not contain a message
                     if (n.getArguments().size() < 1) {
-                        assertMessageCount++;
+                        assertNoMessageCount++;
                     }
                 }
 
