@@ -1,6 +1,7 @@
 package testsmell.smell;
 
 import com.github.javaparser.ast.CompilationUnit;
+import com.github.javaparser.ast.Modifier;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.EnumDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
@@ -24,8 +25,10 @@ public class LazyTest extends AbstractSmell {
     private String productionClassName;
     private List<SmellyElement> smellyElementList;
     private List<MethodUsage> calledProductionMethods;
+    private List<MethodDeclaration> productionMethods;
 
     public LazyTest() {
+        productionMethods = new ArrayList<>();
         smellyElementList = new ArrayList<>();
         calledProductionMethods = new ArrayList<>();
     }
@@ -63,10 +66,10 @@ public class LazyTest extends AbstractSmell {
         classVisitor = new LazyTest.ClassVisitor(TEST_FILE);
         classVisitor.visit(testFileCompilationUnit, null);
 
-        for (MethodUsage method: calledProductionMethods) {
+        for (MethodUsage method : calledProductionMethods) {
             List<MethodUsage> s = calledProductionMethods.stream().filter(x -> x.getProductionMethod().equals(method.getProductionMethod())).collect(Collectors.toList());
-            if (s.size()>1){
-                if(s.stream().filter(y -> y.getTestMethod().equals(method.getTestMethod())).count() != s.size()){
+            if (s.size() > 1) {
+                if (s.stream().filter(y -> y.getTestMethod().equals(method.getTestMethod())).count() != s.size()) {
                     // If counts don not match, this production method is used by multiple test methods. Hence, there is a Lazy Test smell.
                     // If the counts were equal it means that the production method is only used (called from) inside one test method
                     TestMethod testClass = new TestMethod(method.getTestMethod());
@@ -85,9 +88,10 @@ public class LazyTest extends AbstractSmell {
         return smellyElementList;
     }
 
-    private class MethodUsage{
-        private String testMethod,productionMethod;
-        public MethodUsage(String testMethod,String productionMethod){
+    private class MethodUsage {
+        private String testMethod, productionMethod;
+
+        public MethodUsage(String testMethod, String productionMethod) {
             this.testMethod = testMethod;
             this.productionMethod = productionMethod;
         }
@@ -137,17 +141,24 @@ public class LazyTest extends AbstractSmell {
         public void visit(MethodDeclaration n, Void arg) {
             // ensure that this method is only executed for the test file
             if (Objects.equals(fileType, TEST_FILE)) {
+                if (!n.getAnnotationByName("Ignore").isPresent()) {
+                    //only analyze methods that either have a @test annotation (Junit 4) or the method name starts with 'test'
+                    if (n.getAnnotationByName("Test").isPresent() || n.getNameAsString().toLowerCase().startsWith("test")) {
+                        currentMethod = n;
+                        testMethod = new TestMethod(currentMethod.getNameAsString());
+                        testMethod.setHasSmell(false); //default value is false (i.e. no smell)
+                        super.visit(n, arg);
 
-                //only analyze methods that either have a @test annotation (Junit 4) or the method name starts with 'test'
-                if (n.getAnnotationByName("Test").isPresent() || n.getNameAsString().toLowerCase().startsWith("test")) {
-                    currentMethod = n;
-                    testMethod = new TestMethod(currentMethod.getNameAsString());
-                    testMethod.setHasSmell(false); //default value is false (i.e. no smell)
-                    super.visit(n, arg);
-
-                    //reset values for next method
-                    currentMethod = null;
-                    productionVariables = new ArrayList<>();
+                        //reset values for next method
+                        currentMethod = null;
+                        productionVariables = new ArrayList<>();
+                    }
+                }
+            } else { //collect a list of all public/protected members of the production class
+                for (Modifier modifier : n.getModifiers()) {
+                    if (modifier.name().toLowerCase().equals("public") || modifier.name().toLowerCase().equals("protected")) {
+                        productionMethods.add(n);
+                    }
                 }
 
             }
@@ -156,23 +167,31 @@ public class LazyTest extends AbstractSmell {
 
         /**
          * The purpose of this method is to identify the production class methods that are called from the test method
-         * When the parser encounters a method call, the code will check the 'scope' of the called method.
-         * A match is made if the scope is either:
-         * equal to the name of the production class (as in the case of a static method) or
-         * if the scope is a variable that has been declared to be of type of the production class (i.e. contained in the 'productionVariables' list).
+         * When the parser encounters a method call:
+         * 1) the method is contained in the productionMethods list
+         * or
+         * 2) the code will check the 'scope' of the called method
+         *      A match is made if the scope is either:
+         *      equal to the name of the production class (as in the case of a static method) or
+         *      if the scope is a variable that has been declared to be of type of the production class (i.e. contained in the 'productionVariables' list).
          */
         @Override
         public void visit(MethodCallExpr n, Void arg) {
             super.visit(n, arg);
             if (currentMethod != null) {
-                if (n.getScope().isPresent()) {
-                    if (n.getScope().get() instanceof NameExpr) {
-                        //checks if the scope of the method being called is either of production class (e.g. static method)
-                        //or
-                        ///if the scope matches a variable which, in turn, is of type of the production class
-                        if (((NameExpr) n.getScope().get()).getNameAsString().equals(productionClassName) ||
-                                productionVariables.contains(((NameExpr) n.getScope().get()).getNameAsString())) {
-                            calledProductionMethods.add(new MethodUsage(currentMethod.getNameAsString(),n.getNameAsString()));
+                if (productionMethods.stream().anyMatch(i -> i.getNameAsString().equals(n.getNameAsString()) &&
+                        i.getParameters().size() == n.getArguments().size())) {
+                    calledProductionMethods.add(new MethodUsage(currentMethod.getNameAsString(), n.getNameAsString()));
+                } else {
+                    if (n.getScope().isPresent()) {
+                        if (n.getScope().get() instanceof NameExpr) {
+                            //checks if the scope of the method being called is either of production class (e.g. static method)
+                            //or
+                            ///if the scope matches a variable which, in turn, is of type of the production class
+                            if (((NameExpr) n.getScope().get()).getNameAsString().equals(productionClassName) ||
+                                    productionVariables.contains(((NameExpr) n.getScope().get()).getNameAsString())) {
+                                calledProductionMethods.add(new MethodUsage(currentMethod.getNameAsString(), n.getNameAsString()));
+                            }
                         }
                     }
                 }

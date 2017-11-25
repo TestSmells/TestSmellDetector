@@ -1,6 +1,7 @@
 package testsmell.smell;
 
 import com.github.javaparser.ast.CompilationUnit;
+import com.github.javaparser.ast.Modifier;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.EnumDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
@@ -21,8 +22,10 @@ public class EagerTest extends AbstractSmell {
     private static final String PRODUCTION_FILE = "Production";
     private String productionClassName;
     private List<SmellyElement> smellyElementList;
+    private List<MethodDeclaration> productionMethods;
 
     public EagerTest() {
+        productionMethods = new ArrayList<>();
         smellyElementList = new ArrayList<>();
     }
 
@@ -108,24 +111,29 @@ public class EagerTest extends AbstractSmell {
         public void visit(MethodDeclaration n, Void arg) {
             // ensure that this method is only executed for the test file
             if (Objects.equals(fileType, TEST_FILE)) {
+                if (!n.getAnnotationByName("Ignore").isPresent()) {
+                    //only analyze methods that either have a @test annotation (Junit 4) or the method name starts with 'test'
+                    if (n.getAnnotationByName("Test").isPresent() || n.getNameAsString().toLowerCase().startsWith("test")) {
+                        currentMethod = n;
+                        testMethod = new TestMethod(currentMethod.getNameAsString());
+                        testMethod.setHasSmell(false); //default value is false (i.e. no smell)
+                        super.visit(n, arg);
 
-                //only analyze methods that either have a @test annotation (Junit 4) or the method name starts with 'test'
-                if (n.getAnnotationByName("Test").isPresent() || n.getNameAsString().toLowerCase().startsWith("test")) {
-                    currentMethod = n;
-                    testMethod = new TestMethod(currentMethod.getNameAsString());
-                    testMethod.setHasSmell(false); //default value is false (i.e. no smell)
-                    super.visit(n, arg);
+                        testMethod.setHasSmell(eagerCount > 1); //the method has a smell if there is more than 1 call to production methods
+                        smellyElementList.add(testMethod);
 
-                    testMethod.setHasSmell(eagerCount > 1); //the method has a smell if there is more than 1 call to production methods
-                    //System.out.println(n.getNameAsString() + ";" + eagerCount);
-
-                    smellyElementList.add(testMethod);
-
-                    //reset values for next method
-                    currentMethod = null;
-                    eagerCount = 0;
-                    productionVariables = new ArrayList<>();
-                    calledMethods = new ArrayList<>();
+                        //reset values for next method
+                        currentMethod = null;
+                        eagerCount = 0;
+                        productionVariables = new ArrayList<>();
+                        calledMethods = new ArrayList<>();
+                    }
+                }
+            } else { //collect a list of all public/protected members of the production class
+                for (Modifier modifier : n.getModifiers()) {
+                    if (modifier.name().toLowerCase().equals("public") || modifier.name().toLowerCase().equals("protected")) {
+                        productionMethods.add(n);
+                    }
                 }
 
             }
@@ -134,36 +142,45 @@ public class EagerTest extends AbstractSmell {
 
         /**
          * The purpose of this method is to identify the production class methods that are called from the test method
-         * When the parser encounters a method call, the code will check the 'scope' of the called method.
-         * A match is made if the scope is either:
-         * equal to the name of the production class (as in the case of a static method) or
-         * if the scope is a variable that has been declared to be of type of the production class (i.e. contained in the 'productionVariables' list).
+         * When the parser encounters a method call:
+         * 1) the method is contained in the productionMethods list
+         * or
+         * 2) the code will check the 'scope' of the called method
+         *      A match is made if the scope is either:
+         *      equal to the name of the production class (as in the case of a static method) or
+         *      if the scope is a variable that has been declared to be of type of the production class (i.e. contained in the 'productionVariables' list).
          */
         @Override
         public void visit(MethodCallExpr n, Void arg) {
             NameExpr nameExpr = null;
             if (currentMethod != null) {
-                if (n.getScope().isPresent()) {
-                    //this if statement checks if the method is chained and gets the final scope
-                    if ((n.getScope().get() instanceof MethodCallExpr)) {
-                        getFinalScope(n);
-                        nameExpr = tempNameExpr;
-                    }
-                    if (n.getScope().get() instanceof NameExpr) {
-                        nameExpr = (NameExpr) n.getScope().get();
-                    }
+                if (productionMethods.stream().anyMatch(i -> i.getNameAsString().equals(n.getNameAsString()) &&
+                        i.getParameters().size() == n.getArguments().size())) {
+                    eagerCount++;
+                    calledMethods.add(n.getNameAsString());
+                } else {
+                    if (n.getScope().isPresent()) {
+                        //this if statement checks if the method is chained and gets the final scope
+                        if ((n.getScope().get() instanceof MethodCallExpr)) {
+                            getFinalScope(n);
+                            nameExpr = tempNameExpr;
+                        }
+                        if (n.getScope().get() instanceof NameExpr) {
+                            nameExpr = (NameExpr) n.getScope().get();
+                        }
 
-                    if (nameExpr != null) {
-                        //checks if the scope of the method being called is either of production class (e.g. static method)
-                        //or
-                        ///if the scope matches a variable which, in turn, is of type of the production class
-                        if (nameExpr.getNameAsString().equals(productionClassName) ||
-                                productionVariables.contains(nameExpr.getNameAsString())) {
-                            if (!calledMethods.contains(n.getNameAsString())) {
-                                eagerCount++;
-                                calledMethods.add(n.getNameAsString());
+                        if (nameExpr != null) {
+                            //checks if the scope of the method being called is either of production class (e.g. static method)
+                            //or
+                            ///if the scope matches a variable which, in turn, is of type of the production class
+                            if (nameExpr.getNameAsString().equals(productionClassName) ||
+                                    productionVariables.contains(nameExpr.getNameAsString())) {
+                                if (!calledMethods.contains(n.getNameAsString())) {
+                                    eagerCount++;
+                                    calledMethods.add(n.getNameAsString());
+                                }
+
                             }
-
                         }
                     }
                 }
@@ -177,7 +194,7 @@ public class EagerTest extends AbstractSmell {
          * This method is utilized to obtain the scope of a chained method statement
          */
         private void getFinalScope(MethodCallExpr n) {
-            if(n.getScope().isPresent()) {
+            if (n.getScope().isPresent()) {
                 if ((n.getScope().get() instanceof MethodCallExpr)) {
                     getFinalScope((MethodCallExpr) n.getScope().get());
                 } else if ((n.getScope().get() instanceof NameExpr)) {
