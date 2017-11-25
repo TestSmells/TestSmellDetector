@@ -11,11 +11,11 @@ import testsmell.TestMethod;
 import java.io.FileNotFoundException;
 import java.util.*;
 
-public class LazyAssert extends AbstractSmell {
+public class DuplicateAssert extends AbstractSmell {
 
     private List<SmellyElement> smellyElementList;
 
-    public LazyAssert() {
+    public DuplicateAssert() {
         smellyElementList = new ArrayList<>();
     }
 
@@ -40,8 +40,8 @@ public class LazyAssert extends AbstractSmell {
      */
     @Override
     public void runAnalysis(CompilationUnit testFileCompilationUnit,CompilationUnit productionFileCompilationUnit, String testFileName, String productionFileName) throws FileNotFoundException {
-        LazyAssert.ClassVisitor classVisitor;
-        classVisitor = new LazyAssert.ClassVisitor();
+        DuplicateAssert.ClassVisitor classVisitor;
+        classVisitor = new DuplicateAssert.ClassVisitor();
         classVisitor.visit(testFileCompilationUnit, null);
     }
 
