@@ -78,6 +78,9 @@ public class ExceptionCatchingThrowing extends AbstractSmell {
                     testMethod.setHasSmell(false); //default value is false (i.e. no smell)
                     super.visit(n, arg);
 
+                    if(n.getThrownExceptions().size()>=1)
+                        exceptionCount++;
+
                     testMethod.setHasSmell(exceptionCount >= 1);
                     testMethod.addDataItem("ExceptionCount", String.valueOf(exceptionCount));
 
@@ -86,6 +89,8 @@ public class ExceptionCatchingThrowing extends AbstractSmell {
                     //reset values for next method
                     currentMethod = null;
                     exceptionCount = 0;
+
+
                 }
             }
         }
