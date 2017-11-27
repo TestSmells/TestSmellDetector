@@ -20,11 +20,11 @@ public class DuplicateAssert extends AbstractSmell {
     }
 
     /**
-     * Checks of 'Lazy Assert' smell
+     * Checks of 'Duplicate Assert' smell
      */
     @Override
     public String getSmellName() {
-        return "Lazy Assert";
+        return "Duplicate Assert";
     }
 
     /**
