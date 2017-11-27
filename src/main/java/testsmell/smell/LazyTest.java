@@ -5,6 +5,7 @@ import com.github.javaparser.ast.Modifier;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.EnumDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
+import com.github.javaparser.ast.body.VariableDeclarator;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.VariableDeclarationExpr;
@@ -171,9 +172,9 @@ public class LazyTest extends AbstractSmell {
          * 1) the method is contained in the productionMethods list
          * or
          * 2) the code will check the 'scope' of the called method
-         *      A match is made if the scope is either:
-         *      equal to the name of the production class (as in the case of a static method) or
-         *      if the scope is a variable that has been declared to be of type of the production class (i.e. contained in the 'productionVariables' list).
+         * A match is made if the scope is either:
+         * equal to the name of the production class (as in the case of a static method) or
+         * if the scope is a variable that has been declared to be of type of the production class (i.e. contained in the 'productionVariables' list).
          */
         @Override
         public void visit(MethodCallExpr n, Void arg) {
@@ -198,17 +199,27 @@ public class LazyTest extends AbstractSmell {
             }
         }
 
-        /**
-         * The purpose of this method is to capture the names of all variables, declared in the method body, that are of type of the production class.
-         * The variable is captured as and when the code statement is parsed/evaluated by the parser
-         */
+//        /**
+//         * The purpose of this method is to capture the names of all variables, declared in the method body, that are of type of the production class.
+//         * The variable is captured as and when the code statement is parsed/evaluated by the parser
+//         */
+//        @Override
+//        public void visit(VariableDeclarationExpr n, Void arg) {
+//            if (currentMethod != null) {
+//                for (int i = 0; i < n.getVariables().size(); i++) {
+//                    if (productionClassName.equals(n.getVariable(i).getType().asString())) {
+//                        productionVariables.add(n.getVariable(i).getNameAsString());
+//                    }
+//                }
+//            }
+//            super.visit(n, arg);
+//        }
+
         @Override
-        public void visit(VariableDeclarationExpr n, Void arg) {
-            if (currentMethod != null) {
-                for (int i = 0; i < n.getVariables().size(); i++) {
-                    if (productionClassName.equals(n.getVariable(i).getType().asString())) {
-                        productionVariables.add(n.getVariable(i).getNameAsString());
-                    }
+        public void visit(VariableDeclarator n, Void arg) {
+            if (Objects.equals(fileType, TEST_FILE)) {
+                if (productionClassName.equals(n.getType().asString())) {
+                    productionVariables.add(n.getNameAsString());
                 }
             }
             super.visit(n, arg);
