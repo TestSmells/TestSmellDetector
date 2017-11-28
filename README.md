@@ -1,8 +1,23 @@
 # Test Smell Detector
 
+## Introduction
+
+Unit test code, just like any other source code, is subject to bad programming practices, known also as anti-patterns, defects and smells *[1]*. Smells, being symptoms of bad design or implementation decisions, has been proven to be responsible for decreasing the quality of software systems from various aspects, such as making it harder to understand, more complex to maintain, more prone to errors and bugs *[2]*.
+
+Test smells are defined as bad programming practices in unit test code (such as how test cases are organized, implemented and interact with each other) that indicate potential design problems in the test source code *[3]* *[4]* *[5]* *[6]*.
+
+## Project Overview
+
+The purpose of this project is twofold:
+
+1. Contribute to the list of existing test smells, by proposing new test smells that developers need to be aware of.
+2. Provide developers with a tool to automatically detect test smell in their unit test code. 
+
 ## Detected Smells
+
 The below table specifies the types of smells that are detected by this tool along with a brief description of each smell and the detection strategy. 
 <table>
+
     <thead>
         <tr>
             <th>Smell Name</th>
@@ -124,3 +139,24 @@ The below table specifies the types of smells that are detected by this tool alo
         </tr> 
   </tbody>
 </table>
+
+## Contact
+
+For more information or to contribute to this project, you can reach:
+
+1. [Anthony Peruma](https://github.com/shehan)
+2. [Mohamed Wiem Mkaouer](https://github.com/mkaouer)
+
+## References
+
+[1] Fowler, M., & Beck, K. (1999). Refactoring: improving the design of existing code. Addison-Wesley Professional.
+
+[2] Mäntylä, M. V., & Lassenius, C. (2006). Subjective evaluation of software evolvability using code smells: An empirical study. Empirical Software Engineering, 11(3), 395-431.
+
+[3] Van Deursen, A., Moonen, L., van den Bergh, A., & Kok, G. (2001, May). Refactoring test code. In *Proceedings of the 2nd international conference on extreme programming and flexible processes in software engineering (XP2001)* (pp. 92-95).
+
+[4] Greiler, M., Zaidman, A., Deursen, A. V., & Storey, M. A. (2013, May). Strategies for avoiding text fixture smells during software evolution. In *Proceedings of the 10th Working Conference on Mining Software Repositories* (pp. 387-396). IEEE Press.
+
+[5] Palomba, F., Di Nucci, D., Panichella, A., Oliveto, R., & De Lucia, A. (2016, May). On the diffusion of test smells in automatically generated test code: An empirical study. In *Proceedings of the 9th International Workshop on Search-Based Software Testing* (pp. 5-14). ACM.
+
+[6] Meszaros, G. (2007). *xUnit test patterns: Refactoring test code*. Pearson Education.
