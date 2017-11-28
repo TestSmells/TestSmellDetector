@@ -146,6 +146,7 @@ For more information or to contribute to this project, you can reach:
 
 1. [Anthony Peruma](https://github.com/shehan)
 2. [Mohamed Wiem Mkaouer](https://github.com/mkaouer)
+3. [Khaled Almalki](https://github.com/khaledalmalki)
 
 ## References
 
