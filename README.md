@@ -19,7 +19,7 @@ The purpose of this project is twofold:
 
 ## Detected Smells
 
-Provided below are the test smell detected by the tool along with the detection strategy. Examples of each smell type is available [here](https://github.com/TestSmells/TestSmellDetector/blob/master/TestSmellExamples.md).
+Provided below are the test smell detected by the tool along with the detection strategy. Examples of each smell type are available [here](https://github.com/TestSmells/TestSmellDetector/blob/master/TestSmellExamples.md).
 
 #### Assertion Roulette
 
