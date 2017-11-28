@@ -6,6 +6,8 @@ Unit test code, just like any other source code, is subject to bad programming p
 
 Test smells are defined as bad programming practices in unit test code (such as how test cases are organized, implemented and interact with each other) that indicate potential design problems in the test source code *[3]* *[4]* *[5]* *[6]*.
 
+
+
 ## Project Overview
 
 The purpose of this project is twofold:
@@ -13,132 +15,105 @@ The purpose of this project is twofold:
 1. Contribute to the list of existing test smells, by proposing new test smells that developers need to be aware of.
 2. Provide developers with a tool to automatically detect test smell in their unit test code. 
 
+
+
 ## Detected Smells
 
-The below table specifies the types of smells that are detected by this tool along with a brief description of each smell and the detection strategy. 
-<table>
+Provided below are the test smell detected by the tool along with the detection strategy
 
-    <thead>
-        <tr>
-            <th>Smell Name</th>
-            <th>Description</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td>Assertion Roulette</td>
-            <td>
-                <p>Multiple asserts in a test method without a descriptive message impacts readability/understandability/maintainability as it’s not possible to understand the reason for an asserts failure </p>
-                <p>Caused By: Developer implementing the test method is aware of the purpose of the assert output</p>
-                <p>Detection: Assert methods called from the body of a test method do not contain a explanation message</p>          
-            </td>
-        </tr>
-        <tr>
-            <td>Conditional Test Logic (also known as 'Indented Test')</td>
-            <td>
-                <p>Test methods should be simple and must execute all statements. Conditions will alter the behavior of the test and expected output</p>
-                <p>Caused By: Used to verify complex logic or iterate through a collection</p>
-                <p>Detection: Test method body contains one or more  loops, conditional statements (ternary operator, switch/case, if condition)</p>             
-            </td>
-        </tr>
-        <tr>
-            <td>Constructor Initialization</td>
-            <td>
-                <p>Ideally, the test suite should not have a constructor. Initialization of fields should be in the setup() method</p>
-                <p>Caused By: Developers are probably unware of the purpose of setup() method</p>
-                <p>Detection: Class contains one or more constructors</p>             
-            </td>            
-        </tr>
-        <tr>
-            <td>Default Test</td>
-            <td>
-                <p>By default Android Studio creates default test classes when a project is created. These classes are meant to serve as an example for developers when wring unit tests and should either be removed or renamed</p>
-                <p>Caused By: Developers do not write unit tests and hence these artifacts remain in the project or developers start adding test methods into these files and it soon becomes burdensome/risky to refactor</p>
-                <p>Detection: The class name is ether 'ExampleUnitTest' or 'ExampleInstrumentedTest'</p>             
-            </td>
-        </tr>
-        <tr>
-            <td>Empty Test</td>
-            <td>
-                <p>A test method that contains an empty body</p>
-                <p>Caused By: Created for debugging purposes and then forgotten about or contains commented out code</p>
-                <p>Detection: Test method body contains zero statements</p>             
-            </td>
-        </tr>
-        <tr>
-            <td>Exception Catching Throwing</td>
-            <td>
-                <p>Use Junit's exception handling to automatically pass/fail the test instead of writing custom exception handling code or throwing an exception</p>
-                <p>Caused By: A passing or failing of test method is dependent on the tested method throwing an exception</p>
-                <p>Detection: Class contains one or more constructors</p> 
-            </td>
-        </tr>
-        <tr>
-            <td>General Fixture</td>
-            <td>
-                <p>A test setup/fixture method that initializes fields that are not accessed by test methods indicates that the fixture is too generalized. A drawback of it being too general is that unnecessary work is being done when a test method is run.</p>
-                <p>Caused By: The test fixture is implemented to support multiple tests, each having unique requirements</p>
-                <p>Detection: A field initialized in the setup() method but not accessed in the body of a test method</p>             
-            </td>
-        </tr>
-        <tr>
-            <td>Mystery Guest</td>
-            <td>
-                <p>Use of external resources in test methods will result in stability and performance issues. Use mock objects in place of external resources</p>
-                <p>Caused By: Developers not understanding the concept of mock objects or debugging code that was not removed</p>
-                <p>Detection: Test method body contains calls to external resources such as external storage, databases, etc.</p>             
-            </td>
-        </tr>
-        <tr>
-            <td>Print Statement</td>
-            <td>
-                <p>Test methods should not contain print statements as execution of unit tests is an automated process with little to no human intervention. Hence, print statements are redundant.</p>
-                <p>Caused By: Created for debugging purposes and then forgotten</p>
-                <p>Detection: Test method body contains one or more  System.out.print(),println(),printf() or write() statements</p>             
-            </td>
-        </tr>
-        <tr>
-            <td>Redundant Assertion</td>
-            <td>
-                <p>Test methods containing assert calls that are always true or always false</p>
-                <p>Caused By: Possibly done for debugging purposes and then forgotten to be removed or as a mistake</p>
-                <p>Detection: If a test method contains an assert call that explicitly returns a true or false (e.g. assertTrue(true) or assertFalse(false))</p>             
-            </td>            
-        </tr> 
-        <tr>
-            <td>Sensitive Equality</td>
-            <td>
-                <p>Test methods verify objects by invoking the default toString() method of the object and comparing the output against an specific string. Changes to the implementation of toString() might result in failure. The correct approach is to implement a custom method within the object to perform this comparison</p>
-                <p>Caused By: Developers using a simplistic, but not recommended means of string comparison </p>
-                <p>Detection: If a test method contains an assert call that contains an invocation of toString()</p>             
-            </td> 
-        </tr> 
-        <tr>
-            <td>Verbose Test</td>
-             <td>
-                 <p>Similar to the Long Methods code smell, a test method with large number of lines of code impacts readability and maintainability of the method</p>
-                 <p>Caused By: When developers fail to keep test methods simple and include too much information and functionality in the methods</p>
-                 <p>Detection: The number of statements in the body of a test method exceeds a certain amount</p>
-             </td> 
-        </tr>                                                             
-        <tr>
-            <td>Wait And See</td>
-            <td>
-                <p>Use of Thread.sleep() in test methods can possibly lead to unexpected results as the processing time of tasks on different devices/machines can be different. Use mock objects instead</p>
-                <p>Caused By: Used to simulate delays. When developers need the code to wait (i.e. simulate an external event) prior to continuing with the execution</p>
-                <p>Detection: Test method body contains one or more Thread.sleep() statements</p>
-            </td>             
-        </tr> 
-        <tr>
-            <td>Duplicate Assert</td>
-            <td>
-                <p>This smell occurs when a test method tests for the same condition multiple times within the same test method. If the test method needs to test the same condition using different values, a new test method should be utilized; the name of the test method should be an indication of the test being performed.</p>
-                <p>Caused By: Possible situations that would give rise to this smell include: (1) developers grouping multiple conditions to test a single method, (2) developers performing debugging activities and (3) an accidental copy-paste of code.</p>
-                <p>Detection: Test method contains duplicate assert statements</p>
-            </td>             
-        </tr> 
-  </tbody>
-</table>
+#### Assertion Roulette
+
+Occurs when a test method has multiple non-documented assertions. Multiple assertion statements in a test method without a descriptive message impacts readability/understandability/maintainability as it’s not possible to understand the reason for the failure of the test.
+
+Detection: A test method having more that one assertion statement without an explanation message.
+
+#### General Fixture
+
+Occurs when a test case fixture is too general and the test methods only access part of it. A test setup/fixture method that initializes fields that are not accessed by test methods indicates that the fixture is too generalized. A drawback of it being too general is that unnecessary work is being done when a test method is run.
+
+Detection: A field initialized in the setup() method but not accessed in the body of a test method
+
+#### Mystery Guest
+
+Occurs when a test method utilizes external resources (e.g. files, database, etc.). Use of external resources in test methods will result in stability and performance issues. Developers should use mock objects in place of external resources.
+
+Detection: Test method body contains calls to external resources such as external storage, databases, etc.
+
+#### Sensitive Equality
+
+Occurs when the `toString` method is used within a test method. Test methods verify objects by invoking the default `toString()` method of the object and comparing the output against an specific string. Changes to the implementation of `toString()` might result in failure. The correct approach is to implement a custom method within the object to perform this comparison.
+
+Detection: If a test method contains an assertion call that contains an invocation of `toString()`
+
+#### Eager Test
+
+Occurs when a test method invokes several methods of the production object. This smell results in difficulties in test comprehension and maintenance.
+
+#### Lazy Test
+
+Occurs when multiple test methods invoke the same method of the production object.
+
+#### Conditional Test Logic
+
+Test methods need to be simple and execute all statements in the production method. Conditions within the test method will alter the behavior of the test and its expected output, and would lead to situations where the test fails to detect defects in the production method since test statements were not executed as a condition was not met.
+
+Detection: A test method that contains one or more control statements (i.e if statement, switch statement, conditional expression, for statement, foreach statement and while statement) 
+
+#### Constructor Initialization
+
+Ideally, the test suite should not have a constructor. Initialization of fields should be in the `setUp()` method.
+
+Detection: A test class that contains a constructor declaration
+
+#### Default Test
+
+By default Android Studio creates default test classes when a project is created. These classes are meant to serve as an example for developers when wring unit tests and should either be removed or renamed. Having such files in the project will cause developers to start adding test methods into these files, making the default test class a container of all test cases. This also  would possibly cause problems when the classes need to be renamed in the future.
+
+Detection: A test class is named either *ExampleUnitTest* or *ExampleInstrumentedTest*
+
+#### Duplicate Assert
+
+This smell occurs when a test method tests for the same condition multiple times within the same test method. If the test method needs to test the same condition using different values, a new test method should be utilized; the name of the test method should be an indication of the test being performed.
+
+Detection: A test method that contains more than one assertion statement with the same parameters
+
+#### Empty Test
+
+Occurs when a test method does not contain executable statements. An empty test can be considered problematic and more dangerous than not having a test case at all since JUnit will indicate that the test passes even if there are no executable statements present in the method body. As such, developers introducing behavior-breaking changes into production class, will not be notified of the alternated outcomes as JUnit will report the test as passing.
+
+Detection: A test method that does not contain a single executable statement in its body
+
+#### Exception Catching & Throwing
+
+This smell occurs when a test method explicitly a passing or failing of a test method is dependent on the production method throwing an exception. Developers should utilize Junit's exception handling to automatically pass/fail the test instead of writing custom exception handling code or throwing an exception.
+
+Detection: A test method that contains either a throw statement or a catch clause
+
+#### Redundant Print
+
+Print statements in unit tests are redundant as unit tests are executed as part of an automated process with little to no human intervention.
+
+Detection: A test method that invokes either the `print` or `println` or `printf` or `write` method of the System class
+
+#### Redundant Assertion
+
+This smell occurs when test methods contain assertion statements that are either always true or always false.
+
+Detection: A test method that contains an assertion statement in which the expected and actual parameters are the same
+
+#### Unknown Test
+
+It is possible for a test method to written sans an assertion statement, in such an instance JUnit will show the test method as passing if the statements within the test method did not result in an exception, when executed. New developers to the project will find it difficult in understanding the purpose of such test methods (more so if the name of the test method is not descriptive enough).
+
+Detection: A test method that does not contain a single assertion statement and `@Test(expected)` annotation parameter
+
+#### Wait And See
+
+Explicitly causing a thread to sleep can lead to unexpected results as the processing time for a task can differ on different devices. Developers introduce this smell when they need to pause execution of statements in a test method for a certain duration (i.e. simulate an external event) and then continuing with execution.
+
+Detection: A test method that invokes the `Thread.sleep()` method
+
+
 
 ## Contact
 
