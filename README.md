@@ -17,6 +17,30 @@ The purpose of this project is twofold:
 
 
 
+## Tool Usage
+
+Prior to executing the tool, an CSV file needs to be created. The CSV file specifies the list of test files (and their associated production file). The format of the file should be:
+
+```
+appName,pathToTestFile,pathToProductionFile
+```
+
+ Example:
+
+`myCoolApp,F:\Apps\myCoolApp\code\test\GraphTest.java,F:\Apps\myCoolApp\code\src\Graph.java`
+`myCoolApp,F:\Apps\myCoolApp\code\test\EmployeeTest.java,F:\Apps\myCoolApp\code\src\Employee.java`
+`myCoolApp,F:\Apps\myCoolApp\code\test\EmployeeRelationship.java`
+
+Note: In the event a production file is not associated with a test file, then detection for test smells that require production files are not run.
+
+Once the CSV file has been created, the path to the CSV file need to be passed as an argument when executing the jar.
+
+`java -jar .\TestSmellDetector.jar pathToInputFile.csv`
+
+Example:
+
+`java -jar .\TestSmellDetector.jar "F:\Projects\TestSmellDetector\inputFile.csv"`
+
 ## Detected Smells
 
 Provided below are the test smell detected by the tool along with the detection strategy. Examples of each smell type are available [here](https://github.com/TestSmells/TestSmellDetector/blob/master/TestSmellExamples.md).
