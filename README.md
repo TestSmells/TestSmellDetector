@@ -47,7 +47,7 @@ Example:
 
 #### Output
 
-The tool outputs a CSV file containing the results of the execution. The output CSV file will be created in the same location as the jar. The CSV file contains the path of the test (and their associated production file) along with the detection status for each smell. A detection of status of 'true' indicates that the associated smell exists in the test file.
+The tool outputs a CSV file containing the results of the execution. The output CSV file will be created in the same location as the jar. The CSV file contains the path of the test files (and their associated production file) along with the detection status for each smell. A detection of status of 'true' indicates that the associated smell exists in the test file.
 
 
 
