@@ -19,7 +19,7 @@ The purpose of this project is twofold:
 
 ## Tool Usage
 
-Prior to executing the tool, an CSV file needs to be created. The CSV file specifies the list of test files (and their associated production file). The format of the file should be:
+Prior to executing the tool, an CSV file needs to be created. The CSV file specifies the list of test files (and their associated production file). This file will be used as input to the tool. The format of the file should be:
 
 ```
 appName,pathToTestFile,pathToProductionFile
