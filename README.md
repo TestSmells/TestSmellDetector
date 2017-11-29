@@ -19,6 +19,8 @@ The purpose of this project is twofold:
 
 ## Tool Usage
 
+#### Input
+
 Prior to executing the tool, an CSV file needs to be created. The CSV file specifies the list of test files (and their associated production file). This file will be used as input to the tool. The format of the file should be:
 
 ```
@@ -33,6 +35,8 @@ appName,pathToTestFile,pathToProductionFile
 
 *Note: In the event a production file is not associated with a test file, then detection for test smells that require production files are not run.*
 
+#### Execution
+
 Once the CSV file has been created, the path to the CSV file need to be passed as an argument when executing the jar.
 
 `java -jar .\TestSmellDetector.jar pathToInputFile.csv`
@@ -40,6 +44,12 @@ Once the CSV file has been created, the path to the CSV file need to be passed a
 Example:
 
 `java -jar .\TestSmellDetector.jar "F:\Projects\TestSmellDetector\inputFile.csv"`
+
+#### Output
+
+The tool outputs a CSV file containing the results of the run. The CSV file contains the path of the test (and their associated production file) along with the detection status for each smell. A detection of status of 'true' indicates that the associated smell exists in the test file.
+
+
 
 ## Detected Smells
 
@@ -146,6 +156,8 @@ For more information or to contribute to this project, you can reach:
 1. [Anthony Peruma](https://github.com/shehan)
 2. [Mohamed Wiem Mkaouer](https://github.com/mkaouer)
 3. [Khaled Almalki](https://github.com/khaledalmalki)
+
+
 
 ## References
 
