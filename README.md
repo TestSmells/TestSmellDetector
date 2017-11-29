@@ -31,7 +31,7 @@ appName,pathToTestFile,pathToProductionFile
 `myCoolApp,F:\Apps\myCoolApp\code\test\EmployeeTest.java,F:\Apps\myCoolApp\code\src\Employee.java`
 `myCoolApp,F:\Apps\myCoolApp\code\test\EmployeeRelationship.java`
 
-Note: In the event a production file is not associated with a test file, then detection for test smells that require production files are not run.
+*Note: In the event a production file is not associated with a test file, then detection for test smells that require production files are not run.*
 
 Once the CSV file has been created, the path to the CSV file need to be passed as an argument when executing the jar.
 
