@@ -38,7 +38,7 @@ public class IgnoredTest  extends AbstractSmell {
     }
 
     /**
-     * Analyze the test file for test methods that are empty (i.e. no method body)
+     * Analyze the test file for test methods that contain Ignored test methods
      */
     @Override
     public void runAnalysis(CompilationUnit testFileCompilationUnit, CompilationUnit productionFileCompilationUnit, String testFileName, String productionFileName) throws FileNotFoundException {
@@ -76,7 +76,7 @@ public class IgnoredTest  extends AbstractSmell {
         }
 
         /**
-         * The purpose of this method is to 'visit' all test methods in the test file
+         * The purpose of this method is to 'visit' all test methods in the test file. Will check if a test method has an @Ignore annotation
          */
         @Override
         public void visit(MethodDeclaration n, Void arg) {
