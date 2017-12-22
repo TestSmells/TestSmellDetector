@@ -36,6 +36,7 @@ Provided below are examples of test smells that were detected in open source And
 
 - TODO: Constructor Initialization (org.briarproject.briar.beta / bramble-core/src/test/java/org/briarproject/bramble/crypto/TagEncodingTest.java)
 
+- TODO: Ignored Test
   ------
 
   ​
