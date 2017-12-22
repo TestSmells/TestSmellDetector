@@ -123,6 +123,12 @@ This smell occurs when a test method explicitly a passing or failing of a test m
 
 Detection: A test method that contains either a throw statement or a catch clause
 
+#### Ignored Test
+
+JUnit 4 provides developers with the ability to surpress test methods from running. However, these ignored test methods result in overhead since they add undue overhead in terms of compilation time, increase in code complexity and comprehension. 
+
+Detection: A test method or class that contains the `@Ignore` annotation
+
 #### Redundant Print
 
 Print statements in unit tests are redundant as unit tests are executed as part of an automated process with little to no human intervention.
