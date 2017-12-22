@@ -42,6 +42,7 @@ public class TestSmellDetector {
         testSmells.add(new LazyTest());
         testSmells.add(new DuplicateAssert());
         testSmells.add(new UnknownTest());
+        testSmells.add(new IgnoredTest());
     }
 
     /**

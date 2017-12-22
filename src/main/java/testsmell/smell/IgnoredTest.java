@@ -1,0 +1,94 @@
+package testsmell.smell;
+
+import com.github.javaparser.ast.CompilationUnit;
+import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
+import com.github.javaparser.ast.body.MethodDeclaration;
+import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
+import testsmell.AbstractSmell;
+import testsmell.SmellyElement;
+import testsmell.TestClass;
+import testsmell.TestMethod;
+
+import java.io.FileNotFoundException;
+import java.util.ArrayList;
+import java.util.List;
+
+public class IgnoredTest  extends AbstractSmell {
+
+    private List<SmellyElement> smellyElementList;
+
+    public IgnoredTest() {
+        smellyElementList = new ArrayList<>();
+    }
+
+    /**
+     * Checks of 'Ignored Test' smell
+     */
+    @Override
+    public String getSmellName() {
+        return "IgnoredTest";
+    }
+
+    /**
+     * Returns true if any of the elements has a smell
+     */
+    @Override
+    public boolean getHasSmell() {
+        return smellyElementList.stream().filter(x -> x.getHasSmell()).count() >= 1;
+    }
+
+    /**
+     * Analyze the test file for test methods that are empty (i.e. no method body)
+     */
+    @Override
+    public void runAnalysis(CompilationUnit testFileCompilationUnit, CompilationUnit productionFileCompilationUnit, String testFileName, String productionFileName) throws FileNotFoundException {
+        IgnoredTest.ClassVisitor classVisitor;
+        classVisitor = new IgnoredTest.ClassVisitor();
+        classVisitor.visit(testFileCompilationUnit, null);
+    }
+
+    /**
+     * Returns the set of analyzed elements (i.e. test methods)
+     */
+    @Override
+    public List<SmellyElement> getSmellyElements() {
+        return smellyElementList;
+    }
+
+    /**
+     * Visitor class
+     */
+    private class ClassVisitor extends VoidVisitorAdapter<Void> {
+        TestMethod testMethod;
+        TestClass testClass;
+
+        /**
+         * This method will check if the class has the @Ignore annotation
+         */
+        @Override
+        public void visit(ClassOrInterfaceDeclaration n, Void arg) {
+            if (n.getAnnotationByName("Ignore").isPresent()) {
+                testClass = new TestClass(n.getNameAsString());
+                testClass.setHasSmell(true);
+                smellyElementList.add(testClass);
+            }
+            super.visit(n, arg);
+        }
+
+        /**
+         * The purpose of this method is to 'visit' all test methods in the test file
+         */
+        @Override
+        public void visit(MethodDeclaration n, Void arg) {
+            if (n.getAnnotationByName("Ignore").isPresent()) {
+                //only analyze methods that either have a @test annotation (Junit 4) or the method name starts with 'test'
+                if (n.getAnnotationByName("Test").isPresent() || n.getNameAsString().toLowerCase().startsWith("test")) {
+                    testMethod = new TestMethod(n.getNameAsString());
+                    testMethod.setHasSmell(true);
+                    smellyElementList.add(testMethod);
+                }
+            }
+        }
+
+    }
+}
