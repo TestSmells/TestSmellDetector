@@ -8,6 +8,7 @@ import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
 import testsmell.AbstractSmell;
 import testsmell.SmellyElement;
 import testsmell.TestMethod;
+import testsmell.Util;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -15,11 +16,11 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- When a test uses external resources, such as a file containing test data, the test is no longer self contained.
- Consequently, there is not enough information to understand the tested functionality, making it hard to use that test as documentation.
- Moreover, using external resources introduces hidden dependencies: if some force changes or deletes such a resource, tests start failing.
- Chances for this increase when more tests use the same resource.
- A. van Deursen, L. Moonen, A. Bergh, G. Kok, “Refactoring Test Code”, Technical Report, CWI, 2001.
+ * When a test uses external resources, such as a file containing test data, the test is no longer self contained.
+ * Consequently, there is not enough information to understand the tested functionality, making it hard to use that test as documentation.
+ * Moreover, using external resources introduces hidden dependencies: if some force changes or deletes such a resource, tests start failing.
+ * Chances for this increase when more tests use the same resource.
+ * A. van Deursen, L. Moonen, A. Bergh, G. Kok, “Refactoring Test Code”, Technical Report, CWI, 2001.
  */
 public class MysteryGuest extends AbstractSmell {
 
@@ -49,7 +50,7 @@ public class MysteryGuest extends AbstractSmell {
      * Analyze the test file for test methods that use external resources
      */
     @Override
-    public void runAnalysis(CompilationUnit testFileCompilationUnit,CompilationUnit productionFileCompilationUnit, String testFileName, String productionFileName) throws FileNotFoundException {
+    public void runAnalysis(CompilationUnit testFileCompilationUnit, CompilationUnit productionFileCompilationUnit, String testFileName, String productionFileName) throws FileNotFoundException {
         MysteryGuest.ClassVisitor classVisitor;
         classVisitor = new MysteryGuest.ClassVisitor();
         classVisitor.visit(testFileCompilationUnit, null);
@@ -111,23 +112,20 @@ public class MysteryGuest extends AbstractSmell {
         // examine all methods in the test class
         @Override
         public void visit(MethodDeclaration n, Void arg) {
-            if (!n.getAnnotationByName("Ignore").isPresent()) {
-                //only analyze methods that either have a @test annotation (Junit 4) or the method name starts with 'test'
-                if (n.getAnnotationByName("Test").isPresent() || n.getNameAsString().toLowerCase().startsWith("test")) {
-                    currentMethod = n;
-                    testMethod = new TestMethod(n.getNameAsString());
-                    testMethod.setHasSmell(false); //default value is false (i.e. no smell)
-                    super.visit(n, arg);
+            if (Util.isValidTestMethod(n)) {
+                currentMethod = n;
+                testMethod = new TestMethod(n.getNameAsString());
+                testMethod.setHasSmell(false); //default value is false (i.e. no smell)
+                super.visit(n, arg);
 
-                    testMethod.setHasSmell(mysteryCount > 0);
-                    testMethod.addDataItem("MysteryCount", String.valueOf(mysteryCount));
+                testMethod.setHasSmell(mysteryCount > 0);
+                testMethod.addDataItem("MysteryCount", String.valueOf(mysteryCount));
 
-                    smellyElementList.add(testMethod);
+                smellyElementList.add(testMethod);
 
-                    //reset values for next method
-                    currentMethod = null;
-                    mysteryCount = 0;
-                }
+                //reset values for next method
+                currentMethod = null;
+                mysteryCount = 0;
             }
         }
 

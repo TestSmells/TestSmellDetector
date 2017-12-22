@@ -6,6 +6,7 @@ import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
 import testsmell.AbstractSmell;
 import testsmell.SmellyElement;
 import testsmell.TestMethod;
+import testsmell.Util;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -42,7 +43,7 @@ public class VerboseTest extends AbstractSmell {
      * Analyze the test file for test methods for the 'Verbose Test' smell
      */
     @Override
-    public void runAnalysis(CompilationUnit testFileCompilationUnit,CompilationUnit productionFileCompilationUnit, String testFileName, String productionFileName) throws FileNotFoundException {
+    public void runAnalysis(CompilationUnit testFileCompilationUnit, CompilationUnit productionFileCompilationUnit, String testFileName, String productionFileName) throws FileNotFoundException {
         VerboseTest.ClassVisitor classVisitor;
         classVisitor = new VerboseTest.ClassVisitor();
         classVisitor.visit(testFileCompilationUnit, null);
@@ -65,31 +66,28 @@ public class VerboseTest extends AbstractSmell {
         // examine all methods in the test class
         @Override
         public void visit(MethodDeclaration n, Void arg) {
-            if (!n.getAnnotationByName("Ignore").isPresent()) {
-                //only analyze methods that either have a @test annotation (Junit 4) or the method name starts with 'test'
-                if (n.getAnnotationByName("Test").isPresent() || n.getNameAsString().toLowerCase().startsWith("test")) {
-                    currentMethod = n;
-                    testMethod = new TestMethod(n.getNameAsString());
-                    testMethod.setHasSmell(false); //default value is false (i.e. no smell)
+            if (Util.isValidTestMethod(n)) {
+                currentMethod = n;
+                testMethod = new TestMethod(n.getNameAsString());
+                testMethod.setHasSmell(false); //default value is false (i.e. no smell)
 
-                    //method should not be abstract
-                    if (!currentMethod.isAbstract()) {
-                        if (currentMethod.getBody().isPresent()) {
-                            //get the total number of statements contained in the method
-                            if (currentMethod.getBody().get().getStatements().size() >= MAX_STATEMENTS) {
-                                verboseCount++;
-                            }
+                //method should not be abstract
+                if (!currentMethod.isAbstract()) {
+                    if (currentMethod.getBody().isPresent()) {
+                        //get the total number of statements contained in the method
+                        if (currentMethod.getBody().get().getStatements().size() >= MAX_STATEMENTS) {
+                            verboseCount++;
                         }
                     }
-                    testMethod.setHasSmell(verboseCount >= 1);
-                    testMethod.addDataItem("VerboseCount", String.valueOf(verboseCount));
-
-                    smellyElementList.add(testMethod);
-
-                    //reset values for next method
-                    currentMethod = null;
-                    verboseCount = 0;
                 }
+                testMethod.setHasSmell(verboseCount >= 1);
+                testMethod.addDataItem("VerboseCount", String.valueOf(verboseCount));
+
+                smellyElementList.add(testMethod);
+
+                //reset values for next method
+                currentMethod = null;
+                verboseCount = 0;
             }
         }
     }

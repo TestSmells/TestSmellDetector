@@ -6,6 +6,7 @@ import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
 import testsmell.AbstractSmell;
 import testsmell.SmellyElement;
 import testsmell.TestMethod;
+import testsmell.Util;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -43,7 +44,7 @@ public class EmptyTest extends AbstractSmell {
      * Analyze the test file for test methods that are empty (i.e. no method body)
      */
     @Override
-    public void runAnalysis(CompilationUnit testFileCompilationUnit,CompilationUnit productionFileCompilationUnit, String testFileName, String productionFileName) throws FileNotFoundException {
+    public void runAnalysis(CompilationUnit testFileCompilationUnit, CompilationUnit productionFileCompilationUnit, String testFileName, String productionFileName) throws FileNotFoundException {
         EmptyTest.ClassVisitor classVisitor;
         classVisitor = new EmptyTest.ClassVisitor();
         classVisitor.visit(testFileCompilationUnit, null);
@@ -68,22 +69,19 @@ public class EmptyTest extends AbstractSmell {
          */
         @Override
         public void visit(MethodDeclaration n, Void arg) {
-            if (!n.getAnnotationByName("Ignore").isPresent()) {
-                //only analyze methods that either have a @test annotation (Junit 4) or the method name starts with 'test'
-                if (n.getAnnotationByName("Test").isPresent() || n.getNameAsString().toLowerCase().startsWith("test")) {
-                    testMethod = new TestMethod(n.getNameAsString());
-                    testMethod.setHasSmell(false); //default value is false (i.e. no smell)
-                    //method should not be abstract
-                    if (!n.isAbstract()) {
-                        if (n.getBody().isPresent()) {
-                            //get the total number of statements contained in the method
-                            if (n.getBody().get().getStatements().size() == 0) {
-                                testMethod.setHasSmell(true); //the method has no statements (i.e no body)
-                            }
+            if (Util.isValidTestMethod(n)) {
+                testMethod = new TestMethod(n.getNameAsString());
+                testMethod.setHasSmell(false); //default value is false (i.e. no smell)
+                //method should not be abstract
+                if (!n.isAbstract()) {
+                    if (n.getBody().isPresent()) {
+                        //get the total number of statements contained in the method
+                        if (n.getBody().get().getStatements().size() == 0) {
+                            testMethod.setHasSmell(true); //the method has no statements (i.e no body)
                         }
                     }
-                    smellyElementList.add(testMethod);
                 }
+                smellyElementList.add(testMethod);
             }
         }
     }

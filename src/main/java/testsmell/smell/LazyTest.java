@@ -13,6 +13,7 @@ import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
 import testsmell.AbstractSmell;
 import testsmell.SmellyElement;
 import testsmell.TestMethod;
+import testsmell.Util;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -142,18 +143,15 @@ public class LazyTest extends AbstractSmell {
         public void visit(MethodDeclaration n, Void arg) {
             // ensure that this method is only executed for the test file
             if (Objects.equals(fileType, TEST_FILE)) {
-                if (!n.getAnnotationByName("Ignore").isPresent()) {
-                    //only analyze methods that either have a @test annotation (Junit 4) or the method name starts with 'test'
-                    if (n.getAnnotationByName("Test").isPresent() || n.getNameAsString().toLowerCase().startsWith("test")) {
-                        currentMethod = n;
-                        testMethod = new TestMethod(currentMethod.getNameAsString());
-                        testMethod.setHasSmell(false); //default value is false (i.e. no smell)
-                        super.visit(n, arg);
+                if (Util.isValidTestMethod(n)) {
+                    currentMethod = n;
+                    testMethod = new TestMethod(currentMethod.getNameAsString());
+                    testMethod.setHasSmell(false); //default value is false (i.e. no smell)
+                    super.visit(n, arg);
 
-                        //reset values for next method
-                        currentMethod = null;
-                        productionVariables = new ArrayList<>();
-                    }
+                    //reset values for next method
+                    currentMethod = null;
+                    productionVariables = new ArrayList<>();
                 }
             } else { //collect a list of all public/protected members of the production class
                 for (Modifier modifier : n.getModifiers()) {

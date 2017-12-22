@@ -7,6 +7,7 @@ import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
 import testsmell.AbstractSmell;
 import testsmell.SmellyElement;
 import testsmell.TestMethod;
+import testsmell.Util;
 
 import java.io.FileNotFoundException;
 import java.util.*;
@@ -39,7 +40,7 @@ public class DuplicateAssert extends AbstractSmell {
      * Analyze the test file for test methods that have multiple assert statements with the same explanation message
      */
     @Override
-    public void runAnalysis(CompilationUnit testFileCompilationUnit,CompilationUnit productionFileCompilationUnit, String testFileName, String productionFileName) throws FileNotFoundException {
+    public void runAnalysis(CompilationUnit testFileCompilationUnit, CompilationUnit productionFileCompilationUnit, String testFileName, String productionFileName) throws FileNotFoundException {
         DuplicateAssert.ClassVisitor classVisitor;
         classVisitor = new DuplicateAssert.ClassVisitor();
         classVisitor.visit(testFileCompilationUnit, null);
@@ -63,33 +64,30 @@ public class DuplicateAssert extends AbstractSmell {
         // examine all methods in the test class
         @Override
         public void visit(MethodDeclaration n, Void arg) {
-            if (!n.getAnnotationByName("Ignore").isPresent()) {
-                //only analyze methods that either have a @test annotation (Junit 4) or the method name starts with 'test'
-                if (n.getAnnotationByName("Test").isPresent() || n.getNameAsString().toLowerCase().startsWith("test")) {
-                    currentMethod = n;
-                    testMethod = new TestMethod(n.getNameAsString());
-                    testMethod.setHasSmell(false); //default value is false (i.e. no smell)
-                    super.visit(n, arg);
+            if (Util.isValidTestMethod(n)) {
+                currentMethod = n;
+                testMethod = new TestMethod(n.getNameAsString());
+                testMethod.setHasSmell(false); //default value is false (i.e. no smell)
+                super.visit(n, arg);
 
-                    // if there are duplicate messages, then the smell exists
-                    Set<String> set1 = new HashSet<String>(assertMessage);
-                    if (set1.size() < assertMessage.size()) {
-                        testMethod.setHasSmell(true);
-                    }
-
-                    // if there are duplicate assert methods, then the smell exists
-                    Set<String> set2 = new HashSet<String>(assertMethod);
-                    if (set2.size() < assertMethod.size()) {
-                        testMethod.setHasSmell(true);
-                    }
-
-                    smellyElementList.add(testMethod);
-
-                    //reset values for next method
-                    currentMethod = null;
-                    assertMessage = new ArrayList<>();
-                    assertMethod = new ArrayList<>();
+                // if there are duplicate messages, then the smell exists
+                Set<String> set1 = new HashSet<String>(assertMessage);
+                if (set1.size() < assertMessage.size()) {
+                    testMethod.setHasSmell(true);
                 }
+
+                // if there are duplicate assert methods, then the smell exists
+                Set<String> set2 = new HashSet<String>(assertMethod);
+                if (set2.size() < assertMethod.size()) {
+                    testMethod.setHasSmell(true);
+                }
+
+                smellyElementList.add(testMethod);
+
+                //reset values for next method
+                currentMethod = null;
+                assertMessage = new ArrayList<>();
+                assertMethod = new ArrayList<>();
             }
         }
 
@@ -102,7 +100,7 @@ public class DuplicateAssert extends AbstractSmell {
                 // if the name of a method being called is an assertion and has 3 parameters
                 if (n.getNameAsString().startsWith(("assertArrayEquals")) ||
                         n.getNameAsString().startsWith(("assertEquals")) ||
-                        n.getNameAsString().startsWith(("assertNotSame"))||
+                        n.getNameAsString().startsWith(("assertNotSame")) ||
                         n.getNameAsString().startsWith(("assertSame")) ||
                         n.getNameAsString().startsWith(("assertThat"))) {
                     assertMethod.add(n.toString());
@@ -113,7 +111,7 @@ public class DuplicateAssert extends AbstractSmell {
 
                 }
                 // if the name of a method being called is an assertion and has 2 parameters
-                else if (n.getNameAsString().equals("assertFalse")||
+                else if (n.getNameAsString().equals("assertFalse") ||
                         n.getNameAsString().equals("assertNotNull") ||
                         n.getNameAsString().equals("assertNull") ||
                         n.getNameAsString().equals("assertTrue")) {

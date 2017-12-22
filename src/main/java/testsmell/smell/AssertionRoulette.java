@@ -7,15 +7,16 @@ import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
 import testsmell.AbstractSmell;
 import testsmell.SmellyElement;
 import testsmell.TestMethod;
+import testsmell.Util;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- "Guess what's wrong?" This smell comes from having a number of assertions in a test method that have no explanation.
- If one of the assertions fails, you do not know which one it is.
- A. van Deursen, L. Moonen, A. Bergh, G. Kok, “Refactoring Test Code”, Technical Report, CWI, 2001.
+ * "Guess what's wrong?" This smell comes from having a number of assertions in a test method that have no explanation.
+ * If one of the assertions fails, you do not know which one it is.
+ * A. van Deursen, L. Moonen, A. Bergh, G. Kok, “Refactoring Test Code”, Technical Report, CWI, 2001.
  */
 public class AssertionRoulette extends AbstractSmell {
 
@@ -45,7 +46,7 @@ public class AssertionRoulette extends AbstractSmell {
      * Analyze the test file for test methods for multiple assert statements without an explanation/message
      */
     @Override
-    public void runAnalysis(CompilationUnit testFileCompilationUnit,CompilationUnit productionFileCompilationUnit, String testFileName, String productionFileName) throws FileNotFoundException {
+    public void runAnalysis(CompilationUnit testFileCompilationUnit, CompilationUnit productionFileCompilationUnit, String testFileName, String productionFileName) throws FileNotFoundException {
         AssertionRoulette.ClassVisitor classVisitor;
         classVisitor = new AssertionRoulette.ClassVisitor();
         classVisitor.visit(testFileCompilationUnit, null);
@@ -69,30 +70,27 @@ public class AssertionRoulette extends AbstractSmell {
         // examine all methods in the test class
         @Override
         public void visit(MethodDeclaration n, Void arg) {
-            if (!n.getAnnotationByName("Ignore").isPresent()) {
-                //only analyze methods that either have a @test annotation (Junit 4) or the method name starts with 'test'
-                if (n.getAnnotationByName("Test").isPresent() || n.getNameAsString().toLowerCase().startsWith("test")) {
-                    currentMethod = n;
-                    testMethod = new TestMethod(n.getNameAsString());
-                    testMethod.setHasSmell(false); //default value is false (i.e. no smell)
-                    super.visit(n, arg);
+            if (Util.isValidTestMethod(n)) {
+                currentMethod = n;
+                testMethod = new TestMethod(n.getNameAsString());
+                testMethod.setHasSmell(false); //default value is false (i.e. no smell)
+                super.visit(n, arg);
 
 
-                    // if there is only 1 assert statement in the method, then a explanation message is not needed
-                    if (assertCount == 1)
-                        testMethod.setHasSmell(false);
-                    else if (assertNoMessageCount >= 1) //if there is more than one assert statement, then all the asserts need to have an explanation message
-                        testMethod.setHasSmell(true);
+                // if there is only 1 assert statement in the method, then a explanation message is not needed
+                if (assertCount == 1)
+                    testMethod.setHasSmell(false);
+                else if (assertNoMessageCount >= 1) //if there is more than one assert statement, then all the asserts need to have an explanation message
+                    testMethod.setHasSmell(true);
 
-                    testMethod.addDataItem("AssertCount", String.valueOf(assertNoMessageCount));
+                testMethod.addDataItem("AssertCount", String.valueOf(assertNoMessageCount));
 
-                    smellyElementList.add(testMethod);
+                smellyElementList.add(testMethod);
 
-                    //reset values for next method
-                    currentMethod = null;
-                    assertCount = 0;
-                    assertNoMessageCount = 0;
-                }
+                //reset values for next method
+                currentMethod = null;
+                assertCount = 0;
+                assertNoMessageCount = 0;
             }
         }
 
@@ -104,7 +102,7 @@ public class AssertionRoulette extends AbstractSmell {
                 // if the name of a method being called is an assertion and has 3 parameters
                 if (n.getNameAsString().startsWith(("assertArrayEquals")) ||
                         n.getNameAsString().startsWith(("assertEquals")) ||
-                        n.getNameAsString().startsWith(("assertNotSame"))||
+                        n.getNameAsString().startsWith(("assertNotSame")) ||
                         n.getNameAsString().startsWith(("assertSame")) ||
                         n.getNameAsString().startsWith(("assertThat"))) {
                     assertCount++;
@@ -114,7 +112,7 @@ public class AssertionRoulette extends AbstractSmell {
                     }
                 }
                 // if the name of a method being called is an assertion and has 2 parameters
-                else if (n.getNameAsString().equals("assertFalse")||
+                else if (n.getNameAsString().equals("assertFalse") ||
                         n.getNameAsString().equals("assertNotNull") ||
                         n.getNameAsString().equals("assertNull") ||
                         n.getNameAsString().equals("assertTrue")) {

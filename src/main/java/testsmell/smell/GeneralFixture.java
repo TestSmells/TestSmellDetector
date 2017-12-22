@@ -14,6 +14,7 @@ import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
 import testsmell.AbstractSmell;
 import testsmell.SmellyElement;
 import testsmell.TestMethod;
+import testsmell.Util;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -52,7 +53,7 @@ public class GeneralFixture extends AbstractSmell {
     }
 
     @Override
-    public void runAnalysis(CompilationUnit testFileCompilationUnit,CompilationUnit productionFileCompilationUnit, String testFileName, String productionFileName) throws FileNotFoundException {
+    public void runAnalysis(CompilationUnit testFileCompilationUnit, CompilationUnit productionFileCompilationUnit, String testFileName, String productionFileName) throws FileNotFoundException {
         GeneralFixture.ClassVisitor classVisitor;
         classVisitor = new GeneralFixture.ClassVisitor();
         classVisitor.visit(testFileCompilationUnit, null); //This call will populate the list of test methods and identify the setup method [visit(ClassOrInterfaceDeclaration n)]
@@ -110,14 +111,14 @@ public class GeneralFixture extends AbstractSmell {
                     methodDeclaration = (MethodDeclaration) members.get(i);
 
                     //Get a list of all test methods
-                    if (methodDeclaration.getAnnotationByName("Test").isPresent() || methodDeclaration.getNameAsString().toLowerCase().startsWith("test")) {
+                    if (Util.isValidTestMethod(methodDeclaration)) {
                         methodList.add(methodDeclaration);
                     }
 
                     //Get the setup method
                     if (methodDeclaration.getNameAsString().toLowerCase().equals("setup")) {
                         //It should have a body
-                        if(methodDeclaration.getBody().isPresent()){
+                        if (methodDeclaration.getBody().isPresent()) {
                             setupMethod = methodDeclaration;
                         }
                     }
@@ -133,21 +134,18 @@ public class GeneralFixture extends AbstractSmell {
         // examine all methods in the test class
         @Override
         public void visit(MethodDeclaration n, Void arg) {
-            if (!n.getAnnotationByName("Ignore").isPresent()) {
-                //only analyze methods that either have a @test annotation (Junit 4) or the method name starts with 'test'
-                if (n.getAnnotationByName("Test").isPresent() || n.getNameAsString().toLowerCase().startsWith("test")) {
-                    currentMethod = n;
+            if (Util.isValidTestMethod(n)) {
+                currentMethod = n;
 
-                    //call visit(NameExpr) for current method
-                    super.visit(n, arg);
+                //call visit(NameExpr) for current method
+                super.visit(n, arg);
 
-                    testMethod = new TestMethod(n.getNameAsString());
-                    testMethod.setHasSmell(fixtureCount != setupFields.size());
-                    smellyElementList.add(testMethod);
+                testMethod = new TestMethod(n.getNameAsString());
+                testMethod.setHasSmell(fixtureCount != setupFields.size());
+                smellyElementList.add(testMethod);
 
-                    fixtureCount = 0;
-                    currentMethod = null;
-                }
+                fixtureCount = 0;
+                currentMethod = null;
             }
         }
 

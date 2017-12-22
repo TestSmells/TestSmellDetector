@@ -8,6 +8,7 @@ import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
 import testsmell.AbstractSmell;
 import testsmell.SmellyElement;
 import testsmell.TestMethod;
+import testsmell.Util;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -45,7 +46,7 @@ public class ExceptionCatchingThrowing extends AbstractSmell {
      * Analyze the test file for test methods that have exception handling
      */
     @Override
-    public void runAnalysis(CompilationUnit testFileCompilationUnit,CompilationUnit productionFileCompilationUnit, String testFileName, String productionFileName) throws FileNotFoundException {
+    public void runAnalysis(CompilationUnit testFileCompilationUnit, CompilationUnit productionFileCompilationUnit, String testFileName, String productionFileName) throws FileNotFoundException {
         ExceptionCatchingThrowing.ClassVisitor classVisitor;
         classVisitor = new ExceptionCatchingThrowing.ClassVisitor();
         classVisitor.visit(testFileCompilationUnit, null);
@@ -68,28 +69,23 @@ public class ExceptionCatchingThrowing extends AbstractSmell {
         // examine all methods in the test class
         @Override
         public void visit(MethodDeclaration n, Void arg) {
-            if (!n.getAnnotationByName("Ignore").isPresent()) {
-                //only analyze methods that either have a @test annotation (Junit 4) or the method name starts with 'test'
-                if (n.getAnnotationByName("Test").isPresent() || n.getNameAsString().toLowerCase().startsWith("test")) {
-                    currentMethod = n;
-                    testMethod = new TestMethod(n.getNameAsString());
-                    testMethod.setHasSmell(false); //default value is false (i.e. no smell)
-                    super.visit(n, arg);
+            if (Util.isValidTestMethod(n)) {
+                currentMethod = n;
+                testMethod = new TestMethod(n.getNameAsString());
+                testMethod.setHasSmell(false); //default value is false (i.e. no smell)
+                super.visit(n, arg);
 
-                    if(n.getThrownExceptions().size()>=1)
-                        exceptionCount++;
+                if (n.getThrownExceptions().size() >= 1)
+                    exceptionCount++;
 
-                    testMethod.setHasSmell(exceptionCount >= 1);
-                    testMethod.addDataItem("ExceptionCount", String.valueOf(exceptionCount));
+                testMethod.setHasSmell(exceptionCount >= 1);
+                testMethod.addDataItem("ExceptionCount", String.valueOf(exceptionCount));
 
-                    smellyElementList.add(testMethod);
+                smellyElementList.add(testMethod);
 
-                    //reset values for next method
-                    currentMethod = null;
-                    exceptionCount = 0;
-
-
-                }
+                //reset values for next method
+                currentMethod = null;
+                exceptionCount = 0;
             }
         }
 
