@@ -1,18 +1,18 @@
 package testsmell.smell;
 
-import com.github.javaparser.JavaParser;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.MethodDeclaration;
-import com.github.javaparser.ast.expr.*;
+import com.github.javaparser.ast.expr.BooleanLiteralExpr;
+import com.github.javaparser.ast.expr.MethodCallExpr;
+import com.github.javaparser.ast.expr.NullLiteralExpr;
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
-import testsmell.*;
+import testsmell.AbstractSmell;
+import testsmell.SmellyElement;
+import testsmell.TestMethod;
 
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /*
 If a test method contains an assert statement that explicitly returns a true or false, the method is marked as smelly
