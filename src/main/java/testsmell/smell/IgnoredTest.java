@@ -1,6 +1,7 @@
 package testsmell.smell;
 
 import com.github.javaparser.ast.CompilationUnit;
+import com.github.javaparser.ast.Modifier;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
@@ -13,7 +14,7 @@ import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class IgnoredTest  extends AbstractSmell {
+public class IgnoredTest extends AbstractSmell {
 
     private List<SmellyElement> smellyElementList;
 
@@ -76,16 +77,30 @@ public class IgnoredTest  extends AbstractSmell {
         }
 
         /**
-         * The purpose of this method is to 'visit' all test methods in the test file. Will check if a test method has an @Ignore annotation
+         * The purpose of this method is to 'visit' all test methods in the test file.
          */
         @Override
         public void visit(MethodDeclaration n, Void arg) {
-            if (n.getAnnotationByName("Ignore").isPresent()) {
-                //only analyze methods that either have a @test annotation (Junit 4) or the method name starts with 'test'
-                if (n.getAnnotationByName("Test").isPresent() || n.getNameAsString().toLowerCase().startsWith("test")) {
+
+            //JUnit 4
+            //check if test method has Ignore annotation
+            if (n.getAnnotationByName("Test").isPresent()) {
+                if (n.getAnnotationByName("Ignore").isPresent()) {
                     testMethod = new TestMethod(n.getNameAsString());
                     testMethod.setHasSmell(true);
                     smellyElementList.add(testMethod);
+                    return;
+                }
+            }
+
+            //JUnit 3
+            //check if test method is not public
+            if (n.getNameAsString().toLowerCase().startsWith("test")) {
+                if (!n.getModifiers().contains(Modifier.PUBLIC)) {
+                    testMethod = new TestMethod(n.getNameAsString());
+                    testMethod.setHasSmell(true);
+                    smellyElementList.add(testMethod);
+                    return;
                 }
             }
         }
