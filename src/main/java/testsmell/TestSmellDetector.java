@@ -43,6 +43,7 @@ public class TestSmellDetector {
         testSmells.add(new DuplicateAssert());
         testSmells.add(new UnknownTest());
         testSmells.add(new IgnoredTest());
+        testSmells.add(new ResourceOptimism());
     }
 
     /**
