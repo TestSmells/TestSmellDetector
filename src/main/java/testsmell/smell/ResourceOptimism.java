@@ -70,7 +70,7 @@ public class ResourceOptimism extends AbstractSmell {
         // examine all methods in the test class
         @Override
         public void visit(MethodDeclaration n, Void arg) {
-            if (Util.isValidTestMethod(n)) {
+            if (Util.isValidTestMethod(n) || Util.isValidSetupMethod(n)) {
                 currentMethod = n;
                 testMethod = new TestMethod(n.getNameAsString());
                 testMethod.setHasSmell(false); //default value is false (i.e. no smell)
