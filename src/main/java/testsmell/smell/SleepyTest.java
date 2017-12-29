@@ -18,20 +18,20 @@ import java.util.List;
 Use of Thread.sleep() in test methods can possibly lead to unexpected results as the processing time of tasks on different devices/machines can be different. Use mock objects instead
 This code marks a method as smelly if the method body calls Thread.sleep()
  */
-public class WaitAndSee extends AbstractSmell {
+public class SleepyTest extends AbstractSmell {
 
     private List<SmellyElement> smellyElementList;
 
-    public WaitAndSee() {
+    public SleepyTest() {
         smellyElementList = new ArrayList<>();
     }
 
     /**
-     * Checks of 'Wait And See' smell
+     * Checks of 'SleepyTest' smell
      */
     @Override
     public String getSmellName() {
-        return "Wait And See";
+        return "Sleepy Test";
     }
 
     /**
@@ -47,8 +47,8 @@ public class WaitAndSee extends AbstractSmell {
      */
     @Override
     public void runAnalysis(CompilationUnit testFileCompilationUnit, CompilationUnit productionFileCompilationUnit, String testFileName, String productionFileName) throws FileNotFoundException {
-        WaitAndSee.ClassVisitor classVisitor;
-        classVisitor = new WaitAndSee.ClassVisitor();
+        SleepyTest.ClassVisitor classVisitor;
+        classVisitor = new SleepyTest.ClassVisitor();
         classVisitor.visit(testFileCompilationUnit, null);
     }
 
