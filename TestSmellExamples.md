@@ -30,7 +30,7 @@ Provided below are examples of test smells that were detected in open source And
 
 - [Verbose Test (Long Test)](#verbose-test-long-test)
 
-- [Wait And See](#wait-and-see)
+- [Sleepy Test](#sleepy-test)
 
 - TODO: Default Test (com.app.missednotificationsreminder / app/src/test/java/com/app/missednotificationsreminder/ExampleUnitTest.java)
 
@@ -413,7 +413,7 @@ In this example, the test method, `testGetListeArticles()`, has over 300 executa
 
 **[*[↑](#test-smell-examples)*]**
 
-#### Wait And See
+#### Sleepy Test
 
 ##### Source
 

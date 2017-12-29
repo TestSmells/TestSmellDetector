@@ -147,18 +147,17 @@ This smell occurs when a test method makes an optimistic assumption that the ext
 
 Detection: A test method that creates an instance of a `File` object, but does not check of the file exists
 
-#### Unknown Test
-
-It is possible for a test method to written sans an assertion statement, in such an instance JUnit will show the test method as passing if the statements within the test method did not result in an exception, when executed. New developers to the project will find it difficult in understanding the purpose of such test methods (more so if the name of the test method is not descriptive enough).
-
-Detection: A test method that does not contain a single assertion statement and `@Test(expected)` annotation parameter
-
-#### Wait And See
+#### Sleepy Test
 
 Explicitly causing a thread to sleep can lead to unexpected results as the processing time for a task can differ on different devices. Developers introduce this smell when they need to pause execution of statements in a test method for a certain duration (i.e. simulate an external event) and then continuing with execution.
 
 Detection: A test method that invokes the `Thread.sleep()` method
 
+#### Unknown Test
+
+It is possible for a test method to written sans an assertion statement, in such an instance JUnit will show the test method as passing if the statements within the test method did not result in an exception, when executed. New developers to the project will find it difficult in understanding the purpose of such test methods (more so if the name of the test method is not descriptive enough).
+
+Detection: A test method that does not contain a single assertion statement and `@Test(expected)` annotation parameter
 
 
 ## Contact
