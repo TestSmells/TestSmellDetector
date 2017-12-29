@@ -116,7 +116,7 @@ public class GeneralFixture extends AbstractSmell {
                     }
 
                     //Get the setup method
-                    if (methodDeclaration.getNameAsString().toLowerCase().equals("setup")) {
+                    if (Util.isValidSetupMethod(methodDeclaration)) {
                         //It should have a body
                         if (methodDeclaration.getBody().isPresent()) {
                             setupMethod = methodDeclaration;
