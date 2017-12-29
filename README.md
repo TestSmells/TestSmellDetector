@@ -141,6 +141,12 @@ This smell occurs when test methods contain assertion statements that are either
 
 Detection: A test method that contains an assertion statement in which the expected and actual parameters are the same
 
+#### Resource Optimism
+
+This smell occurs when a test method makes an optimistic assumption that the external resource (e.g., File), utilized by the test method, exists.
+
+Detection: A test method that creates an instance of a `File` object, but does not check of the file exists
+
 #### Unknown Test
 
 It is possible for a test method to written sans an assertion statement, in such an instance JUnit will show the test method as passing if the statements within the test method did not result in an exception, when executed. New developers to the project will find it difficult in understanding the purpose of such test methods (more so if the name of the test method is not descriptive enough).
@@ -161,7 +167,7 @@ For more information or to contribute to this project, you can reach:
 
 1. [Anthony Peruma](https://github.com/shehan)
 2. [Mohamed Wiem Mkaouer](https://github.com/mkaouer)
-3. [Khaled Almalki](https://github.com/khaledalmalki)
+3. [Khalid Almalki](https://github.com/khaledalmalki)
 
 
 
