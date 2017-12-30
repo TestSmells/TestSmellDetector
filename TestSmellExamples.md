@@ -39,6 +39,9 @@ Provided below are examples of test smells that were detected in open source And
 - TODO: Ignored Test
 
 - TODO: Resource Optimism
+
+- TODO: Magic Number Test
+
   ------
 
   ​

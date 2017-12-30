@@ -67,6 +67,12 @@ Occurs when a test case fixture is too general and the test methods only access 
 
 Detection: A field initialized in the setup() method but not accessed in the body of a test method
 
+#### Magic Number Test
+
+Occurs when assert statements in a test method contains numeric literals (i.e. magic numbers) as parameters. Magic numbers do not indicate the meaning/purpose of the number. Hence, they should be replaced with constants or variables, thereby providing a descriptive name for the input.  
+
+Detection: An assert method contains a numeric literal as an argument
+
 #### Mystery Guest
 
 Occurs when a test method utilizes external resources (e.g. files, database, etc.). Use of external resources in test methods will result in stability and performance issues. Developers should use mock objects in place of external resources.
