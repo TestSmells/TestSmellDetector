@@ -36,4 +36,22 @@ public class Util {
 
         return valid;
     }
+
+    public static boolean isInt(String s)
+    {
+        try
+        { int i = Integer.parseInt(s); return true; }
+
+        catch(NumberFormatException er)
+        { return false; }
+    }
+
+    public static boolean isNumber(String str) {
+        try {
+            double v = Double.parseDouble(str);
+            return true;
+        } catch (NumberFormatException nfe) {
+        }
+        return false;
+    }
 }
