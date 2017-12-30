@@ -37,7 +37,7 @@ public class TestSmellDetector {
         testSmells.add(new RedundantAssertion());
         testSmells.add(new SensitiveEquality());
         testSmells.add(new VerboseTest());
-        testSmells.add(new WaitAndSee());
+        testSmells.add(new SleepyTest());
         testSmells.add(new EagerTest());
         testSmells.add(new LazyTest());
         testSmells.add(new DuplicateAssert());
