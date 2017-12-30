@@ -45,6 +45,7 @@ public class TestSmellDetector {
         testSmells.add(new IgnoredTest());
         testSmells.add(new ResourceOptimism());
         testSmells.add(new MagicNumberTest());
+        testSmells.add(new DependentTest());
     }
 
     /**
