@@ -17,9 +17,7 @@ import testsmell.TestMethod;
 import testsmell.Util;
 
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 public class GeneralFixture extends AbstractSmell {
 
@@ -101,7 +99,7 @@ public class GeneralFixture extends AbstractSmell {
         private MethodDeclaration methodDeclaration = null;
         private MethodDeclaration currentMethod = null;
         TestMethod testMethod;
-        private int fixtureCount = 0;
+        private Set<String> fixtureCount = new HashSet();
 
         @Override
         public void visit(ClassOrInterfaceDeclaration n, Void arg) {
@@ -141,10 +139,10 @@ public class GeneralFixture extends AbstractSmell {
                 super.visit(n, arg);
 
                 testMethod = new TestMethod(n.getNameAsString());
-                testMethod.setHasSmell(fixtureCount != setupFields.size());
+                testMethod.setHasSmell(fixtureCount.size() != setupFields.size());
                 smellyElementList.add(testMethod);
 
-                fixtureCount = 0;
+                fixtureCount = new HashSet();;
                 currentMethod = null;
             }
         }
@@ -154,7 +152,9 @@ public class GeneralFixture extends AbstractSmell {
             if (currentMethod != null) {
                 //check if the variable contained in the current test method is also contained in the setup method
                 if (setupFields.contains(n.getNameAsString())) {
-                    fixtureCount++;
+                    if(!fixtureCount.contains(n.getNameAsString())){
+                        fixtureCount.add(n.getNameAsString());
+                    }
                     //System.out.println(currentMethod.getNameAsString() + " : " + n.getName().toString());
                 }
             }
