@@ -25,8 +25,8 @@ public class Util {
         boolean valid = false;
 
         if (!n.getAnnotationByName("Ignore").isPresent()) {
-            //only analyze methods that either have a @test annotation (Junit 4) or the method name starts with 'test'
-            if (n.getAnnotationByName("Before").isPresent() || n.getNameAsString().toLowerCase().equals("setUp")) {
+            //only analyze methods that either have a @Before annotation (Junit 4) or the method name is 'setUp'
+            if (n.getAnnotationByName("Before").isPresent() || n.getNameAsString().equals("setUp")) {
                 //must be a public method
                 if (n.getModifiers().contains(Modifier.PUBLIC)) {
                     valid = true;
