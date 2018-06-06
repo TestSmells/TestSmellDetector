@@ -42,8 +42,7 @@ public class TestFile {
     }
 
     public String getTagName(){
-        String[] splittud = testFilePath.split(String.format("\\%s", File.separator));
-        return splittud[4];
+        return testFilePath.split(String.format("\\%s", File.separator))[4];
     }
 
     public String getTestFileName(){
