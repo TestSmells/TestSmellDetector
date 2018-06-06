@@ -2,6 +2,7 @@ package testsmell;
 
 import org.apache.commons.lang3.StringUtils;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,11 +42,12 @@ public class TestFile {
     }
 
     public String getTagName(){
-        return testFilePath.split("\\\\")[4];
+        String[] splittud = testFilePath.split(String.format("\\%s", File.separator));
+        return splittud[4];
     }
 
     public String getTestFileName(){
-        int lastIndex = testFilePath.lastIndexOf("\\");
+        int lastIndex = testFilePath.lastIndexOf(File.separator);
         return testFilePath.substring(lastIndex+1,testFilePath.length());
     }
 
@@ -62,29 +64,29 @@ public class TestFile {
     }
 
     public String getProductionFileName(){
-        int lastIndex = productionFilePath.lastIndexOf("\\");
+        int lastIndex = productionFilePath.lastIndexOf(File.separator);
         if(lastIndex==-1)
             return "";
         return productionFilePath.substring(lastIndex+1,productionFilePath.length());
     }
 
     public String getRelativeTestFilePath() {
-        String[] splitString = testFilePath.split("\\\\");
+        String[] splitString = testFilePath.split(String.format("\\%s", File.separator));
         StringBuilder stringBuilder = new StringBuilder();
         for (int i = 0; i < 5; i++) {
-            stringBuilder.append(splitString[i] + "\\");
+            stringBuilder.append(splitString[i] + File.separator);
         }
-        return testFilePath.substring(stringBuilder.toString().length()).replace("\\", "/");
+        return testFilePath.substring(stringBuilder.toString().length()).replace(File.separator, "/");
     }
 
     public String getRelativeProductionFilePath() {
         if (!StringUtils.isEmpty(productionFilePath)) {
-            String[] splitString = productionFilePath.split("\\\\");
+            String[] splitString = productionFilePath.split(String.format("\\%s", File.separator));
             StringBuilder stringBuilder = new StringBuilder();
             for (int i = 0; i < 5; i++) {
-                stringBuilder.append(splitString[i] + "\\");
+                stringBuilder.append(splitString[i] + File.separator);
             }
-            return productionFilePath.substring(stringBuilder.toString().length()).replace("\\", "/");
+            return productionFilePath.substring(stringBuilder.toString().length()).replace(File.separator, "/");
         } else {
             return "";
 
