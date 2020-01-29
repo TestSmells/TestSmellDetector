@@ -18,11 +18,6 @@ import java.util.List;
 This class check a test method for the existence of loops and conditional statements in the methods body
  */
 public class ConditionalTestLogic extends AbstractSmell {
-    private List<SmellyElement> smellyElementList;
-
-    public ConditionalTestLogic() {
-        smellyElementList = new ArrayList<>();
-    }
 
     /**
      * Checks of 'Conditional Test Logic' smell
@@ -30,14 +25,6 @@ public class ConditionalTestLogic extends AbstractSmell {
     @Override
     public String getSmellName() {
         return "Conditional Test Logic";
-    }
-
-    /**
-     * Returns true if any of the elements has a smell
-     */
-    @Override
-    public boolean getHasSmell() {
-        return smellyElementList.stream().filter(x -> x.getHasSmell()).count() >= 1;
     }
 
     /**
@@ -49,15 +36,6 @@ public class ConditionalTestLogic extends AbstractSmell {
         classVisitor = new ConditionalTestLogic.ClassVisitor();
         classVisitor.visit(testFileCompilationUnit, null);
     }
-
-    /**
-     * Returns the set of analyzed elements (i.e. test methods)
-     */
-    @Override
-    public List<SmellyElement> getSmellyElements() {
-        return smellyElementList;
-    }
-
 
     private class ClassVisitor extends VoidVisitorAdapter<Void> {
         private MethodDeclaration currentMethod = null;

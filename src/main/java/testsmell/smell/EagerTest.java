@@ -22,12 +22,11 @@ public class EagerTest extends AbstractSmell {
     private static final String TEST_FILE = "Test";
     private static final String PRODUCTION_FILE = "Production";
     private String productionClassName;
-    private List<SmellyElement> smellyElementList;
     private List<MethodDeclaration> productionMethods;
 
     public EagerTest() {
+        super();
         productionMethods = new ArrayList<>();
-        smellyElementList = new ArrayList<>();
     }
 
     /**

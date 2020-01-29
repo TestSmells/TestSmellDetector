@@ -14,12 +14,10 @@ import java.util.List;
 
 public class DependentTest extends AbstractSmell {
 
-    private List<SmellyElement> smellyElementList;
     private List<TestMethod> testMethods;
 
-
     public DependentTest() {
-        smellyElementList = new ArrayList<>();
+        super();
         testMethods = new ArrayList<>();
     }
 
@@ -62,14 +60,6 @@ public class DependentTest extends AbstractSmell {
                 }
             }
         }*/
-    }
-
-    /**
-     * Returns the set of analyzed elements (i.e. test methods)
-     */
-    @Override
-    public List<SmellyElement> getSmellyElements() {
-        return smellyElementList;
     }
 
     private class ClassVisitor extends VoidVisitorAdapter<Void> {

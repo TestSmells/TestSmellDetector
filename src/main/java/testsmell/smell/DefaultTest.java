@@ -17,12 +17,6 @@ This code marks the class as smelly if the class name corresponds to the name of
  */
 public class DefaultTest extends AbstractSmell {
 
-    private List<SmellyElement> smellyElementList;
-
-    public DefaultTest() {
-        smellyElementList = new ArrayList<>();
-    }
-
     /**
      * Checks of 'Default Test' smell
      */
@@ -31,27 +25,11 @@ public class DefaultTest extends AbstractSmell {
         return "Default Test";
     }
 
-    /**
-     * Returns true if any of the elements has a smell
-     */
-    @Override
-    public boolean getHasSmell() {
-        return smellyElementList.stream().filter(x -> x.getHasSmell()).count() >= 1;
-    }
-
     @Override
     public void runAnalysis(CompilationUnit testFileCompilationUnit,CompilationUnit productionFileCompilationUnit, String testFileName, String productionFileName) throws FileNotFoundException {
         DefaultTest.ClassVisitor classVisitor;
         classVisitor = new DefaultTest.ClassVisitor();
         classVisitor.visit(testFileCompilationUnit, null);
-    }
-
-    /**
-     * Returns the set of analyzed elements (i.e. test methods)
-     */
-    @Override
-    public List<SmellyElement> getSmellyElements() {
-        return smellyElementList;
     }
 
     private class ClassVisitor extends VoidVisitorAdapter<Void> {

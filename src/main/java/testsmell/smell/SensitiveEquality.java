@@ -16,26 +16,12 @@ import java.util.List;
 
 public class SensitiveEquality extends AbstractSmell {
 
-    private List<SmellyElement> smellyElementList;
-
-    public SensitiveEquality() {
-        smellyElementList = new ArrayList<>();
-    }
-
     /**
      * Checks of 'Sensitive Equality' smell
      */
     @Override
     public String getSmellName() {
         return "Sensitive Equality";
-    }
-
-    /**
-     * Returns true if any of the elements has a smell
-     */
-    @Override
-    public boolean getHasSmell() {
-        return smellyElementList.stream().filter(x -> x.getHasSmell()).count() >= 1;
     }
 
     /**
@@ -46,14 +32,6 @@ public class SensitiveEquality extends AbstractSmell {
         SensitiveEquality.ClassVisitor classVisitor;
         classVisitor = new SensitiveEquality.ClassVisitor();
         classVisitor.visit(testFileCompilationUnit, null);
-    }
-
-    /**
-     * Returns the set of analyzed elements (i.e. test methods)
-     */
-    @Override
-    public List<SmellyElement> getSmellyElements() {
-        return smellyElementList;
     }
 
     private class ClassVisitor extends VoidVisitorAdapter<Void> {

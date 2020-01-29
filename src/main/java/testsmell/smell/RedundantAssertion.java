@@ -20,26 +20,12 @@ If a test method contains an assert statement that explicitly returns a true or 
  */
 public class RedundantAssertion extends AbstractSmell {
 
-    private List<SmellyElement> smellyElementList;
-
-    public RedundantAssertion() {
-        smellyElementList = new ArrayList<>();
-    }
-
     /**
      * Checks of 'Redundant Assertion' smell
      */
     @Override
     public String getSmellName() {
         return "Redundant Assertion";
-    }
-
-    /**
-     * Returns true if any of the elements has a smell
-     */
-    @Override
-    public boolean getHasSmell() {
-        return smellyElementList.stream().filter(x -> x.getHasSmell()).count() >= 1;
     }
 
     /**
@@ -50,14 +36,6 @@ public class RedundantAssertion extends AbstractSmell {
         RedundantAssertion.ClassVisitor classVisitor;
         classVisitor = new RedundantAssertion.ClassVisitor();
         classVisitor.visit(testFileCompilationUnit, null);
-    }
-
-    /**
-     * Returns the set of analyzed elements (i.e. test methods)
-     */
-    @Override
-    public List<SmellyElement> getSmellyElements() {
-        return smellyElementList;
     }
 
     private class ClassVisitor extends VoidVisitorAdapter<Void> {

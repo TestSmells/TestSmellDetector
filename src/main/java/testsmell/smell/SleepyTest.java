@@ -20,26 +20,12 @@ This code marks a method as smelly if the method body calls Thread.sleep()
  */
 public class SleepyTest extends AbstractSmell {
 
-    private List<SmellyElement> smellyElementList;
-
-    public SleepyTest() {
-        smellyElementList = new ArrayList<>();
-    }
-
     /**
      * Checks of 'SleepyTest' smell
      */
     @Override
     public String getSmellName() {
         return "Sleepy Test";
-    }
-
-    /**
-     * Returns true if any of the elements has a smell
-     */
-    @Override
-    public boolean getHasSmell() {
-        return smellyElementList.stream().filter(x -> x.getHasSmell()).count() >= 1;
     }
 
     /**
@@ -50,14 +36,6 @@ public class SleepyTest extends AbstractSmell {
         SleepyTest.ClassVisitor classVisitor;
         classVisitor = new SleepyTest.ClassVisitor();
         classVisitor.visit(testFileCompilationUnit, null);
-    }
-
-    /**
-     * Returns the set of analyzed elements (i.e. test methods)
-     */
-    @Override
-    public List<SmellyElement> getSmellyElements() {
-        return smellyElementList;
     }
 
     private class ClassVisitor extends VoidVisitorAdapter<Void> {

@@ -20,26 +20,12 @@ If this code detects the existence of a catch block or a throw statement in the 
  */
 public class ExceptionCatchingThrowing extends AbstractSmell {
 
-    private List<SmellyElement> smellyElementList;
-
-    public ExceptionCatchingThrowing() {
-        smellyElementList = new ArrayList<>();
-    }
-
     /**
      * Checks of 'Exception Catching Throwing' smell
      */
     @Override
     public String getSmellName() {
         return "Exception Catching Throwing";
-    }
-
-    /**
-     * Returns true if any of the elements has a smell
-     */
-    @Override
-    public boolean getHasSmell() {
-        return smellyElementList.stream().filter(x -> x.getHasSmell()).count() >= 1;
     }
 
     /**

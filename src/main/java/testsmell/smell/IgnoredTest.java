@@ -16,26 +16,12 @@ import java.util.List;
 
 public class IgnoredTest extends AbstractSmell {
 
-    private List<SmellyElement> smellyElementList;
-
-    public IgnoredTest() {
-        smellyElementList = new ArrayList<>();
-    }
-
     /**
      * Checks of 'Ignored Test' smell
      */
     @Override
     public String getSmellName() {
         return "IgnoredTest";
-    }
-
-    /**
-     * Returns true if any of the elements has a smell
-     */
-    @Override
-    public boolean getHasSmell() {
-        return smellyElementList.stream().filter(x -> x.getHasSmell()).count() >= 1;
     }
 
     /**
@@ -46,14 +32,6 @@ public class IgnoredTest extends AbstractSmell {
         IgnoredTest.ClassVisitor classVisitor;
         classVisitor = new IgnoredTest.ClassVisitor();
         classVisitor.visit(testFileCompilationUnit, null);
-    }
-
-    /**
-     * Returns the set of analyzed elements (i.e. test methods)
-     */
-    @Override
-    public List<SmellyElement> getSmellyElements() {
-        return smellyElementList;
     }
 
     /**

@@ -21,26 +21,12 @@ This code checks the body of each test method if System.out. print(), println(),
  */
 public class PrintStatement extends AbstractSmell {
 
-    private List<SmellyElement> smellyElementList;
-
-    public PrintStatement() {
-        smellyElementList = new ArrayList<>();
-    }
-
     /**
      * Checks of 'Print Statement' smell
      */
     @Override
     public String getSmellName() {
         return "Print Statement";
-    }
-
-    /**
-     * Returns true if any of the elements has a smell
-     */
-    @Override
-    public boolean getHasSmell() {
-        return smellyElementList.stream().filter(x -> x.getHasSmell()).count() >= 1;
     }
 
     /**
@@ -51,14 +37,6 @@ public class PrintStatement extends AbstractSmell {
         PrintStatement.ClassVisitor classVisitor;
         classVisitor = new PrintStatement.ClassVisitor();
         classVisitor.visit(testFileCompilationUnit, null);
-    }
-
-    /**
-     * Returns the set of analyzed elements (i.e. test methods)
-     */
-    @Override
-    public List<SmellyElement> getSmellyElements() {
-        return smellyElementList;
     }
 
     private class ClassVisitor extends VoidVisitorAdapter<Void> {

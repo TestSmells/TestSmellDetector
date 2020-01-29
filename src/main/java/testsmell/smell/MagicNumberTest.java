@@ -17,26 +17,12 @@ import java.util.List;
 
 public class MagicNumberTest  extends AbstractSmell {
 
-    private List<SmellyElement> smellyElementList;
-
-    public MagicNumberTest() {
-        smellyElementList = new ArrayList<>();
-    }
-
     /**
      * Checks of 'MagicNumberTest' smell
      */
     @Override
     public String getSmellName() {
         return "Magic Number Test";
-    }
-
-    /**
-     * Returns true if any of the elements has a smell
-     */
-    @Override
-    public boolean getHasSmell() {
-        return smellyElementList.stream().filter(x -> x.getHasSmell()).count() >= 1;
     }
 
     /**
@@ -47,14 +33,6 @@ public class MagicNumberTest  extends AbstractSmell {
         MagicNumberTest.ClassVisitor classVisitor;
         classVisitor = new MagicNumberTest.ClassVisitor();
         classVisitor.visit(testFileCompilationUnit, null);
-    }
-
-    /**
-     * Returns the set of analyzed elements (i.e. test methods)
-     */
-    @Override
-    public List<SmellyElement> getSmellyElements() {
-        return smellyElementList;
     }
 
     private class ClassVisitor extends VoidVisitorAdapter<Void> {

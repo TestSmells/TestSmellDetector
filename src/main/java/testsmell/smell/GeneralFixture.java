@@ -21,14 +21,13 @@ import java.util.*;
 
 public class GeneralFixture extends AbstractSmell {
 
-    private List<SmellyElement> smellyElementList;
-    List<MethodDeclaration> methodList;
-    MethodDeclaration setupMethod;
-    List<FieldDeclaration> fieldList;
-    List<String> setupFields;
+    private List<MethodDeclaration> methodList;
+    private MethodDeclaration setupMethod;
+    private List<FieldDeclaration> fieldList;
+    private List<String> setupFields;
 
     public GeneralFixture() {
-        smellyElementList = new ArrayList<>();
+        super();
         methodList = new ArrayList<>();
         fieldList = new ArrayList<>();
         setupFields = new ArrayList<>();
