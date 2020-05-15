@@ -77,7 +77,7 @@ class TestFileTest {
     @Test
     @EnabledOnOs({OS.WINDOWS})
     public void testGetRelativeProductionFilePathWindows() {
-        String oracle = "code\\test\\Graph.java";
+        String oracle = "code\\src\\Graph.java";
         String output = testFileWindows.getRelativeProductionFilePath();
         assertEquals(oracle, output);
     }
@@ -88,11 +88,5 @@ class TestFileTest {
         String oracle = "code\\test\\GraphTest.java";
         String output = testFileWindows.getRelativeTestFilePath();
         assertEquals(oracle, output);
-    }
-
-    @Test
-    @EnabledOnOs({OS.MAC, OS.LINUX})
-    public void testGetVersionUnix() {
-        System.out.println(testFileUnix.getTagName());
     }
 }
