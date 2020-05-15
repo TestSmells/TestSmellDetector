@@ -2,6 +2,8 @@ import testsmell.AbstractSmell;
 import testsmell.ResultsWriter;
 import testsmell.TestFile;
 import testsmell.TestSmellDetector;
+import testsmell.smell.AssertionRoulette;
+import testsmell.smell.EagerTest;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -27,8 +29,11 @@ public class Main {
             }
         }
 
-
-        TestSmellDetector testSmellDetector = TestSmellDetector.createTestSmellDetector();
+        TestSmellDetector testSmellDetector = new TestSmellDetector(false);
+        List<AbstractSmell> toCompute = new ArrayList<>();
+        toCompute.add(new AssertionRoulette());
+        toCompute.add(new EagerTest());
+        testSmellDetector.setTestSmells(toCompute);
 
         /*
           Read the input file and build the TestFile objects
@@ -96,6 +101,10 @@ public class Main {
             for (AbstractSmell smell : tempFile.getTestSmells()) {
                 try {
                     columnValues.add(String.valueOf(smell.getHasSmell()));
+                    if (smell instanceof AssertionRoulette)
+                        columnValues.add(String.valueOf(((AssertionRoulette) smell).getAssertionsCount()));
+                    if (smell instanceof EagerTest)
+                        columnValues.add(String.valueOf(((EagerTest) smell).getEagerCount()));
                 }
                 catch (NullPointerException e){
                     columnValues.add("");

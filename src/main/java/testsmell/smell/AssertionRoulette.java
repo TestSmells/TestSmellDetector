@@ -21,6 +21,7 @@ import java.util.List;
 public class AssertionRoulette extends AbstractSmell {
 
     private List<SmellyElement> smellyElementList;
+    private int assertionsCount = 0;
 
     public AssertionRoulette() {
         smellyElementList = new ArrayList<>();
@@ -50,6 +51,11 @@ public class AssertionRoulette extends AbstractSmell {
         AssertionRoulette.ClassVisitor classVisitor;
         classVisitor = new AssertionRoulette.ClassVisitor();
         classVisitor.visit(testFileCompilationUnit, null);
+        assertionsCount = classVisitor.overallAssertions;
+    }
+
+    public int getAssertionsCount() {
+        return assertionsCount;
     }
 
     /**
@@ -65,6 +71,7 @@ public class AssertionRoulette extends AbstractSmell {
         private MethodDeclaration currentMethod = null;
         private int assertNoMessageCount = 0;
         private int assertCount = 0;
+        private int overallAssertions = 0;
         TestMethod testMethod;
 
         // examine all methods in the test class
@@ -89,6 +96,7 @@ public class AssertionRoulette extends AbstractSmell {
 
                 //reset values for next method
                 currentMethod = null;
+                overallAssertions += assertCount;
                 assertCount = 0;
                 assertNoMessageCount = 0;
             }
