@@ -68,7 +68,7 @@ public class Main {
 
         columnNames = testSmellDetector.getTestSmellNames();
         columnNames.add(0, "App");
-        columnNames.add(1, "Version");
+        columnNames.add(1, "TestClass");
         columnNames.add(2, "TestFilePath");
         columnNames.add(3, "ProductionFilePath");
         columnNames.add(4, "RelativeTestFilePath");
@@ -93,7 +93,7 @@ public class Main {
             //write output
             columnValues = new ArrayList<>();
             columnValues.add(file.getApp());
-            columnValues.add(file.getTagName());
+            columnValues.add(file.getTestFileName());
             columnValues.add(file.getTestFilePath());
             columnValues.add(file.getProductionFilePath());
             columnValues.add(file.getRelativeTestFilePath());
