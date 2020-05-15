@@ -112,6 +112,7 @@ public class AssertionRoulette extends AbstractSmell {
                         n.getNameAsString().startsWith(("assertEquals")) ||
                         n.getNameAsString().startsWith(("assertNotSame")) ||
                         n.getNameAsString().startsWith(("assertSame")) ||
+                        n.getNameAsString().startsWith("assertThrows") ||
                         n.getNameAsString().startsWith(("assertThat"))) {
                     assertCount++;
                     // assert methods that do not contain a message
