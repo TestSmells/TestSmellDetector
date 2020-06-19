@@ -97,10 +97,6 @@ public class Main {
             for (AbstractSmell smell : tempFile.getTestSmells()) {
                 try {
                     columnValues.add(String.valueOf(smell.getHasSmell()));
-                    if (smell instanceof AssertionRoulette)
-                        columnValues.add(String.valueOf(((AssertionRoulette) smell).getAssertionsCount()));
-                    if (smell instanceof EagerTest)
-                        columnValues.add(String.valueOf(((EagerTest) smell).getEagerCount()));
                 }
                 catch (NullPointerException e){
                     columnValues.add("");
