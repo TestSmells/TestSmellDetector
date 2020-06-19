@@ -29,11 +29,7 @@ public class Main {
             }
         }
 
-        TestSmellDetector testSmellDetector = new TestSmellDetector(false);
-        List<AbstractSmell> toCompute = new ArrayList<>();
-        toCompute.add(new AssertionRoulette());
-        toCompute.add(new EagerTest());
-        testSmellDetector.setTestSmells(toCompute);
+        TestSmellDetector testSmellDetector = new TestSmellDetector();
 
         /*
           Read the input file and build the TestFile objects
