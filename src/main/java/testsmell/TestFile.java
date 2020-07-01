@@ -2,6 +2,7 @@ package testsmell;
 
 import org.apache.commons.lang3.StringUtils;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,13 +41,18 @@ public class TestFile {
         testSmells.add(smell);
     }
 
+    /**
+     * Supposed to return the version of the project.
+     * Returns the "N.I.Y", Not Implemented Yet string
+     * todo: not implemented in any way yet
+     */
     public String getTagName(){
-        return testFilePath.split("\\\\")[4];
+        return "N.I.Y";
     }
 
     public String getTestFileName(){
-        int lastIndex = testFilePath.lastIndexOf("\\");
-        return testFilePath.substring(lastIndex+1,testFilePath.length());
+        int lastIndex = testFilePath.lastIndexOf(File.separator);
+        return testFilePath.substring(lastIndex+1);
     }
 
     public String getTestFileNameWithoutExtension(){
@@ -62,32 +68,40 @@ public class TestFile {
     }
 
     public String getProductionFileName(){
-        int lastIndex = productionFilePath.lastIndexOf("\\");
+        int lastIndex = productionFilePath.lastIndexOf(File.separator);
         if(lastIndex==-1)
             return "";
-        return productionFilePath.substring(lastIndex+1,productionFilePath.length());
+        return productionFilePath.substring(lastIndex+1);
     }
 
+    /**
+     * Returns the path of the test file relative to the folder with the name of the project.
+     * If the project directory has a different name, returns an empty string.
+     * @return the relative test file path
+     */
     public String getRelativeTestFilePath() {
-        String[] splitString = testFilePath.split("\\\\");
-        StringBuilder stringBuilder = new StringBuilder();
-        for (int i = 0; i < 5; i++) {
-            stringBuilder.append(splitString[i] + "\\");
-        }
-        return testFilePath.substring(stringBuilder.toString().length()).replace("\\", "/");
+        if (!StringUtils.isEmpty(testFilePath)) {
+            int projectNameIndex = testFilePath.lastIndexOf(app);
+            if (projectNameIndex == -1)
+                return "";
+            return testFilePath.substring(projectNameIndex+app.length()+File.separator.length());
+        } else
+            return "";
     }
 
+    /**
+     * Returns the path of the production file relative to the folder with the name of the project.
+     * If the project directory has a different name, returns an empty string.
+     * @return the relative production file path
+     *
+     */
     public String getRelativeProductionFilePath() {
         if (!StringUtils.isEmpty(productionFilePath)) {
-            String[] splitString = productionFilePath.split("\\\\");
-            StringBuilder stringBuilder = new StringBuilder();
-            for (int i = 0; i < 5; i++) {
-                stringBuilder.append(splitString[i] + "\\");
-            }
-            return productionFilePath.substring(stringBuilder.toString().length()).replace("\\", "/");
-        } else {
+            int projectNameIndex = productionFilePath.lastIndexOf(app);
+            if (projectNameIndex == -1)
+                return "";
+            return productionFilePath.substring(projectNameIndex+app.length()+File.separator.length());
+        } else
             return "";
-
-        }
     }
 }

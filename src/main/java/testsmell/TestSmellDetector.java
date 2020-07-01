@@ -23,6 +23,8 @@ public class TestSmellDetector {
         initializeSmells();
     }
 
+    public TestSmellDetector(boolean initialize) {}
+
     private void initializeSmells(){
         testSmells = new ArrayList<>();
         testSmells.add(new AssertionRoulette());
@@ -46,6 +48,10 @@ public class TestSmellDetector {
         testSmells.add(new ResourceOptimism());
         testSmells.add(new MagicNumberTest());
         testSmells.add(new DependentTest());
+    }
+
+    public void setTestSmells(List<AbstractSmell> testSmells) {
+        this.testSmells = testSmells;
     }
 
     /**
@@ -83,7 +89,7 @@ public class TestSmellDetector {
             productionFileCompilationUnit = JavaParser.parse(productionFileInputStream);
         }
 
-        initializeSmells();
+//        initializeSmells();
         for (AbstractSmell smell : testSmells) {
             try {
                 smell.runAnalysis(testFileCompilationUnit, productionFileCompilationUnit,testFile.getTestFileNameWithoutExtension(),testFile.getProductionFileNameWithoutExtension());

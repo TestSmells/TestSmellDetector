@@ -23,3 +23,7 @@ hs_err_pid*
 
 # IntelliJ IDEA
 .idea
+Output_TestSmellDetection*
+target/
+TestSmellDetector.iml
+files-smell.csv

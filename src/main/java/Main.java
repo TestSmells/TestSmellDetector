@@ -2,6 +2,8 @@ import testsmell.AbstractSmell;
 import testsmell.ResultsWriter;
 import testsmell.TestFile;
 import testsmell.TestSmellDetector;
+import testsmell.smell.AssertionRoulette;
+import testsmell.smell.EagerTest;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -27,8 +29,7 @@ public class Main {
             }
         }
 
-
-        TestSmellDetector testSmellDetector = TestSmellDetector.createTestSmellDetector();
+        TestSmellDetector testSmellDetector = new TestSmellDetector();
 
         /*
           Read the input file and build the TestFile objects
@@ -63,7 +64,7 @@ public class Main {
 
         columnNames = testSmellDetector.getTestSmellNames();
         columnNames.add(0, "App");
-        columnNames.add(1, "Version");
+        columnNames.add(1, "TestClass");
         columnNames.add(2, "TestFilePath");
         columnNames.add(3, "ProductionFilePath");
         columnNames.add(4, "RelativeTestFilePath");
@@ -88,7 +89,7 @@ public class Main {
             //write output
             columnValues = new ArrayList<>();
             columnValues.add(file.getApp());
-            columnValues.add(file.getTagName());
+            columnValues.add(file.getTestFileName());
             columnValues.add(file.getTestFilePath());
             columnValues.add(file.getProductionFilePath());
             columnValues.add(file.getRelativeTestFilePath());
