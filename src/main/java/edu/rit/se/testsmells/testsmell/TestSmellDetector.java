@@ -22,7 +22,7 @@ public class TestSmellDetector {
         testSmells = new ArrayList<>();
     }
 
-    public void addSmell(AbstractSmell smell) {
+    public void addDetectableSmell(AbstractSmell smell) {
         testSmells.add(smell);
     }
 
@@ -55,9 +55,10 @@ public class TestSmellDetector {
         for (AbstractSmell smell : testSmells) {
             try {
                 smell.runAnalysis(testFileCompilationUnit, productionFileCompilationUnit, testFile.getTestFileNameWithoutExtension(), testFile.getProductionFileNameWithoutExtension());
-                testFile.addSmell(smell);
+                testFile.addDetectedSmell(smell);
+                //TODO: Use smell.getSmellyElements() to aggregate smelly classes and methods
             } finally {
-                testFile.addSmell(null);
+                testFile.addDetectedSmell(null);
             }
         }
 

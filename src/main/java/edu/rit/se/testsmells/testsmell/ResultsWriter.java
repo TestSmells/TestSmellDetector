@@ -41,7 +41,7 @@ public class ResultsWriter {
      * @param columnNames the column names
      * @throws IOException
      */
-    public void writeColumnName(List<String> columnNames) throws IOException {
+    public void writeColumnNames(List<String> columnNames) throws IOException {
         writeOutput(columnNames);
     }
 

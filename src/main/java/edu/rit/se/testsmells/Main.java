@@ -10,7 +10,6 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -18,26 +17,43 @@ import java.util.List;
 
 public class Main {
     public static void main(String[] args) throws IOException {
-        if (args == null) {
-            System.out.println("Please provide the file containing the paths to the collection of test files");
-            return;
-        }
-        if (!args[0].isEmpty()) {
-            File inputFile = new File(args[0]);
-            if (!inputFile.exists() || inputFile.isDirectory()) {
-                System.out.println("Please provide a valid file containing the paths to the collection of test files");
-                return;
-            }
-        }
+        File inputFile = handleCliArgs(args);
 
         TestSmellDetector testSmellDetector = TestSmellDetector.createTestSmellDetector();
 
         initializeSmells(testSmellDetector);
 
+        ResultsWriter resultsWriter = initializeOutputFile(testSmellDetector.getTestSmellNames());
+
         /*
-          Read the input file and build the TestFile objects
-         */
-        BufferedReader in = new BufferedReader(new FileReader(args[0]));
+          Iterate through all test files to detect smells and then write the output
+        */
+        for (TestFile rawFile : readInputTestFiles(inputFile)) {
+            System.out.println(getCurrentDateFormatted() + " Processing: " + rawFile.getTestFilePath());
+            System.out.println("Processing: " + rawFile.getTestFilePath());
+
+            TestFile smellyFile = testSmellDetector.detectSmells(rawFile);
+
+            writeOutput(resultsWriter, smellyFile);
+        }
+
+        System.out.println("end");
+    }
+
+    private static void writeOutput(ResultsWriter resultsWriter, TestFile smellyFile) throws IOException {
+        List<String> entries = getTestDescriptionEntries(smellyFile);
+        for (AbstractSmell smell : smellyFile.getTestSmells()) {
+            try {
+                entries.add(String.valueOf(smell.hasSmell()));
+            } catch (NullPointerException e) {
+                entries.add("");
+            }
+        }
+        resultsWriter.writeLine(entries);
+    }
+
+    private static List<TestFile> readInputTestFiles(File inputFile) throws IOException {
+        BufferedReader in = new BufferedReader(new FileReader(inputFile));
         String str;
 
         String[] lineItem;
@@ -56,81 +72,74 @@ public class Main {
 
             testFiles.add(testFile);
         }
+        return testFiles;
+    }
 
-        /*
-          Initialize the output file - Create the output file and add the column names
-         */
+    private static File handleCliArgs(String[] args) {
+        assert args != null && args.length > 0 && args[0].isEmpty() : "Please provide the file containing the paths to the collection of test files";
+        File inputFile = new File(args[0]);
+        assert inputFile.exists() && !inputFile.isDirectory() : "Please provide a valid file containing the paths to the collection of test files";
+
+        return inputFile;
+    }
+
+    private static Object getCurrentDateFormatted() {
+        return (new SimpleDateFormat("yyyy/MM/dd HH:mm:ss")).format(new Date());
+    }
+
+    private static List<String> getTestDescriptionEntries(TestFile smellyFile) {
+        List<String> columnValues = new ArrayList<>();
+
+        columnValues.add(smellyFile.getApp());
+        columnValues.add(smellyFile.getTestFileName());
+        columnValues.add(smellyFile.getTestFilePath());
+        columnValues.add(smellyFile.getProductionFilePath());
+        columnValues.add(smellyFile.getRelativeTestFilePath());
+        columnValues.add(smellyFile.getRelativeProductionFilePath());
+
+        return columnValues;
+    }
+
+    private static ResultsWriter initializeOutputFile(List<String> testSmellNames) throws IOException {
         ResultsWriter resultsWriter = ResultsWriter.createResultsWriter();
-        List<String> columnNames;
-        List<String> columnValues;
+        List<String> columnNames = new ArrayList<>();
 
-        columnNames = testSmellDetector.getTestSmellNames();
-        columnNames.add(0, "App");
-        columnNames.add(1, "TestClass");
-        columnNames.add(2, "TestFilePath");
-        columnNames.add(3, "ProductionFilePath");
-        columnNames.add(4, "RelativeTestFilePath");
-        columnNames.add(5, "RelativeProductionFilePath");
+        columnNames.add("App");
+        columnNames.add("TestClass");
+        columnNames.add("TestFilePath");
+        columnNames.add("ProductionFilePath");
+        columnNames.add("RelativeTestFilePath");
+        columnNames.add("RelativeProductionFilePath");
 
-        resultsWriter.writeColumnName(columnNames);
+        columnNames.addAll(testSmellNames);
 
-        /*
-          Iterate through all test files to detect smells and then write the output
-        */
-        TestFile tempFile;
-        DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-        Date date;
-        for (TestFile file : testFiles) {
-            date = new Date();
-            System.out.println(dateFormat.format(date) + " Processing: " + file.getTestFilePath());
-            System.out.println("Processing: " + file.getTestFilePath());
+        resultsWriter.writeColumnNames(columnNames);
 
-            //detect smells
-            tempFile = testSmellDetector.detectSmells(file);
-
-            //write output
-            columnValues = new ArrayList<>();
-            columnValues.add(file.getApp());
-            columnValues.add(file.getTestFileName());
-            columnValues.add(file.getTestFilePath());
-            columnValues.add(file.getProductionFilePath());
-            columnValues.add(file.getRelativeTestFilePath());
-            columnValues.add(file.getRelativeProductionFilePath());
-            for (AbstractSmell smell : tempFile.getTestSmells()) {
-                try {
-                    columnValues.add(String.valueOf(smell.hasSmell()));
-                } catch (NullPointerException e) {
-                    columnValues.add("");
-                }
-            }
-            resultsWriter.writeLine(columnValues);
-        }
-
-        System.out.println("end");
+        return resultsWriter;
     }
 
     private static void initializeSmells(TestSmellDetector testSmellDetector) {
-        testSmellDetector.addSmell(new AssertionRoulette());
-        testSmellDetector.addSmell(new ConditionalTestLogic());
-        testSmellDetector.addSmell(new ConstructorInitialization());
-        testSmellDetector.addSmell(new DefaultTest());
-        testSmellDetector.addSmell(new EmptyTest());
-        testSmellDetector.addSmell(new ExceptionCatchingThrowing());
-        testSmellDetector.addSmell(new GeneralFixture());
-        testSmellDetector.addSmell(new MysteryGuest());
-        testSmellDetector.addSmell(new PrintStatement());
-        testSmellDetector.addSmell(new RedundantAssertion());
-        testSmellDetector.addSmell(new SensitiveEquality());
-        testSmellDetector.addSmell(new VerboseTest());
-        testSmellDetector.addSmell(new SleepyTest());
-        testSmellDetector.addSmell(new EagerTest());
-        testSmellDetector.addSmell(new LazyTest());
-        testSmellDetector.addSmell(new DuplicateAssert());
-        testSmellDetector.addSmell(new UnknownTest());
-        testSmellDetector.addSmell(new IgnoredTest());
-        testSmellDetector.addSmell(new ResourceOptimism());
-        testSmellDetector.addSmell(new MagicNumberTest());
-        testSmellDetector.addSmell(new DependentTest());
+        testSmellDetector.addDetectableSmell(new AssertionRoulette());
+        testSmellDetector.addDetectableSmell(new ConditionalTestLogic());
+        testSmellDetector.addDetectableSmell(new ConstructorInitialization());
+        testSmellDetector.addDetectableSmell(new DefaultTest());
+        testSmellDetector.addDetectableSmell(new EmptyTest());
+        testSmellDetector.addDetectableSmell(new ExceptionCatchingThrowing());
+        testSmellDetector.addDetectableSmell(new GeneralFixture());
+        testSmellDetector.addDetectableSmell(new MysteryGuest());
+        testSmellDetector.addDetectableSmell(new PrintStatement());
+        testSmellDetector.addDetectableSmell(new RedundantAssertion());
+        testSmellDetector.addDetectableSmell(new SensitiveEquality());
+        testSmellDetector.addDetectableSmell(new VerboseTest());
+        testSmellDetector.addDetectableSmell(new SleepyTest());
+        testSmellDetector.addDetectableSmell(new EagerTest());
+        testSmellDetector.addDetectableSmell(new LazyTest());
+        testSmellDetector.addDetectableSmell(new DuplicateAssert());
+        testSmellDetector.addDetectableSmell(new UnknownTest());
+        testSmellDetector.addDetectableSmell(new IgnoredTest());
+        testSmellDetector.addDetectableSmell(new ResourceOptimism());
+        testSmellDetector.addDetectableSmell(new MagicNumberTest());
+        testSmellDetector.addDetectableSmell(new DependentTest());
     }
 
 

@@ -37,7 +37,7 @@ public class TestFile {
         this.testSmells = new ArrayList<>();
     }
 
-    public void addSmell(AbstractSmell smell) {
+    public void addDetectedSmell(AbstractSmell smell) {
         testSmells.add(smell);
     }
 
