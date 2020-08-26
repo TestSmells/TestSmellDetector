@@ -9,7 +9,7 @@ public class MethodValidator {
     }
 
     public boolean isValidSetupMethod(MethodDeclaration method) {
-        return isVisible(method) && (hasAnnotation(method, "Before") || nameStartsWith(method, "setUp"));
+        return isVisible(method) && (hasAnnotation(method, "Before") || hasAnnotation(method, "BeforeEach") || nameStartsWith(method, "setUp"));
     }
 
     private boolean nameStartsWith(MethodDeclaration method, String value) {

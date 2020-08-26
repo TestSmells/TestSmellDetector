@@ -57,6 +57,7 @@ public class TestSmellDetector {
                 smell.runAnalysis(testFileCompilationUnit, productionFileCompilationUnit, testFile.getTestFileNameWithoutExtension(), testFile.getProductionFileNameWithoutExtension());
                 testFile.addDetectedSmell(smell);
                 //TODO: Use smell.getSmellyElements() to aggregate smelly classes and methods
+            } catch (FileNotFoundException ignored) {
             } finally {
                 testFile.addDetectedSmell(null);
             }
