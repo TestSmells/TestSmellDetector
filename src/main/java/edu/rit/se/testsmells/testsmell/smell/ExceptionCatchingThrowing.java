@@ -6,12 +6,9 @@ import com.github.javaparser.ast.stmt.CatchClause;
 import com.github.javaparser.ast.stmt.ThrowStmt;
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
 import edu.rit.se.testsmells.testsmell.AbstractSmell;
-import edu.rit.se.testsmells.testsmell.SmellyElement;
 import edu.rit.se.testsmells.testsmell.TestMethod;
 
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
-import java.util.List;
 
 /*
 This class checks if test methods in the class either catch or throw exceptions. Use Junit's exception handling to automatically pass/fail the test
@@ -19,10 +16,10 @@ If this code detects the existence of a catch block or a throw statement in the 
  */
 public class ExceptionCatchingThrowing extends AbstractSmell {
 
-    private List<SmellyElement> smellyElementList;
+
 
     public ExceptionCatchingThrowing() {
-        smellyElementList = new ArrayList<>();
+        super();
     }
 
     /**
@@ -34,13 +31,6 @@ public class ExceptionCatchingThrowing extends AbstractSmell {
     }
 
     /**
-     * Returns true if any of the elements has a smell
-     */
-    public boolean hasSmell() {
-        return smellyElementList.stream().filter(x -> x.hasSmell()).count() >= 1;
-    }
-
-    /**
      * Analyze the test file for test methods that have exception handling
      */
     @Override
@@ -48,14 +38,6 @@ public class ExceptionCatchingThrowing extends AbstractSmell {
         ExceptionCatchingThrowing.ClassVisitor classVisitor;
         classVisitor = new ExceptionCatchingThrowing.ClassVisitor();
         classVisitor.visit(testFileCompilationUnit, null);
-    }
-
-    /**
-     * Returns the set of analyzed elements (i.e. test methods)
-     */
-    @Override
-    public List<SmellyElement> getSmellyElements() {
-        return smellyElementList;
     }
 
     private class ClassVisitor extends VoidVisitorAdapter<Void> {
@@ -79,7 +61,7 @@ public class ExceptionCatchingThrowing extends AbstractSmell {
                 testMethod.setHasSmell(exceptionCount >= 1);
                 testMethod.addDataItem("ExceptionCount", String.valueOf(exceptionCount));
 
-                smellyElementList.add(testMethod);
+                addSmellyElement(testMethod);
 
                 //reset values for next method
                 currentMethod = null;

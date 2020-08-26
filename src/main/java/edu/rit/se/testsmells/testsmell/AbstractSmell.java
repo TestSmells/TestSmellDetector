@@ -1,36 +1,41 @@
 package edu.rit.se.testsmells.testsmell;
 
 import com.github.javaparser.ast.CompilationUnit;
-import com.github.javaparser.ast.Modifier;
 import com.github.javaparser.ast.body.MethodDeclaration;
 
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
 import java.util.List;
 
 public abstract class AbstractSmell {
+    private final MethodValidator methodValidator;
+    private final List<SmellyElement> smellyElementList;
 
     public abstract String getSmellName();
 
-    public abstract boolean hasSmell();
-
     public abstract void runAnalysis(CompilationUnit testFileCompilationUnit, CompilationUnit productionFileCompilationUnit, String testFileName, String productionFileName) throws FileNotFoundException;
 
-    public abstract List<SmellyElement> getSmellyElements();
+    public AbstractSmell() {
+        methodValidator = new MethodValidator();
+        smellyElementList = new ArrayList<>();
+    }
 
-    protected boolean isValidTestMethod(MethodDeclaration n) {
-        boolean valid = false;
+    /**
+     * Returns the set of analyzed elements (i.e. test methods)
+     */
+    public List<SmellyElement> getSmellyElements() {
+        return smellyElementList;
+    }
 
-        if (!n.getAnnotationByName("Ignore").isPresent()) {
-            //only analyze methods that either have a @test annotation (Junit 4) or the method name starts with 'test'
-            if (n.getAnnotationByName("Test").isPresent() || n.getNameAsString().toLowerCase().startsWith("test")) {
-                //must be a public method
-                if (n.getModifiers().contains(Modifier.PUBLIC)) {
-                    valid = true;
-                }
-            }
-        }
+    public void addSmellyElement(SmellyElement elem) {
+        smellyElementList.add(elem);
+    }
 
-        return valid;
+    /**
+     * Returns true if any of the elements has a smell
+     */
+    public boolean hasSmell() {
+        return smellyElementList.stream().filter(x -> x.hasSmell()).count() >= 1;
     }
 
     protected boolean isNumber(String str) {
@@ -42,19 +47,11 @@ public abstract class AbstractSmell {
         }
     }
 
-    protected boolean isValidSetupMethod(MethodDeclaration n) {
-        boolean valid = false;
+    protected boolean isValidTestMethod(MethodDeclaration method) {
+        return methodValidator.isValidTestMethod(method);
+    }
 
-        if (!n.getAnnotationByName("Ignore").isPresent()) {
-            //only analyze methods that either have a @Before annotation (Junit 4) or the method name is 'setUp'
-            if (n.getAnnotationByName("Before").isPresent() || n.getNameAsString().equals("setUp")) {
-                //must be a public method
-                if (n.getModifiers().contains(Modifier.PUBLIC)) {
-                    valid = true;
-                }
-            }
-        }
-
-        return valid;
+    protected boolean isValidSetupMethod(MethodDeclaration method) {
+        return methodValidator.isValidSetupMethod(method);
     }
 }

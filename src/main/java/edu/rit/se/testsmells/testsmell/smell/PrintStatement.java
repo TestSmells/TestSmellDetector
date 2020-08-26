@@ -7,12 +7,9 @@ import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
 import edu.rit.se.testsmells.testsmell.AbstractSmell;
-import edu.rit.se.testsmells.testsmell.SmellyElement;
 import edu.rit.se.testsmells.testsmell.TestMethod;
 
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
-import java.util.List;
 
 /*
 Test methods should not contain print statements as execution of unit tests is an automated process with little to no human intervention. Hence, print statements are redundant.
@@ -20,10 +17,10 @@ This code checks the body of each test method if System.out. print(), println(),
  */
 public class PrintStatement extends AbstractSmell {
 
-    private List<SmellyElement> smellyElementList;
+
 
     public PrintStatement() {
-        smellyElementList = new ArrayList<>();
+        super();
     }
 
     /**
@@ -35,13 +32,6 @@ public class PrintStatement extends AbstractSmell {
     }
 
     /**
-     * Returns true if any of the elements has a smell
-     */
-    public boolean hasSmell() {
-        return smellyElementList.stream().filter(x -> x.hasSmell()).count() >= 1;
-    }
-
-    /**
      * Analyze the test file for test methods that print output to the console
      */
     @Override
@@ -49,14 +39,6 @@ public class PrintStatement extends AbstractSmell {
         PrintStatement.ClassVisitor classVisitor;
         classVisitor = new PrintStatement.ClassVisitor();
         classVisitor.visit(testFileCompilationUnit, null);
-    }
-
-    /**
-     * Returns the set of analyzed elements (i.e. test methods)
-     */
-    @Override
-    public List<SmellyElement> getSmellyElements() {
-        return smellyElementList;
     }
 
     private class ClassVisitor extends VoidVisitorAdapter<Void> {
@@ -76,7 +58,7 @@ public class PrintStatement extends AbstractSmell {
                 testMethod.setHasSmell(printCount >= 1);
                 testMethod.addDataItem("PrintCount", String.valueOf(printCount));
 
-                smellyElementList.add(testMethod);
+                addSmellyElement(testMethod);
 
                 //reset values for next method
                 currentMethod = null;

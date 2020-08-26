@@ -4,12 +4,9 @@ import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
 import edu.rit.se.testsmells.testsmell.AbstractSmell;
-import edu.rit.se.testsmells.testsmell.SmellyElement;
 import edu.rit.se.testsmells.testsmell.TestMethod;
 
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * This class checks if a test method is empty (i.e. the method does not contain statements in its body)
@@ -17,10 +14,10 @@ import java.util.List;
  */
 public class EmptyTest extends AbstractSmell {
 
-    private List<SmellyElement> smellyElementList;
+
 
     public EmptyTest() {
-        smellyElementList = new ArrayList<>();
+        super();
     }
 
     /**
@@ -32,13 +29,6 @@ public class EmptyTest extends AbstractSmell {
     }
 
     /**
-     * Returns true if any of the elements has a smell
-     */
-    public boolean hasSmell() {
-        return smellyElementList.stream().filter(x -> x.hasSmell()).count() >= 1;
-    }
-
-    /**
      * Analyze the test file for test methods that are empty (i.e. no method body)
      */
     @Override
@@ -46,14 +36,6 @@ public class EmptyTest extends AbstractSmell {
         EmptyTest.ClassVisitor classVisitor;
         classVisitor = new EmptyTest.ClassVisitor();
         classVisitor.visit(testFileCompilationUnit, null);
-    }
-
-    /**
-     * Returns the set of analyzed elements (i.e. test methods)
-     */
-    @Override
-    public List<SmellyElement> getSmellyElements() {
-        return smellyElementList;
     }
 
     /**
@@ -79,7 +61,7 @@ public class EmptyTest extends AbstractSmell {
                         }
                     }
                 }
-                smellyElementList.add(testMethod);
+                addSmellyElement(testMethod);
             }
         }
     }

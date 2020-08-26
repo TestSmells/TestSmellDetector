@@ -6,12 +6,9 @@ import com.github.javaparser.ast.body.ConstructorDeclaration;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
 import edu.rit.se.testsmells.testsmell.AbstractSmell;
-import edu.rit.se.testsmells.testsmell.SmellyElement;
 import edu.rit.se.testsmells.testsmell.TestClass;
 
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
-import java.util.List;
 
 
 /*
@@ -19,12 +16,10 @@ This class checks if the code file contains a Constructor. Ideally, the test sui
 If this code detects the existence of a constructor, it sets the class as smelly
  */
 public class ConstructorInitialization extends AbstractSmell {
-
-    private List<SmellyElement> smellyElementList;
     private String testFileName;
 
     public ConstructorInitialization() {
-        smellyElementList = new ArrayList<>();
+        super();
     }
 
     /**
@@ -36,13 +31,6 @@ public class ConstructorInitialization extends AbstractSmell {
     }
 
     /**
-     * Returns true if any of the elements has a smell
-     */
-    public boolean hasSmell() {
-        return smellyElementList.stream().filter(x -> x.hasSmell()).count() >= 1;
-    }
-
-    /**
      * Analyze the test file for Constructor Initialization smell
      */
     @Override
@@ -51,14 +39,6 @@ public class ConstructorInitialization extends AbstractSmell {
         ConstructorInitialization.ClassVisitor classVisitor;
         classVisitor = new ConstructorInitialization.ClassVisitor();
         classVisitor.visit(testFileCompilationUnit, null);
-    }
-
-    /**
-     * Returns the set of analyzed elements (i.e. test methods)
-     */
-    @Override
-    public List<SmellyElement> getSmellyElements() {
-        return smellyElementList;
     }
 
 
@@ -82,7 +62,7 @@ public class ConstructorInitialization extends AbstractSmell {
                 if(!constructorAllowed) {
                     testClass = new TestClass(n.getNameAsString());
                     testClass.setHasSmell(true);
-                    smellyElementList.add(testClass);
+                    addSmellyElement(testClass);
                 }
             }
         }

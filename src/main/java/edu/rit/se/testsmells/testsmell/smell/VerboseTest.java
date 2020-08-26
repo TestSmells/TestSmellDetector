@@ -4,22 +4,19 @@ import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
 import edu.rit.se.testsmells.testsmell.AbstractSmell;
-import edu.rit.se.testsmells.testsmell.SmellyElement;
 import edu.rit.se.testsmells.testsmell.TestMethod;
 
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
-import java.util.List;
 
 /*
 If a test methods contains a statements that exceeds a certain threshold, the method is marked as smelly
  */
 public class VerboseTest extends AbstractSmell {
 
-    private List<SmellyElement> smellyElementList;
+
 
     public VerboseTest() {
-        smellyElementList = new ArrayList<>();
+        super();
     }
 
     /**
@@ -31,13 +28,6 @@ public class VerboseTest extends AbstractSmell {
     }
 
     /**
-     * Returns true if any of the elements has a smell
-     */
-    public boolean hasSmell() {
-        return smellyElementList.stream().filter(x -> x.hasSmell()).count() >= 1;
-    }
-
-    /**
      * Analyze the test file for test methods for the 'Verbose Test' smell
      */
     @Override
@@ -45,14 +35,6 @@ public class VerboseTest extends AbstractSmell {
         VerboseTest.ClassVisitor classVisitor;
         classVisitor = new VerboseTest.ClassVisitor();
         classVisitor.visit(testFileCompilationUnit, null);
-    }
-
-    /**
-     * Returns the set of analyzed elements (i.e. test methods)
-     */
-    @Override
-    public List<SmellyElement> getSmellyElements() {
-        return smellyElementList;
     }
 
     private class ClassVisitor extends VoidVisitorAdapter<Void> {
@@ -81,7 +63,7 @@ public class VerboseTest extends AbstractSmell {
                 testMethod.setHasSmell(verboseCount >= 1);
                 testMethod.addDataItem("VerboseCount", String.valueOf(verboseCount));
 
-                smellyElementList.add(testMethod);
+                addSmellyElement(testMethod);
 
                 //reset values for next method
                 currentMethod = null;

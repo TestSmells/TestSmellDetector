@@ -6,7 +6,6 @@ import com.github.javaparser.ast.expr.AnnotationExpr;
 import com.github.javaparser.ast.expr.VariableDeclarationExpr;
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
 import edu.rit.se.testsmells.testsmell.AbstractSmell;
-import edu.rit.se.testsmells.testsmell.SmellyElement;
 import edu.rit.se.testsmells.testsmell.TestMethod;
 
 import java.io.FileNotFoundException;
@@ -23,10 +22,10 @@ import java.util.List;
  */
 public class MysteryGuest extends AbstractSmell {
 
-    private List<SmellyElement> smellyElementList;
+
 
     public MysteryGuest() {
-        smellyElementList = new ArrayList<>();
+        super();
     }
 
     /**
@@ -38,13 +37,6 @@ public class MysteryGuest extends AbstractSmell {
     }
 
     /**
-     * Returns true if any of the elements has a smell
-     */
-    public boolean hasSmell() {
-        return smellyElementList.stream().filter(x -> x.hasSmell()).count() >= 1;
-    }
-
-    /**
      * Analyze the test file for test methods that use external resources
      */
     @Override
@@ -52,14 +44,6 @@ public class MysteryGuest extends AbstractSmell {
         MysteryGuest.ClassVisitor classVisitor;
         classVisitor = new MysteryGuest.ClassVisitor();
         classVisitor.visit(testFileCompilationUnit, null);
-    }
-
-    /**
-     * Returns the set of analyzed elements (i.e. test methods)
-     */
-    @Override
-    public List<SmellyElement> getSmellyElements() {
-        return smellyElementList;
     }
 
     private class ClassVisitor extends VoidVisitorAdapter<Void> {
@@ -119,7 +103,7 @@ public class MysteryGuest extends AbstractSmell {
                 testMethod.setHasSmell(mysteryCount > 0);
                 testMethod.addDataItem("MysteryCount", String.valueOf(mysteryCount));
 
-                smellyElementList.add(testMethod);
+                addSmellyElement(testMethod);
 
                 //reset values for next method
                 currentMethod = null;

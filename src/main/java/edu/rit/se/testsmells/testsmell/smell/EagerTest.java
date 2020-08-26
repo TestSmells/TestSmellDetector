@@ -10,7 +10,6 @@ import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
 import edu.rit.se.testsmells.testsmell.AbstractSmell;
-import edu.rit.se.testsmells.testsmell.SmellyElement;
 import edu.rit.se.testsmells.testsmell.TestMethod;
 
 import java.io.FileNotFoundException;
@@ -23,13 +22,13 @@ public class EagerTest extends AbstractSmell {
     private static final String TEST_FILE = "Test";
     private static final String PRODUCTION_FILE = "Production";
     private String productionClassName;
-    private List<SmellyElement> smellyElementList;
+
     private List<MethodDeclaration> productionMethods;
     private int eagerCount;
 
     public EagerTest() {
+        super();
         productionMethods = new ArrayList<>();
-        smellyElementList = new ArrayList<>();
     }
 
     /**
@@ -38,14 +37,6 @@ public class EagerTest extends AbstractSmell {
     @Override
     public String getSmellName() {
         return "Eager Test";
-    }
-
-    /**
-     * Returns true if any of the elements has a smell
-     */
-    @Override
-    public boolean hasSmell() {
-        return smellyElementList.stream().filter(x -> x.hasSmell()).count() >= 1;
     }
 
     /**
@@ -65,14 +56,6 @@ public class EagerTest extends AbstractSmell {
         classVisitor = new EagerTest.ClassVisitor(TEST_FILE);
         classVisitor.visit(testFileCompilationUnit, null);
         eagerCount = classVisitor.overallEager;
-    }
-
-    /**
-     * Returns the set of analyzed elements (i.e. test methods)
-     */
-    @Override
-    public List<SmellyElement> getSmellyElements() {
-        return smellyElementList;
     }
 
     public int getEagerCount() {
@@ -125,7 +108,7 @@ public class EagerTest extends AbstractSmell {
                     super.visit(n, arg);
 
                     testMethod.setHasSmell(eagerCount > 1); //the method has a smell if there is more than 1 call to production methods
-                    smellyElementList.add(testMethod);
+                    addSmellyElement(testMethod);
 
                     //reset values for next method
                     currentMethod = null;

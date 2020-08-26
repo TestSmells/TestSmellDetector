@@ -6,21 +6,17 @@ import com.github.javaparser.ast.expr.ConditionalExpr;
 import com.github.javaparser.ast.stmt.*;
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
 import edu.rit.se.testsmells.testsmell.AbstractSmell;
-import edu.rit.se.testsmells.testsmell.SmellyElement;
 import edu.rit.se.testsmells.testsmell.TestMethod;
 
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
-import java.util.List;
 
 /*
 This class check a test method for the existence of loops and conditional statements in the methods body
  */
 public class ConditionalTestLogic extends AbstractSmell {
-    private List<SmellyElement> smellyElementList;
 
     public ConditionalTestLogic() {
-        smellyElementList = new ArrayList<>();
+        super();
     }
 
     /**
@@ -31,12 +27,6 @@ public class ConditionalTestLogic extends AbstractSmell {
         return "Conditional Test Logic";
     }
 
-    /**
-     * Returns true if any of the elements has a smell
-     */
-    public boolean hasSmell() {
-        return smellyElementList.stream().filter(x -> x.hasSmell()).count() >= 1;
-    }
 
     /**
      * Analyze the test file for test methods that use conditional statements
@@ -47,15 +37,6 @@ public class ConditionalTestLogic extends AbstractSmell {
         classVisitor = new ConditionalTestLogic.ClassVisitor();
         classVisitor.visit(testFileCompilationUnit, null);
     }
-
-    /**
-     * Returns the set of analyzed elements (i.e. test methods)
-     */
-    @Override
-    public List<SmellyElement> getSmellyElements() {
-        return smellyElementList;
-    }
-
 
     private class ClassVisitor extends VoidVisitorAdapter<Void> {
         private MethodDeclaration currentMethod = null;
@@ -80,7 +61,7 @@ public class ConditionalTestLogic extends AbstractSmell {
                 testMethod.addDataItem("ForCount", String.valueOf(forCount));
                 testMethod.addDataItem("WhileCount", String.valueOf(whileCount));
 
-                smellyElementList.add(testMethod);
+                addSmellyElement(testMethod);
 
                 //reset values for next method
                 currentMethod = null;

@@ -7,22 +7,19 @@ import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NullLiteralExpr;
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
 import edu.rit.se.testsmells.testsmell.AbstractSmell;
-import edu.rit.se.testsmells.testsmell.SmellyElement;
 import edu.rit.se.testsmells.testsmell.TestMethod;
 
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
-import java.util.List;
 
 /*
 If a test method contains an assert statement that explicitly returns a true or false, the method is marked as smelly
  */
 public class RedundantAssertion extends AbstractSmell {
 
-    private List<SmellyElement> smellyElementList;
+
 
     public RedundantAssertion() {
-        smellyElementList = new ArrayList<>();
+        super();
     }
 
     /**
@@ -34,13 +31,6 @@ public class RedundantAssertion extends AbstractSmell {
     }
 
     /**
-     * Returns true if any of the elements has a smell
-     */
-    public boolean hasSmell() {
-        return smellyElementList.stream().filter(x -> x.hasSmell()).count() >= 1;
-    }
-
-    /**
      * Analyze the test file for test methods for multiple assert statements
      */
     @Override
@@ -48,14 +38,6 @@ public class RedundantAssertion extends AbstractSmell {
         RedundantAssertion.ClassVisitor classVisitor;
         classVisitor = new RedundantAssertion.ClassVisitor();
         classVisitor.visit(testFileCompilationUnit, null);
-    }
-
-    /**
-     * Returns the set of analyzed elements (i.e. test methods)
-     */
-    @Override
-    public List<SmellyElement> getSmellyElements() {
-        return smellyElementList;
     }
 
     private class ClassVisitor extends VoidVisitorAdapter<Void> {
@@ -75,7 +57,7 @@ public class RedundantAssertion extends AbstractSmell {
                 testMethod.setHasSmell(redundantCount >= 1);
                 testMethod.addDataItem("RedundantCount", String.valueOf(redundantCount));
 
-                smellyElementList.add(testMethod);
+                addSmellyElement(testMethod);
 
                 //reset values for next method
                 currentMethod = null;

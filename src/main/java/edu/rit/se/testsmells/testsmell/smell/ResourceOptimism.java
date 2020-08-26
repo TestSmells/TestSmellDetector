@@ -10,7 +10,6 @@ import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.expr.VariableDeclarationExpr;
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
 import edu.rit.se.testsmells.testsmell.AbstractSmell;
-import edu.rit.se.testsmells.testsmell.SmellyElement;
 import edu.rit.se.testsmells.testsmell.TestMethod;
 
 import java.io.FileNotFoundException;
@@ -19,10 +18,10 @@ import java.util.List;
 
 public class ResourceOptimism extends AbstractSmell {
 
-    private List<SmellyElement> smellyElementList;
+
 
     public ResourceOptimism() {
-        smellyElementList = new ArrayList<>();
+        super();
     }
 
     /**
@@ -34,13 +33,6 @@ public class ResourceOptimism extends AbstractSmell {
     }
 
     /**
-     * Returns true if any of the elements has a smell
-     */
-    public boolean hasSmell() {
-        return smellyElementList.stream().filter(x -> x.hasSmell()).count() >= 1;
-    }
-
-    /**
      * Analyze the test file for the 'ResourceOptimism' smell
      */
     @Override
@@ -48,14 +40,6 @@ public class ResourceOptimism extends AbstractSmell {
         ResourceOptimism.ClassVisitor classVisitor;
         classVisitor = new ResourceOptimism.ClassVisitor();
         classVisitor.visit(testFileCompilationUnit, null);
-    }
-
-    /**
-     * Returns the set of analyzed elements (i.e. test methods)
-     */
-    @Override
-    public List<SmellyElement> getSmellyElements() {
-        return smellyElementList;
     }
 
 
@@ -80,7 +64,7 @@ public class ResourceOptimism extends AbstractSmell {
                 testMethod.setHasSmell(methodVariables.size() >= 1 || hasSmell == true);
                 testMethod.addDataItem("ResourceOptimismCount", String.valueOf(resourceOptimismCount));
 
-                smellyElementList.add(testMethod);
+                addSmellyElement(testMethod);
 
                 //reset values for next method
                 currentMethod = null;

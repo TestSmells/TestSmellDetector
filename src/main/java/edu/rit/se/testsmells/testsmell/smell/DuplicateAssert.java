@@ -5,7 +5,6 @@ import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
 import edu.rit.se.testsmells.testsmell.AbstractSmell;
-import edu.rit.se.testsmells.testsmell.SmellyElement;
 import edu.rit.se.testsmells.testsmell.TestMethod;
 
 import java.io.FileNotFoundException;
@@ -16,10 +15,10 @@ import java.util.Set;
 
 public class DuplicateAssert extends AbstractSmell {
 
-    private List<SmellyElement> smellyElementList;
+
 
     public DuplicateAssert() {
-        smellyElementList = new ArrayList<>();
+        super();
     }
 
     /**
@@ -31,13 +30,6 @@ public class DuplicateAssert extends AbstractSmell {
     }
 
     /**
-     * Returns true if any of the elements has a smell
-     */
-    public boolean hasSmell() {
-        return smellyElementList.stream().filter(x -> x.hasSmell()).count() >= 1;
-    }
-
-    /**
      * Analyze the test file for test methods that have multiple assert statements with the same explanation message
      */
     @Override
@@ -45,14 +37,6 @@ public class DuplicateAssert extends AbstractSmell {
         DuplicateAssert.ClassVisitor classVisitor;
         classVisitor = new DuplicateAssert.ClassVisitor();
         classVisitor.visit(testFileCompilationUnit, null);
-    }
-
-    /**
-     * Returns the set of analyzed elements (i.e. test methods)
-     */
-    @Override
-    public List<SmellyElement> getSmellyElements() {
-        return smellyElementList;
     }
 
 
@@ -83,7 +67,7 @@ public class DuplicateAssert extends AbstractSmell {
                     testMethod.setHasSmell(true);
                 }
 
-                smellyElementList.add(testMethod);
+                addSmellyElement(testMethod);
 
                 //reset values for next method
                 currentMethod = null;

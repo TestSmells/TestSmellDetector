@@ -6,12 +6,9 @@ import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
 import edu.rit.se.testsmells.testsmell.AbstractSmell;
-import edu.rit.se.testsmells.testsmell.SmellyElement;
 import edu.rit.se.testsmells.testsmell.TestMethod;
 
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
-import java.util.List;
 
 /*
 Use of Thread.sleep() in test methods can possibly lead to unexpected results as the processing time of tasks on different devices/machines can be different. Use mock objects instead
@@ -19,10 +16,10 @@ This code marks a method as smelly if the method body calls Thread.sleep()
  */
 public class SleepyTest extends AbstractSmell {
 
-    private List<SmellyElement> smellyElementList;
+
 
     public SleepyTest() {
-        smellyElementList = new ArrayList<>();
+        super();
     }
 
     /**
@@ -34,13 +31,6 @@ public class SleepyTest extends AbstractSmell {
     }
 
     /**
-     * Returns true if any of the elements has a smell
-     */
-    public boolean hasSmell() {
-        return smellyElementList.stream().filter(x -> x.hasSmell()).count() >= 1;
-    }
-
-    /**
      * Analyze the test file for test methods that use Thread.sleep()
      */
     @Override
@@ -48,14 +38,6 @@ public class SleepyTest extends AbstractSmell {
         SleepyTest.ClassVisitor classVisitor;
         classVisitor = new SleepyTest.ClassVisitor();
         classVisitor.visit(testFileCompilationUnit, null);
-    }
-
-    /**
-     * Returns the set of analyzed elements (i.e. test methods)
-     */
-    @Override
-    public List<SmellyElement> getSmellyElements() {
-        return smellyElementList;
     }
 
     private class ClassVisitor extends VoidVisitorAdapter<Void> {
@@ -75,7 +57,7 @@ public class SleepyTest extends AbstractSmell {
                 testMethod.setHasSmell(sleepCount >= 1);
                 testMethod.addDataItem("ThreadSleepCount", String.valueOf(sleepCount));
 
-                smellyElementList.add(testMethod);
+                addSmellyElement(testMethod);
 
                 //reset values for next method
                 currentMethod = null;

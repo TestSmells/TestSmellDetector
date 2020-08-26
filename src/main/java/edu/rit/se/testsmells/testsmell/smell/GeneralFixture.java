@@ -12,7 +12,6 @@ import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.ExpressionStmt;
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
 import edu.rit.se.testsmells.testsmell.AbstractSmell;
-import edu.rit.se.testsmells.testsmell.SmellyElement;
 import edu.rit.se.testsmells.testsmell.TestMethod;
 
 import java.io.FileNotFoundException;
@@ -20,14 +19,14 @@ import java.util.*;
 
 public class GeneralFixture extends AbstractSmell {
 
-    private List<SmellyElement> smellyElementList;
+
     List<MethodDeclaration> methodList;
     MethodDeclaration setupMethod;
     List<FieldDeclaration> fieldList;
     List<String> setupFields;
 
     public GeneralFixture() {
-        smellyElementList = new ArrayList<>();
+        super();
         methodList = new ArrayList<>();
         fieldList = new ArrayList<>();
         setupFields = new ArrayList<>();
@@ -39,13 +38,6 @@ public class GeneralFixture extends AbstractSmell {
     @Override
     public String getSmellName() {
         return "General Fixture";
-    }
-
-    /**
-     * Returns true if any of the elements has a smell
-     */
-    public boolean hasSmell() {
-        return smellyElementList.stream().filter(x -> x.hasSmell()).count() >= 1;
     }
 
     @Override
@@ -82,14 +74,6 @@ public class GeneralFixture extends AbstractSmell {
             //This call will visit each test method to identify the list of variables the method contains [visit(MethodDeclaration n)]
             classVisitor.visit(method, null);
         }
-    }
-
-    /**
-     * Returns the set of analyzed elements (i.e. test methods)
-     */
-    @Override
-    public List<SmellyElement> getSmellyElements() {
-        return smellyElementList;
     }
 
 
@@ -137,7 +121,7 @@ public class GeneralFixture extends AbstractSmell {
 
                 testMethod = new TestMethod(n.getNameAsString());
                 testMethod.setHasSmell(fixtureCount.size() != setupFields.size());
-                smellyElementList.add(testMethod);
+                addSmellyElement(testMethod);
 
                 fixtureCount = new HashSet<>();
                 currentMethod = null;

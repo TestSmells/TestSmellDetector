@@ -10,7 +10,6 @@ import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
 import edu.rit.se.testsmells.testsmell.AbstractSmell;
-import edu.rit.se.testsmells.testsmell.SmellyElement;
 import edu.rit.se.testsmells.testsmell.TestMethod;
 
 import java.io.FileNotFoundException;
@@ -23,13 +22,13 @@ public class LazyTest extends AbstractSmell {
     private static final String TEST_FILE = "Test";
     private static final String PRODUCTION_FILE = "Production";
     private String productionClassName;
-    private List<SmellyElement> smellyElementList;
+
     private List<MethodUsage> calledProductionMethods;
     private List<MethodDeclaration> productionMethods;
 
     public LazyTest() {
+        super();
         productionMethods = new ArrayList<>();
-        smellyElementList = new ArrayList<>();
         calledProductionMethods = new ArrayList<>();
     }
 
@@ -39,13 +38,6 @@ public class LazyTest extends AbstractSmell {
     @Override
     public String getSmellName() {
         return "Lazy Test";
-    }
-
-    /**
-     * Returns true if any of the elements has a smell
-     */
-    public boolean hasSmell() {
-        return smellyElementList.stream().filter(x -> x.hasSmell()).count() >= 1;
     }
 
     /**
@@ -73,18 +65,10 @@ public class LazyTest extends AbstractSmell {
                     // If the counts were equal it means that the production method is only used (called from) inside one test method
                     TestMethod testClass = new TestMethod(method.getTestMethod());
                     testClass.setHasSmell(true);
-                    smellyElementList.add(testClass);
+                    addSmellyElement(testClass);
                 }
             }
         }
-    }
-
-    /**
-     * Returns the set of analyzed elements (i.e. test methods)
-     */
-    @Override
-    public List<SmellyElement> getSmellyElements() {
-        return smellyElementList;
     }
 
     private class MethodUsage {

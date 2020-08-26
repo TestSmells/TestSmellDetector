@@ -5,12 +5,9 @@ import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
 import edu.rit.se.testsmells.testsmell.AbstractSmell;
-import edu.rit.se.testsmells.testsmell.SmellyElement;
 import edu.rit.se.testsmells.testsmell.TestMethod;
 
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * "Guess what's wrong?" This smell comes from having a number of assertions in a test method that have no explanation.
@@ -19,11 +16,10 @@ import java.util.List;
  */
 public class AssertionRoulette extends AbstractSmell {
 
-    private List<SmellyElement> smellyElementList;
     private int assertionsCount = 0;
 
     public AssertionRoulette() {
-        smellyElementList = new ArrayList<>();
+        super();
     }
 
     /**
@@ -32,13 +28,6 @@ public class AssertionRoulette extends AbstractSmell {
     @Override
     public String getSmellName() {
         return "Assertion Roulette";
-    }
-
-    /**
-     * Returns true if any of the elements has a smell
-     */
-    public boolean hasSmell() {
-        return smellyElementList.stream().filter(x -> x.hasSmell()).count() >= 1;
     }
 
     /**
@@ -54,14 +43,6 @@ public class AssertionRoulette extends AbstractSmell {
 
     public int getAssertionsCount() {
         return assertionsCount;
-    }
-
-    /**
-     * Returns the set of analyzed elements (i.e. test methods)
-     */
-    @Override
-    public List<SmellyElement> getSmellyElements() {
-        return smellyElementList;
     }
 
 
@@ -90,7 +71,7 @@ public class AssertionRoulette extends AbstractSmell {
 
                 testMethod.addDataItem("AssertCount", String.valueOf(assertNoMessageCount));
 
-                smellyElementList.add(testMethod);
+                addSmellyElement(testMethod);
 
                 //reset values for next method
                 currentMethod = null;

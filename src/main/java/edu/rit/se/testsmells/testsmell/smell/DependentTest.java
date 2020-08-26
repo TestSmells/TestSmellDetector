@@ -5,7 +5,6 @@ import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
 import edu.rit.se.testsmells.testsmell.AbstractSmell;
-import edu.rit.se.testsmells.testsmell.SmellyElement;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -13,12 +12,12 @@ import java.util.List;
 
 public class DependentTest extends AbstractSmell {
 
-    private List<SmellyElement> smellyElementList;
+
     private List<TestMethod> testMethods;
 
 
     public DependentTest() {
-        smellyElementList = new ArrayList<>();
+        super();
         testMethods = new ArrayList<>();
     }
 
@@ -28,13 +27,6 @@ public class DependentTest extends AbstractSmell {
     @Override
     public String getSmellName() {
         return "Dependent Test";
-    }
-
-    /**
-     * Returns true if any of the elements has a smell
-     */
-    public boolean hasSmell() {
-        return smellyElementList.stream().filter(x -> x.hasSmell()).count() >= 1;
     }
 
     /**
@@ -48,17 +40,9 @@ public class DependentTest extends AbstractSmell {
 
         for (TestMethod testMethod : testMethods) {
             if (testMethod.getCalledMethods().stream().anyMatch(x -> x.getName().equals(testMethods.stream().map(z -> z.getMethodDeclaration().getNameAsString())))){
-                smellyElementList.add(new edu.rit.se.testsmells.testsmell.TestMethod(testMethod.getMethodDeclaration().getNameAsString()));
+                addSmellyElement(new edu.rit.se.testsmells.testsmell.TestMethod(testMethod.getMethodDeclaration().getNameAsString()));
             }
         }
-    }
-
-    /**
-     * Returns the set of analyzed elements (i.e. test methods)
-     */
-    @Override
-    public List<SmellyElement> getSmellyElements() {
-        return smellyElementList;
     }
 
     private class ClassVisitor extends VoidVisitorAdapter<Void> {
