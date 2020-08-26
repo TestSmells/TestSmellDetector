@@ -7,7 +7,6 @@ import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
 import edu.rit.se.testsmells.testsmell.AbstractSmell;
 import edu.rit.se.testsmells.testsmell.SmellyElement;
 import edu.rit.se.testsmells.testsmell.TestMethod;
-import edu.rit.se.testsmells.testsmell.Util;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -18,7 +17,7 @@ import java.util.List;
  * If one of the assertions fails, you do not know which one it is.
  * A. van Deursen, L. Moonen, A. Bergh, G. Kok, “Refactoring Test Code”, Technical Report, CWI, 2001.
  */
-public class AssertionRoulette implements AbstractSmell {
+public class AssertionRoulette extends AbstractSmell {
 
     private List<SmellyElement> smellyElementList;
     private int assertionsCount = 0;
@@ -76,7 +75,7 @@ public class AssertionRoulette implements AbstractSmell {
         // examine all methods in the test class
         @Override
         public void visit(MethodDeclaration n, Void arg) {
-            if (Util.isValidTestMethod(n)) {
+            if (isValidTestMethod(n)) {
                 currentMethod = n;
                 testMethod = new TestMethod(n.getNameAsString());
                 testMethod.setHasSmell(false); //default value is false (i.e. no smell)

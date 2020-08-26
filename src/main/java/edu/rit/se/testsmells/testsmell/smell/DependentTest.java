@@ -6,13 +6,12 @@ import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
 import edu.rit.se.testsmells.testsmell.AbstractSmell;
 import edu.rit.se.testsmells.testsmell.SmellyElement;
-import edu.rit.se.testsmells.testsmell.Util;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DependentTest implements AbstractSmell {
+public class DependentTest extends AbstractSmell {
 
     private List<SmellyElement> smellyElementList;
     private List<TestMethod> testMethods;
@@ -69,7 +68,7 @@ public class DependentTest implements AbstractSmell {
         // examine all methods in the test class
         @Override
         public void visit(MethodDeclaration n, Void arg) {
-            if (Util.isValidTestMethod(n)) {
+            if (isValidTestMethod(n)) {
                 currentMethod = n;
                 calledMethods = new ArrayList<>();
 

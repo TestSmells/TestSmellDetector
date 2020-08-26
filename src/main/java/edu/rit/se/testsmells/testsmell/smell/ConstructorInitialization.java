@@ -18,7 +18,7 @@ import java.util.List;
 This class checks if the code file contains a Constructor. Ideally, the test suite should not have a constructor. Initialization of fields should be in the setUP() method
 If this code detects the existence of a constructor, it sets the class as smelly
  */
-public class ConstructorInitialization implements AbstractSmell {
+public class ConstructorInitialization extends AbstractSmell {
 
     private List<SmellyElement> smellyElementList;
     private String testFileName;

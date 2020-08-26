@@ -14,7 +14,7 @@ import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class IgnoredTest implements AbstractSmell {
+public class IgnoredTest extends AbstractSmell {
 
     private List<SmellyElement> smellyElementList;
 

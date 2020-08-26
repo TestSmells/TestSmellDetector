@@ -6,7 +6,6 @@ import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
 import edu.rit.se.testsmells.testsmell.AbstractSmell;
 import edu.rit.se.testsmells.testsmell.SmellyElement;
 import edu.rit.se.testsmells.testsmell.TestMethod;
-import edu.rit.se.testsmells.testsmell.Util;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -15,7 +14,7 @@ import java.util.List;
 /*
 If a test methods contains a statements that exceeds a certain threshold, the method is marked as smelly
  */
-public class VerboseTest implements AbstractSmell {
+public class VerboseTest extends AbstractSmell {
 
     private List<SmellyElement> smellyElementList;
 
@@ -65,7 +64,7 @@ public class VerboseTest implements AbstractSmell {
         // examine all methods in the test class
         @Override
         public void visit(MethodDeclaration n, Void arg) {
-            if (Util.isValidTestMethod(n)) {
+            if (isValidTestMethod(n)) {
                 currentMethod = n;
                 testMethod = new TestMethod(n.getNameAsString());
                 testMethod.setHasSmell(false); //default value is false (i.e. no smell)

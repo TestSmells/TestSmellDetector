@@ -12,7 +12,6 @@ import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
 import edu.rit.se.testsmells.testsmell.AbstractSmell;
 import edu.rit.se.testsmells.testsmell.SmellyElement;
 import edu.rit.se.testsmells.testsmell.TestMethod;
-import edu.rit.se.testsmells.testsmell.Util;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -20,7 +19,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-public class LazyTest implements AbstractSmell {
+public class LazyTest extends AbstractSmell {
     private static final String TEST_FILE = "Test";
     private static final String PRODUCTION_FILE = "Production";
     private String productionClassName;
@@ -141,7 +140,7 @@ public class LazyTest implements AbstractSmell {
         public void visit(MethodDeclaration n, Void arg) {
             // ensure that this method is only executed for the test file
             if (Objects.equals(fileType, TEST_FILE)) {
-                if (Util.isValidTestMethod(n)) {
+                if (isValidTestMethod(n)) {
                     currentMethod = n;
                     testMethod = new TestMethod(currentMethod.getNameAsString());
                     testMethod.setHasSmell(false); //default value is false (i.e. no smell)

@@ -10,14 +10,13 @@ import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
 import edu.rit.se.testsmells.testsmell.AbstractSmell;
 import edu.rit.se.testsmells.testsmell.SmellyElement;
 import edu.rit.se.testsmells.testsmell.TestMethod;
-import edu.rit.se.testsmells.testsmell.Util;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class UnknownTest implements AbstractSmell {
+public class UnknownTest extends AbstractSmell {
 
     private List<SmellyElement> smellyElementList;
 
@@ -70,7 +69,7 @@ public class UnknownTest implements AbstractSmell {
         // examine all methods in the test class
         @Override
         public void visit(MethodDeclaration n, Void arg) {
-            if (Util.isValidTestMethod(n)) {
+            if (isValidTestMethod(n)) {
                 Optional<AnnotationExpr> assertAnnotation = n.getAnnotationByName("Test");
                 if (assertAnnotation.isPresent()) {
                     for (int i = 0; i < assertAnnotation.get().getNodeLists().size(); i++) {

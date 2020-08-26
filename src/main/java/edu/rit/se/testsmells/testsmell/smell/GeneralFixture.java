@@ -14,12 +14,11 @@ import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
 import edu.rit.se.testsmells.testsmell.AbstractSmell;
 import edu.rit.se.testsmells.testsmell.SmellyElement;
 import edu.rit.se.testsmells.testsmell.TestMethod;
-import edu.rit.se.testsmells.testsmell.Util;
 
 import java.io.FileNotFoundException;
 import java.util.*;
 
-public class GeneralFixture implements AbstractSmell {
+public class GeneralFixture extends AbstractSmell {
 
     private List<SmellyElement> smellyElementList;
     List<MethodDeclaration> methodList;
@@ -95,25 +94,24 @@ public class GeneralFixture implements AbstractSmell {
 
 
     private class ClassVisitor extends VoidVisitorAdapter<Void> {
-        private MethodDeclaration methodDeclaration = null;
         private MethodDeclaration currentMethod = null;
         TestMethod testMethod;
-        private Set<String> fixtureCount = new HashSet();
+        private Set<String> fixtureCount = new HashSet<>();
 
         @Override
         public void visit(ClassOrInterfaceDeclaration n, Void arg) {
             NodeList<BodyDeclaration<?>> members = n.getMembers();
-            for (int i = 0; i < members.size(); i++) {
-                if (members.get(i) instanceof MethodDeclaration) {
-                    methodDeclaration = (MethodDeclaration) members.get(i);
+            for (BodyDeclaration<?> member : members) {
+                if (member instanceof MethodDeclaration) {
+                    MethodDeclaration methodDeclaration = (MethodDeclaration) member;
 
                     //Get a list of all test methods
-                    if (Util.isValidTestMethod(methodDeclaration)) {
+                    if (isValidTestMethod(methodDeclaration)) {
                         methodList.add(methodDeclaration);
                     }
 
                     //Get the setup method
-                    if (Util.isValidSetupMethod(methodDeclaration)) {
+                    if (isValidSetupMethod(methodDeclaration)) {
                         //It should have a body
                         if (methodDeclaration.getBody().isPresent()) {
                             setupMethod = methodDeclaration;
@@ -122,8 +120,8 @@ public class GeneralFixture implements AbstractSmell {
                 }
 
                 //Get all fields in the class
-                if (members.get(i) instanceof FieldDeclaration) {
-                    fieldList.add((FieldDeclaration) members.get(i));
+                if (member instanceof FieldDeclaration) {
+                    fieldList.add((FieldDeclaration) member);
                 }
             }
         }
@@ -131,7 +129,7 @@ public class GeneralFixture implements AbstractSmell {
         // examine all methods in the test class
         @Override
         public void visit(MethodDeclaration n, Void arg) {
-            if (Util.isValidTestMethod(n)) {
+            if (isValidTestMethod(n)) {
                 currentMethod = n;
 
                 //call visit(NameExpr) for current method
@@ -141,7 +139,7 @@ public class GeneralFixture implements AbstractSmell {
                 testMethod.setHasSmell(fixtureCount.size() != setupFields.size());
                 smellyElementList.add(testMethod);
 
-                fixtureCount = new HashSet();;
+                fixtureCount = new HashSet<>();
                 currentMethod = null;
             }
         }
@@ -151,10 +149,7 @@ public class GeneralFixture implements AbstractSmell {
             if (currentMethod != null) {
                 //check if the variable contained in the current test method is also contained in the setup method
                 if (setupFields.contains(n.getNameAsString())) {
-                    if(!fixtureCount.contains(n.getNameAsString())){
-                        fixtureCount.add(n.getNameAsString());
-                    }
-                    //System.out.println(currentMethod.getNameAsString() + " : " + n.getName().toString());
+                    fixtureCount.add(n.getNameAsString());
                 }
             }
 

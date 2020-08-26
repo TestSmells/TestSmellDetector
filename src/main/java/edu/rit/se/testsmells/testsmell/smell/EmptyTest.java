@@ -6,7 +6,6 @@ import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
 import edu.rit.se.testsmells.testsmell.AbstractSmell;
 import edu.rit.se.testsmells.testsmell.SmellyElement;
 import edu.rit.se.testsmells.testsmell.TestMethod;
-import edu.rit.se.testsmells.testsmell.Util;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -16,7 +15,7 @@ import java.util.List;
  * This class checks if a test method is empty (i.e. the method does not contain statements in its body)
  * If the the number of statements in the body is 0, then the method is smelly
  */
-public class EmptyTest implements AbstractSmell {
+public class EmptyTest extends AbstractSmell {
 
     private List<SmellyElement> smellyElementList;
 
@@ -68,7 +67,7 @@ public class EmptyTest implements AbstractSmell {
          */
         @Override
         public void visit(MethodDeclaration n, Void arg) {
-            if (Util.isValidTestMethod(n)) {
+            if (isValidTestMethod(n)) {
                 testMethod = new TestMethod(n.getNameAsString());
                 testMethod.setHasSmell(false); //default value is false (i.e. no smell)
                 //method should not be abstract

@@ -8,7 +8,6 @@ import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
 import edu.rit.se.testsmells.testsmell.AbstractSmell;
 import edu.rit.se.testsmells.testsmell.SmellyElement;
 import edu.rit.se.testsmells.testsmell.TestMethod;
-import edu.rit.se.testsmells.testsmell.Util;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -18,7 +17,7 @@ import java.util.List;
 Use of Thread.sleep() in test methods can possibly lead to unexpected results as the processing time of tasks on different devices/machines can be different. Use mock objects instead
 This code marks a method as smelly if the method body calls Thread.sleep()
  */
-public class SleepyTest implements AbstractSmell {
+public class SleepyTest extends AbstractSmell {
 
     private List<SmellyElement> smellyElementList;
 
@@ -67,7 +66,7 @@ public class SleepyTest implements AbstractSmell {
         // examine all methods in the test class
         @Override
         public void visit(MethodDeclaration n, Void arg) {
-            if (Util.isValidTestMethod(n)) {
+            if (isValidTestMethod(n)) {
                 currentMethod = n;
                 testMethod = new TestMethod(n.getNameAsString());
                 testMethod.setHasSmell(false); //default value is false (i.e. no smell)
