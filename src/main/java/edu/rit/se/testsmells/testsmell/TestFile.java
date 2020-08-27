@@ -4,11 +4,41 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class TestFile {
-    private String app, testFilePath, productionFilePath;
-    private List<AbstractSmell> testSmells;
+    private final String app, testFilePath, productionFilePath;
+    private final List<AbstractSmell> testSmells;
+
+    public TestFile(String app, String testFilePath, String productionFilePath) {
+        this.app = app;
+        this.testFilePath = testFilePath;
+        this.productionFilePath = productionFilePath;
+        this.testSmells = new ArrayList<>();
+    }
+
+    public Map<String, String> getTestDescriptionEntries() {
+        Map<String, String> descriptions = new HashMap<>();
+
+        descriptions.put("App", getApp());
+        descriptions.put("TestFileName", getTestFileName());
+        descriptions.put("TestFilePath", getTestFilePath());
+        descriptions.put("ProductionFilePath", getProductionFilePath());
+        descriptions.put("RelativeTestFilePath", getRelativeTestFilePath());
+        descriptions.put("RelativeProductionFilePath", getRelativeProductionFilePath());
+
+        return descriptions;
+    }
+
+    public void addDetectedSmell(AbstractSmell smell) {
+        testSmells.add(smell);
+    }
+
+    public List<AbstractSmell> getTestSmells() {
+        return testSmells;
+    }
 
     public String getApp() {
         return app;
@@ -20,34 +50,6 @@ public class TestFile {
 
     public String getTestFilePath() {
         return testFilePath;
-    }
-
-    public List<AbstractSmell> getTestSmells() {
-        return testSmells;
-    }
-
-    public boolean hasProductionFile() {
-        return ((productionFilePath != null && !productionFilePath.isEmpty()));
-    }
-
-    public TestFile(String app, String testFilePath, String productionFilePath) {
-        this.app = app;
-        this.testFilePath = testFilePath;
-        this.productionFilePath = productionFilePath;
-        this.testSmells = new ArrayList<>();
-    }
-
-    public void addDetectedSmell(AbstractSmell smell) {
-        testSmells.add(smell);
-    }
-
-    /**
-     * Supposed to return the version of the project.
-     * Returns the "N.I.Y", Not Implemented Yet string
-     * todo: not implemented in any way yet
-     */
-    public String getTagName() {
-        return "N.I.Y";
     }
 
     public String getTestFileName() {

@@ -1,6 +1,5 @@
 package edu.rit.se.testsmells;
 
-import edu.rit.se.testsmells.testsmell.AbstractSmell;
 import edu.rit.se.testsmells.testsmell.ResultsWriter;
 import edu.rit.se.testsmells.testsmell.TestFile;
 import edu.rit.se.testsmells.testsmell.TestSmellDetector;
@@ -19,37 +18,26 @@ public class Main {
     public static void main(String[] args) throws IOException {
         File inputFile = handleCliArgs(args);
 
-        TestSmellDetector testSmellDetector = TestSmellDetector.createTestSmellDetector();
+        TestSmellDetector testSmellDetector = initializeSmells();
 
-        initializeSmells(testSmellDetector);
-
-        ResultsWriter resultsWriter = initializeOutputFile(testSmellDetector.getTestSmellNames());
-
-        /*
-          Iterate through all test files to detect smells and then write the output
-        */
-        for (TestFile rawFile : readInputTestFiles(inputFile)) {
+        List<TestFile> files = readInputTestFiles(inputFile);
+        ResultsWriter resultsWriter = initializeOutputFile(testSmellDetector, files.get(0));
+        for (TestFile rawFile : files) {
             System.out.println(getCurrentDateFormatted() + " Processing: " + rawFile.getTestFilePath());
-            System.out.println("Processing: " + rawFile.getTestFilePath());
-
             TestFile smellyFile = testSmellDetector.detectSmells(rawFile);
 
-            writeOutput(resultsWriter, smellyFile);
+            resultsWriter.exportSmellsToFile(smellyFile);
         }
 
         System.out.println("end");
     }
 
-    private static void writeOutput(ResultsWriter resultsWriter, TestFile smellyFile) throws IOException {
-        List<String> entries = getTestDescriptionEntries(smellyFile);
-        for (AbstractSmell smell : smellyFile.getTestSmells()) {
-            try {
-                entries.add(String.valueOf(smell.hasSmell()));
-            } catch (NullPointerException e) {
-                entries.add("");
-            }
-        }
-        resultsWriter.writeLine(entries);
+    private static ResultsWriter initializeOutputFile(TestSmellDetector testSmellDetector, TestFile anyFile) throws IOException {
+        ResultsWriter resultsWriter = ResultsWriter.createResultsWriter();
+
+        resultsWriter.writeCSVHeader(testSmellDetector, anyFile);
+
+        return resultsWriter;
     }
 
     private static List<TestFile> readInputTestFiles(File inputFile) throws IOException {
@@ -87,38 +75,9 @@ public class Main {
         return (new SimpleDateFormat("yyyy/MM/dd HH:mm:ss")).format(new Date());
     }
 
-    private static List<String> getTestDescriptionEntries(TestFile smellyFile) {
-        List<String> columnValues = new ArrayList<>();
+    private static TestSmellDetector initializeSmells() {
+        TestSmellDetector testSmellDetector = TestSmellDetector.createTestSmellDetector();
 
-        columnValues.add(smellyFile.getApp());
-        columnValues.add(smellyFile.getTestFileName());
-        columnValues.add(smellyFile.getTestFilePath());
-        columnValues.add(smellyFile.getProductionFilePath());
-        columnValues.add(smellyFile.getRelativeTestFilePath());
-        columnValues.add(smellyFile.getRelativeProductionFilePath());
-
-        return columnValues;
-    }
-
-    private static ResultsWriter initializeOutputFile(List<String> testSmellNames) throws IOException {
-        ResultsWriter resultsWriter = ResultsWriter.createResultsWriter();
-        List<String> columnNames = new ArrayList<>();
-
-        columnNames.add("App");
-        columnNames.add("TestClass");
-        columnNames.add("TestFilePath");
-        columnNames.add("ProductionFilePath");
-        columnNames.add("RelativeTestFilePath");
-        columnNames.add("RelativeProductionFilePath");
-
-        columnNames.addAll(testSmellNames);
-
-        resultsWriter.writeColumnNames(columnNames);
-
-        return resultsWriter;
-    }
-
-    private static void initializeSmells(TestSmellDetector testSmellDetector) {
         testSmellDetector.addDetectableSmell(new AssertionRoulette());
         testSmellDetector.addDetectableSmell(new ConditionalTestLogic());
         testSmellDetector.addDetectableSmell(new ConstructorInitialization());
@@ -140,6 +99,8 @@ public class Main {
         testSmellDetector.addDetectableSmell(new ResourceOptimism());
         testSmellDetector.addDetectableSmell(new MagicNumberTest());
         testSmellDetector.addDetectableSmell(new DependentTest());
+
+        return testSmellDetector;
     }
 
 

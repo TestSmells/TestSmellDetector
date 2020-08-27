@@ -3,6 +3,7 @@ package edu.rit.se.testsmells.testsmell;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.text.MessageFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
@@ -17,7 +18,7 @@ public class ResultsWriter {
     /**
      * Creates the file into which output it to be written into. Results from each file will be stored in a new file
      *
-     * @throws IOException
+     * @throws IOException Failed to create/open output file
      */
     private ResultsWriter() throws IOException {
         String time = String.valueOf(Calendar.getInstance().getTimeInMillis());
@@ -29,39 +30,37 @@ public class ResultsWriter {
      * Factory method that provides a new instance of the ResultsWriter
      *
      * @return new ResultsWriter instance
-     * @throws IOException
+     * @throws IOException Failed to create/open output file
      */
     public static ResultsWriter createResultsWriter() throws IOException {
         return new ResultsWriter();
     }
 
-    /**
-     * Writes column names into the CSV file
-     *
-     * @param columnNames the column names
-     * @throws IOException
-     */
-    public void writeColumnNames(List<String> columnNames) throws IOException {
-        writeOutput(columnNames);
+    public void writeCSVHeader(TestSmellDetector testSmellDetector, TestFile anyFile) throws IOException {
+        List<String> headers = new ArrayList<>(anyFile.getTestDescriptionEntries().keySet());
+        headers.addAll(testSmellDetector.getTestSmellNames());
+        writeCSV(headers);
     }
 
-    /**
-     * Writes column values into the CSV file
-     *
-     * @param columnValues the column values
-     * @throws IOException
-     */
-    public void writeLine(List<String> columnValues) throws IOException {
-        writeOutput(columnValues);
+    public void exportSmellsToFile(TestFile fileTestSmells) throws IOException {
+        List<String> entries = new ArrayList<>(fileTestSmells.getTestDescriptionEntries().values());
+        for (AbstractSmell smell : fileTestSmells.getTestSmells()) {
+            try {
+                entries.add(String.valueOf(smell.hasSmell()));
+            } catch (NullPointerException e) {
+                entries.add("");
+            }
+        }
+        writeCSV(entries);
     }
 
     /**
      * Appends the input values into the CSV file
      *
      * @param dataValues the data that needs to be written into the file
-     * @throws IOException
+     * @throws IOException Failed to create/open output file
      */
-    private void writeOutput(List<String> dataValues) throws IOException {
+    public void writeCSV(List<String> dataValues) throws IOException {
         writer = new FileWriter(outputFile, true);
 
         for (int i = 0; i < dataValues.size(); i++) {
