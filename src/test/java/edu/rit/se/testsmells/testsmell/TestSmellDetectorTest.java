@@ -55,6 +55,10 @@ class TestSmellDetectorTest {
         }
 
         @Override
+        protected void checkValidity(String testPath, String prodPath, String app) {
+        }
+
+        @Override
         public String getTestFileNameWithoutExtension() {
             return "";
         }

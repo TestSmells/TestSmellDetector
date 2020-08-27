@@ -11,9 +11,24 @@ public class TestFile extends SmellsContainer {
 
     public TestFile(String app, String testFilePath, String productionFilePath) {
         super();
+        checkValidity(testFilePath, productionFilePath, app);
         this.app = app;
         this.testFilePath = testFilePath;
         this.productionFilePath = productionFilePath;
+    }
+
+    protected void checkValidity(String testPath, String prodPath, String app) {
+        if (!haveExtension(testPath, prodPath) || !haveFileSeparator(testPath, prodPath) || app.isEmpty()) {
+            throw new IllegalArgumentException("Both testFilePath and productionFilePath should include extensions and file separator. App cannot be empty!");
+        }
+    }
+
+    private boolean haveFileSeparator(String testPath, String prodPath) {
+        return testPath.lastIndexOf(File.separator) != -1 && prodPath.lastIndexOf(File.separator) != -1;
+    }
+
+    private boolean haveExtension(String testPath, String prodPath) {
+        return testPath.lastIndexOf('.') != -1 && prodPath.lastIndexOf('.') != -1;
     }
 
     public Map<String, String> getTestDescriptionEntries() {
@@ -76,11 +91,7 @@ public class TestFile extends SmellsContainer {
      * @return the relative test file path
      */
     public String getRelativeTestFilePath() {
-        if (!StringUtils.isEmpty(testFilePath)) {
-            int projectNameIndex = testFilePath.lastIndexOf(app);
-            if (projectNameIndex == -1) return "";
-            return testFilePath.substring(projectNameIndex + app.length() + File.separator.length());
-        } else return "";
+        return extractRelativePathFrom(testFilePath);
     }
 
     /**
@@ -90,10 +101,14 @@ public class TestFile extends SmellsContainer {
      * @return the relative production file path
      */
     public String getRelativeProductionFilePath() {
-        if (!StringUtils.isEmpty(productionFilePath)) {
-            int projectNameIndex = productionFilePath.lastIndexOf(app);
+        return extractRelativePathFrom(productionFilePath);
+    }
+
+    private String extractRelativePathFrom(String path) {
+        if (!StringUtils.isEmpty(path)) {
+            int projectNameIndex = path.lastIndexOf(app);
             if (projectNameIndex == -1) return "";
-            return productionFilePath.substring(projectNameIndex + app.length() + File.separator.length());
+            return path.substring(projectNameIndex + app.length() + File.separator.length());
         } else return "";
     }
 }
