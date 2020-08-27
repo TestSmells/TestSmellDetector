@@ -3,20 +3,17 @@ package edu.rit.se.testsmells.testsmell;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-public class TestFile {
+public class TestFile extends SmellsContainer {
     private final String app, testFilePath, productionFilePath;
-    private final List<AbstractSmell> testSmells;
 
     public TestFile(String app, String testFilePath, String productionFilePath) {
+        super();
         this.app = app;
         this.testFilePath = testFilePath;
         this.productionFilePath = productionFilePath;
-        this.testSmells = new ArrayList<>();
     }
 
     public Map<String, String> getTestDescriptionEntries() {
@@ -32,14 +29,6 @@ public class TestFile {
         return descriptions;
     }
 
-    public void addDetectedSmell(AbstractSmell smell) {
-        testSmells.add(smell);
-    }
-
-    public List<AbstractSmell> getTestSmells() {
-        return testSmells;
-    }
-
     public String getApp() {
         return app;
     }
@@ -52,26 +41,36 @@ public class TestFile {
         return testFilePath;
     }
 
-    public String getTestFileName() {
-        int lastIndex = testFilePath.lastIndexOf(File.separator);
-        return testFilePath.substring(lastIndex + 1);
-    }
-
     public String getTestFileNameWithoutExtension() {
-        int lastIndex = getTestFileName().lastIndexOf(".");
-        return getTestFileName().substring(0, lastIndex);
+        return removeExtension(getTestFileName());
     }
 
     public String getProductionFileNameWithoutExtension() {
-        int lastIndex = getProductionFileName().lastIndexOf(".");
-        if (lastIndex == -1) return "";
-        return getProductionFileName().substring(0, lastIndex);
+        return removeExtension(getProductionFileName());
+    }
+
+    private String removeExtension(String filename) {
+        try {
+            return filename.substring(0, filename.lastIndexOf("."));
+        } catch (StringIndexOutOfBoundsException e) {
+            return "";
+        }
+    }
+
+    private String extractFileFromPath(String path) {
+        try {
+            return path.substring(path.lastIndexOf(File.separator) + 1);
+        } catch (StringIndexOutOfBoundsException e) {
+            return "";
+        }
+    }
+
+    public String getTestFileName() {
+        return extractFileFromPath(testFilePath);
     }
 
     public String getProductionFileName() {
-        int lastIndex = productionFilePath.lastIndexOf(File.separator);
-        if (lastIndex == -1) return "";
-        return productionFilePath.substring(lastIndex + 1);
+        return extractFileFromPath(productionFilePath);
     }
 
     /**

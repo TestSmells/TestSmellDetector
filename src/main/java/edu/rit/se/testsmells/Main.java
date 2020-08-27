@@ -22,11 +22,11 @@ public class Main {
 
         List<TestFile> files = readInputTestFiles(inputFile);
         ResultsWriter resultsWriter = initializeOutputFile(testSmellDetector, files.get(0));
-        for (TestFile rawFile : files) {
-            System.out.println(getCurrentDateFormatted() + " Processing: " + rawFile.getTestFilePath());
-            TestFile smellyFile = testSmellDetector.detectSmells(rawFile);
+        for (TestFile file : files) {
+            System.out.println(getCurrentDateFormatted() + " Processing: " + file.getTestFilePath());
 
-            resultsWriter.exportSmellsToFile(smellyFile);
+            testSmellDetector.detectSmells(file);
+            resultsWriter.exportSmells(file);
         }
 
         System.out.println("end");

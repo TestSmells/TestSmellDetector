@@ -36,13 +36,13 @@ public class ResultsWriter {
         return new ResultsWriter();
     }
 
-    public void writeCSVHeader(TestSmellDetector testSmellDetector, TestFile anyFile) throws IOException {
+    public void writeCSVHeader(TestSmellDetector testSmellDetector, SmellsContainer anyFile) throws IOException {
         List<String> headers = new ArrayList<>(anyFile.getTestDescriptionEntries().keySet());
         headers.addAll(testSmellDetector.getTestSmellNames());
         writeCSV(headers);
     }
 
-    public void exportSmellsToFile(TestFile fileTestSmells) throws IOException {
+    public void exportSmells(SmellsContainer fileTestSmells) throws IOException {
         List<String> entries = new ArrayList<>(fileTestSmells.getTestDescriptionEntries().values());
         for (AbstractSmell smell : fileTestSmells.getTestSmells()) {
             try {

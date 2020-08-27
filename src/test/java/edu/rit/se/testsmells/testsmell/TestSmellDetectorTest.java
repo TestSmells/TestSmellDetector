@@ -39,7 +39,8 @@ class TestSmellDetectorTest {
         List<AbstractSmell> smells = new ArrayList<>();
 
         try {
-            smells = this.sut.detectSmells(tf).getTestSmells();
+            this.sut.detectSmells(tf);
+            smells = tf.getTestSmells();
         } catch (IOException e) {
             fail("Exception IOException unexpectedly raised: " + e.getMessage());
         }

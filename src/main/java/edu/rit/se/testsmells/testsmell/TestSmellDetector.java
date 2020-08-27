@@ -47,7 +47,7 @@ public class TestSmellDetector {
     /**
      * Loads the java source code file into an AST and then analyzes it for the existence of the different types of test smells
      */
-    public TestFile detectSmells(TestFile testFile) throws IOException {
+    public void detectSmells(TestFile testFile) throws IOException {
         CompilationUnit testFileCompilationUnit = parseIntoCompilationUnit(testFile.getTestFilePath());
 
         CompilationUnit productionFileCompilationUnit = parseIntoCompilationUnit(testFile.getProductionFilePath());
@@ -62,8 +62,6 @@ public class TestSmellDetector {
                 testFile.addDetectedSmell(null);
             }
         }
-
-        return testFile;
 
     }
 
