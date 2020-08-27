@@ -53,16 +53,12 @@ public class TestFile extends SmellsContainer {
         try {
             return filename.substring(0, filename.lastIndexOf("."));
         } catch (StringIndexOutOfBoundsException e) {
-            return "";
+            return filename;
         }
     }
 
     private String extractFileFromPath(String path) {
-        try {
-            return path.substring(path.lastIndexOf(File.separator) + 1);
-        } catch (StringIndexOutOfBoundsException e) {
-            return "";
-        }
+        return path.substring(path.lastIndexOf(File.separator) + 1);
     }
 
     public String getTestFileName() {

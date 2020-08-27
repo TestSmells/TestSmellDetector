@@ -5,6 +5,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledOnOs;
 import org.junit.jupiter.api.condition.OS;
 
+import java.io.File;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class TestFileTest {
@@ -88,5 +90,92 @@ class TestFileTest {
         String oracle = "code\\test\\GraphTest.java";
         String output = testFileWindows.getRelativeTestFilePath();
         assertEquals(oracle, output);
+    }
+}
+
+class FilePathWithoutSeparatorTest {
+    String path;
+    TestFile sut;
+
+    @BeforeEach
+    public void setUp() {
+        path = "file.extension";
+        sut = new TestFile("", path, path);
+    }
+
+    @Test
+    public void testTestFilePath() {
+        assertEquals(sut.getTestFilePath(), path);
+    }
+
+    @Test
+    public void testTestFileName() {
+        assertEquals(sut.getTestFileName(), path);
+    }
+
+    @Test
+    public void testProductionFilePath() {
+        assertEquals(sut.getProductionFilePath(), path);
+    }
+
+    @Test
+    public void testProductionFileName() {
+        assertEquals(sut.getProductionFileName(), path);
+    }
+}
+
+class FileWithoutExtension {
+    String filename;
+    String relativePath;
+    String path;
+    TestFile sut;
+
+    @BeforeEach
+    public void setUp() {
+        String app = "folder";
+        filename = "fileWithoutExtension";
+        relativePath = "to" + File.separator + filename;
+        path = app + File.separator + relativePath;
+        sut = new TestFile(app, path, path);
+    }
+
+    @Test
+    public void testTestFilePath() {
+        assertEquals(sut.getTestFilePath(), path);
+    }
+
+    @Test
+    public void testRelativeTestFilePath() {
+        assertEquals(sut.getRelativeTestFilePath(), relativePath);
+    }
+
+    @Test
+    public void testTestFileName() {
+        assertEquals(sut.getTestFileName(), filename);
+    }
+
+    @Test
+    public void testTestFileNameWithoutExtension() {
+        assertEquals(sut.getTestFileNameWithoutExtension(), filename);
+    }
+
+    @Test
+    public void testProductionFilePath() {
+        assertEquals(sut.getProductionFilePath(), path);
+    }
+
+    @Test
+    public void testRelativeProductionFilePath() {
+        assertEquals(sut.getRelativeProductionFilePath(), relativePath);
+    }
+
+    @Test
+    public void testProductionFileName() {
+        assertEquals(sut.getProductionFileName(), filename);
+    }
+
+    @Test
+    public void testProductionFileNameWithoutExtension() {
+        assertEquals(sut.getProductionFileNameWithoutExtension(), filename);
     }
 }
