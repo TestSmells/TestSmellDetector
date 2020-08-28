@@ -3,12 +3,17 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-
     <groupId>edu.rit.se.testsmells</groupId>
     <artifactId>TestSmellDetector</artifactId>
     <version>0.1</version>
     <packaging>jar</packaging>
     <build>
+        <resources>
+            <resource>
+                <directory>src/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -36,6 +41,17 @@
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <mainClass>${project.MainClass}</mainClass>
+                        </manifest>
+                    </archive>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-assembly-plugin</artifactId>
                 <executions>
                     <execution>
@@ -46,9 +62,7 @@
                         <configuration>
                             <archive>
                                 <manifest>
-                                    <mainClass>
-                                        Main
-                                    </mainClass>
+                                    <mainClass>${project.MainClass}</mainClass>
                                 </manifest>
                             </archive>
                             <descriptorRefs>
