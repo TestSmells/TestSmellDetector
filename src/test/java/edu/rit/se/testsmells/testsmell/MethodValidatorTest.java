@@ -170,8 +170,8 @@ class MethodValidatorTest {
 
         @Override
         public void visit(MethodDeclaration n, Void arg) {
-            super.visit(n, arg);
             func.accept(n);
+            super.visit(n, arg);
         }
     }
 }

@@ -29,6 +29,10 @@
                         <version>5.4.2</version>
                     </dependency>
                 </dependencies>
+                <configuration>
+                    <excludedGroups>integration</excludedGroups>
+                    <argLine>--illegal-access=permit</argLine>
+                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -56,6 +60,23 @@
             </plugin>
         </plugins>
     </build>
+    <profiles>
+        <profile>
+            <id>integration</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <configuration>
+                            <groups>integration</groups>
+                            <excludedGroups>none</excludedGroups>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 
     <dependencies>
         <dependency>
@@ -87,5 +108,5 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
-    
+
 </project>

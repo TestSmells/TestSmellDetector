@@ -1,25 +1,33 @@
 package edu.rit.se.testsmells.testsmell;
 
-import org.apache.commons.lang3.StringUtils;
-
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
-public class TestFile extends SmellsContainer {
+public class TestFile implements SmellsContainer {
     private final String app, testFilePath, productionFilePath;
 
     public TestFile(String app, String testFilePath, String productionFilePath) {
-        super();
         checkValidity(testFilePath, productionFilePath, app);
         this.app = app;
         this.testFilePath = testFilePath;
         this.productionFilePath = productionFilePath;
     }
 
+    /**
+     * Apply validation checks on constructor params.
+     * It should be overridable for test purpose
+     *
+     * @param testPath Test file path (must contain file extension and be in a subfolder)
+     * @param prodPath Production file path (must contain file extension and be in a subfolder)
+     * @param app      Project name (cannot be empty)
+     */
     protected void checkValidity(String testPath, String prodPath, String app) {
-        if (!haveExtension(testPath, prodPath) || !haveFileSeparator(testPath, prodPath) || app.isEmpty()) {
-            throw new IllegalArgumentException("Both testFilePath and productionFilePath should include extensions and file separator. App cannot be empty!");
+        if (!haveExtension(testPath, prodPath) || !haveFileSeparator(testPath, prodPath)) {
+            throw new IllegalArgumentException("Both testFilePath and productionFilePath should include extensions and file separator.");
+        }
+        if (app.isEmpty()) {
+            throw new IllegalArgumentException("App cannot be empty!");
         }
     }
 
@@ -31,6 +39,11 @@ public class TestFile extends SmellsContainer {
         return testPath.lastIndexOf('.') != -1 && prodPath.lastIndexOf('.') != -1;
     }
 
+    /**
+     * Retrieve each description property name and getter method in a HashMap
+     *
+     * @return A Map of description properties
+     */
     public Map<String, String> getTestDescriptionEntries() {
         Map<String, String> descriptions = new HashMap<>();
 
@@ -65,11 +78,7 @@ public class TestFile extends SmellsContainer {
     }
 
     private String removeExtension(String filename) {
-        try {
-            return filename.substring(0, filename.lastIndexOf("."));
-        } catch (StringIndexOutOfBoundsException e) {
-            return filename;
-        }
+        return filename.substring(0, filename.lastIndexOf("."));
     }
 
     private String extractFileFromPath(String path) {
@@ -105,10 +114,8 @@ public class TestFile extends SmellsContainer {
     }
 
     private String extractRelativePathFrom(String path) {
-        if (!StringUtils.isEmpty(path)) {
-            int projectNameIndex = path.lastIndexOf(app);
-            if (projectNameIndex == -1) return "";
-            return path.substring(projectNameIndex + app.length() + File.separator.length());
-        } else return "";
+        int projectNameIndex = path.lastIndexOf(app);
+        if (projectNameIndex == -1) return "";
+        return path.substring(projectNameIndex + app.length() + File.separator.length());
     }
 }
