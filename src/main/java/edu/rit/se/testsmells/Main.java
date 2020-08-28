@@ -1,5 +1,6 @@
 package edu.rit.se.testsmells;
 
+import edu.rit.se.testsmells.testsmell.ExportingGranularityController;
 import edu.rit.se.testsmells.testsmell.ResultsWriter;
 import edu.rit.se.testsmells.testsmell.TestFile;
 import edu.rit.se.testsmells.testsmell.TestSmellDetector;
@@ -9,9 +10,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 public class Main {
@@ -22,12 +21,10 @@ public class Main {
 
         List<TestFile> files = readInputTestFiles(inputFile);
         ResultsWriter resultsWriter = initializeOutputFile(testSmellDetector, files.get(0));
-        for (TestFile file : files) {
-            System.out.println(getCurrentDateFormatted() + " Processing: " + file.getTestFilePath());
+        ExportingGranularityController exportCtrl = new ExportingGranularityController(testSmellDetector, resultsWriter);
 
-            testSmellDetector.detectSmells(file);
-            resultsWriter.exportSmells(file);
-        }
+        exportCtrl.addSmells(files);
+        exportCtrl.run();
 
         System.out.println("end");
     }
@@ -69,10 +66,6 @@ public class Main {
         assert inputFile.exists() && !inputFile.isDirectory() : "Please provide a valid file containing the paths to the collection of test files";
 
         return inputFile;
-    }
-
-    private static Object getCurrentDateFormatted() {
-        return (new SimpleDateFormat("yyyy/MM/dd HH:mm:ss")).format(new Date());
     }
 
     private static TestSmellDetector initializeSmells() {
