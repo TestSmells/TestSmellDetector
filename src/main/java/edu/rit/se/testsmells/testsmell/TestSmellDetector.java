@@ -7,6 +7,7 @@ import org.apache.commons.lang3.StringUtils;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -67,12 +68,16 @@ public class TestSmellDetector {
 
     }
 
-    private CompilationUnit parseIntoCompilationUnit(String testFilePath) throws FileNotFoundException {
-        if (StringUtils.isEmpty(testFilePath)) {
+    private CompilationUnit parseIntoCompilationUnit(String filePath) {
+        if (StringUtils.isEmpty(filePath)) {
             return null;
         }
-        FileInputStream testFileInputStream;
-        testFileInputStream = new FileInputStream(testFilePath);
+        InputStream testFileInputStream;
+        try {
+            testFileInputStream = new FileInputStream(filePath);
+        } catch (IOException e) {
+            testFileInputStream = getClass().getResourceAsStream(filePath);
+        }
         return JavaParser.parse(testFileInputStream);
     }
 }

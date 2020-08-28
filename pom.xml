@@ -7,6 +7,9 @@
     <artifactId>TestSmellDetector</artifactId>
     <version>0.1</version>
     <packaging>jar</packaging>
+    <properties>
+        <project.MainClass>edu.rit.se.testsmells.Main</project.MainClass>
+    </properties>
     <build>
         <resources>
             <resource>
@@ -14,6 +17,12 @@
                 <filtering>true</filtering>
             </resource>
         </resources>
+        <testResources>
+            <testResource>
+                <directory>src/resources</directory>
+                <filtering>true</filtering>
+            </testResource>
+        </testResources>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
