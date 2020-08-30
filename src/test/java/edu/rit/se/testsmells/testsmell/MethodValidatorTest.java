@@ -8,8 +8,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.function.Consumer;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class MethodValidatorTest {
     MethodValidator sut;
@@ -28,7 +27,7 @@ class MethodValidatorTest {
                         "public void sampleTest(){} \n" +
                         "} \n";
 
-        MethodVisitorStub assertion = new MethodVisitorStub((MethodDeclaration a) -> assertFalse(sut.isValidTestMethod(a)));
+        MethodVisitorStub assertion = new MethodVisitorStub(new TestMethodAssertionCommand(false)::invoke);
 
         assertion.visit(JavaParser.parse(code), null);
     }
@@ -41,7 +40,7 @@ class MethodValidatorTest {
                         "private void sampleTest(){} \n" +
                         "} \n";
 
-        MethodVisitorStub assertion = new MethodVisitorStub((MethodDeclaration a) -> assertFalse(sut.isValidTestMethod(a)));
+        MethodVisitorStub assertion = new MethodVisitorStub(new TestMethodAssertionCommand(false)::invoke);
 
         assertion.visit(JavaParser.parse(code), null);
     }
@@ -54,7 +53,7 @@ class MethodValidatorTest {
                         "public void sampleTest(){} \n" +
                         "} \n";
 
-        MethodVisitorStub assertion = new MethodVisitorStub((MethodDeclaration a) -> assertTrue(sut.isValidTestMethod(a)));
+        MethodVisitorStub assertion = new MethodVisitorStub(new TestMethodAssertionCommand(true)::invoke);
 
         assertion.visit(JavaParser.parse(code), null);
     }
@@ -66,7 +65,7 @@ class MethodValidatorTest {
                         "public void testSample(){} \n" +
                         "} \n";
 
-        MethodVisitorStub assertion = new MethodVisitorStub((MethodDeclaration a) -> assertTrue(sut.isValidTestMethod(a)));
+        MethodVisitorStub assertion = new MethodVisitorStub(new TestMethodAssertionCommand(true)::invoke);
 
         assertion.visit(JavaParser.parse(code), null);
     }
@@ -78,7 +77,7 @@ class MethodValidatorTest {
                         "public void sampleTest(){} \n" +
                         "} \n";
 
-        MethodVisitorStub assertion = new MethodVisitorStub((MethodDeclaration a) -> assertFalse(sut.isValidTestMethod(a)));
+        MethodVisitorStub assertion = new MethodVisitorStub(new TestMethodAssertionCommand(false)::invoke);
 
         assertion.visit(JavaParser.parse(code), null);
     }
@@ -92,7 +91,7 @@ class MethodValidatorTest {
                         "public void setUp(){} \n" +
                         "} \n";
 
-        MethodVisitorStub assertion = new MethodVisitorStub((MethodDeclaration a) -> assertFalse(sut.isValidSetupMethod(a)));
+        MethodVisitorStub assertion = new MethodVisitorStub(new SetupMethodAssertionCommand(false)::invoke);
 
         assertion.visit(JavaParser.parse(code), null);
     }
@@ -105,7 +104,7 @@ class MethodValidatorTest {
                         "private void setUp(){} \n" +
                         "} \n";
 
-        MethodVisitorStub assertion = new MethodVisitorStub((MethodDeclaration a) -> assertFalse(sut.isValidSetupMethod(a)));
+        MethodVisitorStub assertion = new MethodVisitorStub(new SetupMethodAssertionCommand(false)::invoke);
 
         assertion.visit(JavaParser.parse(code), null);
     }
@@ -118,7 +117,7 @@ class MethodValidatorTest {
                         "public void setSut(){} \n" +
                         "} \n";
 
-        MethodVisitorStub assertion = new MethodVisitorStub((MethodDeclaration a) -> assertTrue(sut.isValidSetupMethod(a)));
+        MethodVisitorStub assertion = new MethodVisitorStub(new SetupMethodAssertionCommand(true)::invoke);
 
         assertion.visit(JavaParser.parse(code), null);
     }
@@ -131,7 +130,7 @@ class MethodValidatorTest {
                         "public void setSut(){} \n" +
                         "} \n";
 
-        MethodVisitorStub assertion = new MethodVisitorStub((MethodDeclaration a) -> assertTrue(sut.isValidSetupMethod(a)));
+        MethodVisitorStub assertion = new MethodVisitorStub(new SetupMethodAssertionCommand(true)::invoke);
 
         assertion.visit(JavaParser.parse(code), null);
     }
@@ -143,7 +142,7 @@ class MethodValidatorTest {
                         "public void setUp(){} \n" +
                         "} \n";
 
-        MethodVisitorStub assertion = new MethodVisitorStub((MethodDeclaration a) -> assertTrue(sut.isValidSetupMethod(a)));
+        MethodVisitorStub assertion = new MethodVisitorStub(new SetupMethodAssertionCommand(true)::invoke);
 
         assertion.visit(JavaParser.parse(code), null);
     }
@@ -156,7 +155,7 @@ class MethodValidatorTest {
                         "public void sampleTest(){} \n" +
                         "} \n";
 
-        MethodVisitorStub assertion = new MethodVisitorStub((MethodDeclaration a) -> assertFalse(sut.isValidSetupMethod(a)));
+        MethodVisitorStub assertion = new MethodVisitorStub(new SetupMethodAssertionCommand(false)::invoke);
 
         assertion.visit(JavaParser.parse(code), null);
     }
@@ -172,6 +171,30 @@ class MethodValidatorTest {
         public void visit(MethodDeclaration n, Void arg) {
             func.accept(n);
             super.visit(n, arg);
+        }
+    }
+
+    private class TestMethodAssertionCommand {
+        private final boolean assertionValue;
+
+        private TestMethodAssertionCommand(boolean assertionValue) {
+            this.assertionValue = assertionValue;
+        }
+
+        public void invoke(MethodDeclaration a) {
+            assertEquals(assertionValue, sut.isValidTestMethod(a));
+        }
+    }
+
+    private class SetupMethodAssertionCommand {
+        private final boolean assertionValue;
+
+        private SetupMethodAssertionCommand(boolean assertionValue) {
+            this.assertionValue = assertionValue;
+        }
+
+        public void invoke(MethodDeclaration a) {
+            assertEquals(assertionValue, sut.isValidSetupMethod(a));
         }
     }
 }
