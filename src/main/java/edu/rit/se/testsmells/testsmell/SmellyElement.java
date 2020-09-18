@@ -13,6 +13,10 @@ public abstract class SmellyElement implements SmellsContainer {
         this.name = name;
     }
 
+    public void clear() {
+        data.clear();
+    }
+
     public void setHasSmell(boolean hasSmell) {
         this.hasSmell = hasSmell;
     }

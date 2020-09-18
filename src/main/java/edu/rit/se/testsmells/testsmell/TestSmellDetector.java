@@ -10,10 +10,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class TestSmellDetector {
 
+    private List<InputStream> inputStreams;
     private List<AbstractSmell> testSmells;
 
     /**
@@ -21,10 +23,25 @@ public class TestSmellDetector {
      */
     public TestSmellDetector() {
         testSmells = new ArrayList<>();
+        inputStreams = new ArrayList<>();
     }
 
     public void addDetectableSmell(AbstractSmell smell) {
         testSmells.add(smell);
+    }
+
+    public void clear() {
+        for (InputStream inputStream : inputStreams) {
+            try {
+                inputStream.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        for (AbstractSmell smell : testSmells) {
+            smell.clear();
+        }
+        testSmells.clear();
     }
 
     /**
@@ -48,7 +65,7 @@ public class TestSmellDetector {
     /**
      * Loads the java source code file into an AST and then analyzes it for the existence of the different types of test smells
      */
-    public void detectSmells(TestFile testFile) {
+    public void detectSmells(TestFile testFile) throws IOException {
         CompilationUnit testFileCompilationUnit = parseIntoCompilationUnit(testFile.getTestFilePath());
 
         CompilationUnit productionFileCompilationUnit = parseIntoCompilationUnit(testFile.getProductionFilePath());
@@ -58,7 +75,7 @@ public class TestSmellDetector {
                 smell.runAnalysis(testFileCompilationUnit, productionFileCompilationUnit, testFile.getTestFileNameWithoutExtension(), testFile.getProductionFileNameWithoutExtension());
             } catch (FileNotFoundException ignored) {
             }
-            
+
             testFile.addDetectedSmell(smell);
             for (SmellsContainer element : smell.getSmellyElements()) {
                 element.addDetectedSmell(smell);
@@ -71,12 +88,15 @@ public class TestSmellDetector {
         if (StringUtils.isEmpty(filePath)) {
             return null;
         }
-        InputStream testFileInputStream;
+        InputStream testFileInputStream = null;
         try {
             testFileInputStream = new FileInputStream(filePath);
         } catch (IOException e) {
             testFileInputStream = getClass().getResourceAsStream(filePath);
+        } finally {
+            inputStreams.add(testFileInputStream);
         }
+        assert Objects.nonNull(testFileInputStream);
         return JavaParser.parse(testFileInputStream);
     }
 }

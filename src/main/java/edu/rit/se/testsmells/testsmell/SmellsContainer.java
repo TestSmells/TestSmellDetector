@@ -1,12 +1,12 @@
 package edu.rit.se.testsmells.testsmell;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public interface SmellsContainer {
-    List<AbstractSmell> testSmells = new ArrayList<>();
+    List<AbstractSmell> testSmells = new CopyOnWriteArrayList<>();
 
     Map<String, String> getTestDescriptionEntries();
 

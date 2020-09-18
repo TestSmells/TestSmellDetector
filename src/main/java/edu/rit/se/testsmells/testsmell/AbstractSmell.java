@@ -4,8 +4,8 @@ import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.MethodDeclaration;
 
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public abstract class AbstractSmell {
     private final MethodValidator methodValidator;
@@ -13,11 +13,18 @@ public abstract class AbstractSmell {
 
     public abstract String getSmellName();
 
-    public abstract void runAnalysis(CompilationUnit testFileCompilationUnit, CompilationUnit productionFileCompilationUnit, String testFileName, String productionFileName) throws FileNotFoundException;
-
     public AbstractSmell() {
         methodValidator = new MethodValidator(); //TODO: dependency should be injected (or, at least, be a singleton)
-        smellyElementList = new ArrayList<>();
+        smellyElementList = new CopyOnWriteArrayList<>();
+    }
+
+    public abstract void runAnalysis(CompilationUnit testFileCompilationUnit, CompilationUnit productionFileCompilationUnit, String testFileName, String productionFileName) throws FileNotFoundException;
+
+    public void clear() {
+        for (SmellyElement smellyElement : smellyElementList) {
+            smellyElement.clear();
+        }
+        smellyElementList.clear();
     }
 
     /**
