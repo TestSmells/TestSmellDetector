@@ -4,20 +4,16 @@ import edu.rit.se.testsmells.testsmell.smell.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @IntegrationTest
 public class TestSmellDetectorIT {
 
     private TestSmellDetector testSmellDetector;
-    private List<TestFile> files;
 
     @BeforeEach
     void setUp() {
@@ -25,49 +21,50 @@ public class TestSmellDetectorIT {
     }
 
     @Test
+    public void testAssertionRoulette() {
+        List<TestFile> files = Collections.singletonList(new TestFile(
+                "AssertionRouletteProject",
+                "/AssertionRoulette/src/test/com/madgag/agit/AssertionRouletteTest.java",
+                ""
+        ));
+
+        detectSmells(files);
+        boolean expectedSmellDetected = false;
+        for (TestFile file : files) {
+            for (AbstractSmell testSmell : file.getTestSmells()) {
+                if (testSmell != null) {
+                    if (testSmell.getSmellName().equals(new AssertionRoulette().getSmellName())) {
+                        expectedSmellDetected = testSmell.hasSmell();
+                    }
+                }
+            }
+        }
+        assertTrue(expectedSmellDetected);
+
+    }
+
+    @Test
     public void testSmellsFreeProject() {
-        detectSmells(
+        List<TestFile> files = Collections.singletonList(new TestFile(
                 "SmellsFreeProject",
-                "/Queue/src/main/java/br/ufmg/aserg/victorveloso/queue/Queue.java",
-                "/Queue/src/test/java/br/ufmg/aserg/victorveloso/queue/QueueTest.java"
-        );
+                "/Queue/src/test/java/br/ufmg/aserg/victorveloso/queue/QueueTest.java",
+                "/Queue/src/main/java/br/ufmg/aserg/victorveloso/queue/Queue.java"
+        ));
+        detectSmells(files);
 
         for (TestFile file : files) {
             for (AbstractSmell testSmell : file.getTestSmells()) {
                 if (testSmell != null) {
-                    assertFalse(testSmell.hasSmell());
+                    assertFalse(testSmell.hasSmell(), String.format("Detected smell named %s", testSmell.getSmellName()));
                 }
             }
         }
     }
 
-    private void detectSmells(String app, String productionFile, String testFile) {
-        files = readInputTestFiles(formatInputValue(app, productionFile, testFile));
+    private void detectSmells(List<TestFile> files) {
         for (TestFile file : files) {
-            try {
-                testSmellDetector.detectSmells(file);
-            } catch (NullPointerException | IOException e) {
-                fail(e.getMessage());
-            }
+            testSmellDetector.detectSmells(file);
         }
-    }
-
-    private String formatInputValue(String app, String productionFile, String testFile) {
-        return app + "," + productionFile + "," + testFile;
-    }
-
-    private List<TestFile> readInputTestFiles(String inputFileContent) {
-        TestFile testFile;
-        List<TestFile> testFiles = new ArrayList<>();
-        for (List<String> entry : splitLinesAndParseCSV(inputFileContent)) {
-            testFile = new TestFile(entry.get(0), entry.get(1), entry.get(2));
-            testFiles.add(testFile);
-        }
-        return testFiles;
-    }
-
-    private List<List<String>> splitLinesAndParseCSV(String inputFileContent) {
-        return Arrays.stream(inputFileContent.split("\n")).map(s -> Arrays.asList(s.split(","))).collect(Collectors.toList());
     }
 
     private TestSmellDetector initializeSmells() {
@@ -76,14 +73,14 @@ public class TestSmellDetectorIT {
         testSmellDetector.addDetectableSmell(new AssertionRoulette());
         testSmellDetector.addDetectableSmell(new ConditionalTestLogic());
 
-        //testSmellDetector.addDetectableSmell(new ConstructorInitialization()); // Constructor Initialization gives false positives
+        testSmellDetector.addDetectableSmell(new ConstructorInitialization()); // Constructor Initialization gives false positives
         testSmellDetector.addDetectableSmell(new DefaultTest());
         testSmellDetector.addDetectableSmell(new EmptyTest());
         testSmellDetector.addDetectableSmell(new ExceptionCatchingThrowing());
         testSmellDetector.addDetectableSmell(new GeneralFixture());
-        testSmellDetector.addDetectableSmell(new MysteryGuest());
         testSmellDetector.addDetectableSmell(new PrintStatement());
         testSmellDetector.addDetectableSmell(new RedundantAssertion());
+        testSmellDetector.addDetectableSmell(new MysteryGuest());
         testSmellDetector.addDetectableSmell(new SensitiveEquality());
         testSmellDetector.addDetectableSmell(new VerboseTest());
         testSmellDetector.addDetectableSmell(new SleepyTest());
@@ -91,7 +88,7 @@ public class TestSmellDetectorIT {
         testSmellDetector.addDetectableSmell(new LazyTest());
         testSmellDetector.addDetectableSmell(new DuplicateAssert());
         testSmellDetector.addDetectableSmell(new UnknownTest());
-        testSmellDetector.addDetectableSmell(new IgnoredTest());
+        //testSmellDetector.addDetectableSmell(new IgnoredTest());
         testSmellDetector.addDetectableSmell(new ResourceOptimism());
         testSmellDetector.addDetectableSmell(new MagicNumberTest());
         testSmellDetector.addDetectableSmell(new DependentTest());

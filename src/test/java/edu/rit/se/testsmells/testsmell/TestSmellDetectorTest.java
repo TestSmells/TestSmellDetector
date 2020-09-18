@@ -6,7 +6,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,12 +37,8 @@ class TestSmellDetectorTest {
         TestFile tf = new TestFileStub("app", "", "");
         List<AbstractSmell> smells = new ArrayList<>();
 
-        try {
-            this.sut.detectSmells(tf);
-            smells = tf.getTestSmells();
-        } catch (IOException e) {
-            fail("Exception IOException unexpectedly raised: " + e.getMessage());
-        }
+        this.sut.detectSmells(tf);
+        smells = tf.getTestSmells();
 
         assertEquals(smells.size(), 1);
         assertNull(smells.get(0));

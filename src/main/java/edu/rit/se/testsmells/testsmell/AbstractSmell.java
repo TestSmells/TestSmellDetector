@@ -16,7 +16,7 @@ public abstract class AbstractSmell {
     public abstract void runAnalysis(CompilationUnit testFileCompilationUnit, CompilationUnit productionFileCompilationUnit, String testFileName, String productionFileName) throws FileNotFoundException;
 
     public AbstractSmell() {
-        methodValidator = new MethodValidator();
+        methodValidator = new MethodValidator(); //TODO: dependency should be injected (or, at least, be a singleton)
         smellyElementList = new ArrayList<>();
     }
 
@@ -35,7 +35,7 @@ public abstract class AbstractSmell {
      * Returns true if any of the elements has a smell
      */
     public boolean hasSmell() {
-        return smellyElementList.stream().filter(x -> x.hasSmell()).count() >= 1;
+        return smellyElementList.stream().anyMatch(SmellyElement::hasSmell);
     }
 
     protected boolean isNumber(String str) {

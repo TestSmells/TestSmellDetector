@@ -6,6 +6,7 @@ import java.util.Map;
 
 public class TestFile implements SmellsContainer {
     private final String app, testFilePath, productionFilePath;
+    private boolean isProductionFileOmitted = false;
 
     public TestFile(String app, String testFilePath, String productionFilePath) {
         checkValidity(testFilePath, productionFilePath, app);
@@ -23,6 +24,9 @@ public class TestFile implements SmellsContainer {
      * @param app      Project name (cannot be empty)
      */
     protected void checkValidity(String testPath, String prodPath, String app) {
+        if (prodPath.isEmpty()) {
+            isProductionFileOmitted = true;
+        }
         if (!haveExtension(testPath, prodPath) || !haveFileSeparator(testPath, prodPath)) {
             throw new IllegalArgumentException("Both testFilePath and productionFilePath should include extensions and file separator.");
         }
@@ -32,11 +36,11 @@ public class TestFile implements SmellsContainer {
     }
 
     private boolean haveFileSeparator(String testPath, String prodPath) {
-        return testPath.lastIndexOf(File.separator) != -1 && prodPath.lastIndexOf(File.separator) != -1;
+        return testPath.lastIndexOf(File.separator) != -1 && (isProductionFileOmitted || prodPath.lastIndexOf(File.separator) != -1);
     }
 
     private boolean haveExtension(String testPath, String prodPath) {
-        return testPath.lastIndexOf('.') != -1 && prodPath.lastIndexOf('.') != -1;
+        return testPath.lastIndexOf('.') != -1 && (isProductionFileOmitted || prodPath.lastIndexOf('.') != -1);
     }
 
     /**
@@ -74,6 +78,9 @@ public class TestFile implements SmellsContainer {
     }
 
     public String getProductionFileNameWithoutExtension() {
+        if (isProductionFileOmitted) {
+            return "";
+        }
         return removeExtension(getProductionFileName());
     }
 
@@ -90,6 +97,9 @@ public class TestFile implements SmellsContainer {
     }
 
     public String getProductionFileName() {
+        if (isProductionFileOmitted) {
+            return "";
+        }
         return extractFileFromPath(productionFilePath);
     }
 
