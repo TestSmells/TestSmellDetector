@@ -41,7 +41,7 @@ class TestSmellDetectorTest {
         smells = tf.getTestSmells();
 
         assertEquals(smells.size(), 1);
-        assertNull(smells.get(0));
+        assertFalse(smells.get(0).hasSmell());
     }
 
     private static class TestFileStub extends TestFile {

@@ -11,21 +11,20 @@ public interface SmellsContainer {
     Map<String, String> getTestDescriptionEntries();
 
     default void addDetectedSmell(AbstractSmell newSmell) {
-        if (Objects.nonNull(newSmell)) {
-            AbstractSmell existingSmell = findSameTypeSmell(newSmell);
-            if (Objects.nonNull(existingSmell)) {
-                for (SmellyElement smellyElement : newSmell.getSmellyElements()) {
-                    existingSmell.addSmellyElement(smellyElement);
-                }
-                return;
+        assert Objects.nonNull(newSmell);
+        AbstractSmell existingSmell = findSmellNamed(newSmell.getSmellName());
+        if (Objects.nonNull(existingSmell)) {
+            for (SmellyElement smellyElement : newSmell.getSmellyElements()) {
+                existingSmell.addSmellyElement(smellyElement);
             }
+        } else {
+            testSmells.add(newSmell);
         }
-        testSmells.add(newSmell);
     }
 
-    default AbstractSmell findSameTypeSmell(AbstractSmell smellType) {
+    default AbstractSmell findSmellNamed(String smellName) {
         for (AbstractSmell existingSmell : testSmells) {
-            if (Objects.nonNull(existingSmell) && smellType.getClass().equals(existingSmell.getClass())) {
+            if (smellName.equals(existingSmell.getSmellName())) {
                 return existingSmell;
             }
         }

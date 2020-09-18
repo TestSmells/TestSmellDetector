@@ -56,13 +56,12 @@ public class TestSmellDetector {
         for (AbstractSmell smell : testSmells) {
             try {
                 smell.runAnalysis(testFileCompilationUnit, productionFileCompilationUnit, testFile.getTestFileNameWithoutExtension(), testFile.getProductionFileNameWithoutExtension());
-                testFile.addDetectedSmell(smell);
-                for (SmellsContainer element : smell.getSmellyElements()) {
-                    element.addDetectedSmell(smell);
-                }
             } catch (FileNotFoundException ignored) {
-            } finally {
-                testFile.addDetectedSmell(null);
+            }
+            
+            testFile.addDetectedSmell(smell);
+            for (SmellsContainer element : smell.getSmellyElements()) {
+                element.addDetectedSmell(smell);
             }
         }
 
