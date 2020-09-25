@@ -3,6 +3,7 @@ package edu.rit.se.testsmells.testsmell;
 import edu.rit.se.testsmells.testsmell.smell.*;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -25,6 +26,7 @@ public class TestSmellDetectorIntegrationTest {
         testSmellDetector = null;
     }
 
+    @Disabled
     @Test
     public void testSmellsFreeProject() throws IOException {
         TestFile file = new TestFile(

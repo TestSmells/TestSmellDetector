@@ -26,6 +26,10 @@ public class ResultsWriter {
         writer = new FileWriter(outputFile, false);
     }
 
+    public String getOutputFile() {
+        return outputFile;
+    }
+
     /**
      * Factory method that provides a new instance of the ResultsWriter
      *

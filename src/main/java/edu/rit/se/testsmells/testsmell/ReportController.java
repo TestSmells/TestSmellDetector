@@ -20,6 +20,12 @@ public class ReportController {
         configuredGranularties = readProperties();
     }
 
+    public ReportController(ResultsWriter resultsWriter, List<ReportGranularity> granularities) {
+        this.resultsWriter = resultsWriter;
+
+        configuredGranularties = granularities;
+    }
+
     private List<ReportGranularity> readProperties() throws IOException {
         Properties prop = new Properties();
         prop.load(getClass().getClassLoader().getResourceAsStream(PROPERTIES_FILENAME));
@@ -65,8 +71,9 @@ public class ReportController {
 
     private void reportSmellyElements(List<AbstractSmell> smells, Class<?> type) throws IOException {
         for (AbstractSmell smell : smells) {
-            List<SmellyElement> smellyMethods = smell.getSmellyElements().stream().filter(type::isInstance).collect(Collectors.toList());
-            for (SmellyElement elem : smellyMethods) {
+            List<SmellyElement> smellyElements = smell.getSmellyElements();
+            smellyElements = smellyElements.stream().filter(type::isInstance).collect(Collectors.toList());
+            for (SmellyElement elem : smellyElements) {
                 resultsWriter.exportSmells(elem);
             }
         }

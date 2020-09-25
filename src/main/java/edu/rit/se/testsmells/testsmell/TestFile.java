@@ -55,6 +55,7 @@ public class TestFile implements SmellsContainer {
         descriptions.put("TestFileName", getTestFileName());
         descriptions.put("TestFilePath", getTestFilePath());
         descriptions.put("ProductionFilePath", getProductionFilePath());
+        descriptions.put("ProductionFileName", getProductionFileName());
         descriptions.put("RelativeTestFilePath", getRelativeTestFilePath());
         descriptions.put("RelativeProductionFilePath", getRelativeProductionFilePath());
 
@@ -124,7 +125,7 @@ public class TestFile implements SmellsContainer {
     }
 
     private String extractRelativePathFrom(String path) {
-        int projectNameIndex = path.lastIndexOf(app);
+        int projectNameIndex = path.indexOf(app);
         if (projectNameIndex == -1) return "";
         return path.substring(projectNameIndex + app.length() + File.separator.length());
     }
