@@ -1,9 +1,7 @@
 package edu.rit.se.testsmells.testsmell;
 
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Properties;
+import java.util.*;
 import java.util.stream.Collectors;
 
 enum ReportGranularity {FILE, CLASS, METHOD}
@@ -69,13 +67,30 @@ public class ReportController {
         }
     }
 
-    private void reportSmellyElements(List<AbstractSmell> smells, Class<?> type) throws IOException {
-        for (AbstractSmell smell : smells) {
-            List<SmellyElement> smellyElements = smell.getSmellyElements();
-            smellyElements = smellyElements.stream().filter(type::isInstance).collect(Collectors.toList());
-            for (SmellyElement elem : smellyElements) {
-                resultsWriter.exportSmells(elem);
+    private List<SmellyElement> mergeSmellyElements(List<SmellyElement> elements) {
+        List<SmellyElement> result = new ArrayList<>();
+        for (SmellyElement s1 : elements) {
+            boolean have = false;
+            for (SmellyElement s2 : result) {
+                if (s1 == s2) {
+                    have = true;
+                } else if (s1.getElementName().equals(s2.getElementName())) {
+                    have = true;
+                    s2.setHasSmell(s2.hasSmell() || s1.hasSmell());
+                    s1.getData().forEach(s2::addDataItem);
+                }
             }
+            if (!have) {
+                result.add(s1);
+            }
+        }
+        return result;
+    }
+
+    private void reportSmellyElements(List<AbstractSmell> smells, Class<?> type) throws IOException {
+        List<SmellyElement> c = smells.stream().map(AbstractSmell::getSmellyElements).flatMap(Collection::stream).filter(type::isInstance).collect(Collectors.toList());
+        for (SmellyElement elem : mergeSmellyElements(c)) {
+            resultsWriter.exportSmells(elem);
         }
     }
 }
