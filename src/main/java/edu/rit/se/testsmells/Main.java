@@ -23,7 +23,7 @@ public class Main {
 
         List<TestFile> files = readInputTestFiles(inputFile);
         ResultsWriter resultsWriter = initializeOutputFile(testSmellDetector, files.get(0));
-        ReportController reportCtrl = new ReportController(resultsWriter);
+        ReportController reportCtrl = ReportController.createReportController(resultsWriter);
 
         for (TestFile file : files) {
             System.out.println(getCurrentDateFormatted() + " Processing: " + file.getTestFilePath());

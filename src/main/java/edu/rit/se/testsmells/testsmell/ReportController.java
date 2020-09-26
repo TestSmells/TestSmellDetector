@@ -1,38 +1,40 @@
 package edu.rit.se.testsmells.testsmell;
 
-import java.io.IOException;
-import java.util.*;
-import java.util.stream.Collectors;
+import edu.rit.se.testsmells.testsmell.internal.ExtractingByMerge;
 
-enum ReportGranularity {FILE, CLASS, METHOD}
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
+import java.util.Properties;
+import java.util.stream.Collectors;
 
 public class ReportController {
     private final ResultsWriter resultsWriter;
-    private final List<ReportGranularity> configuredGranularties;
-    private final String PROPERTIES_FILENAME = "test-smells.properties";
-    private String PROPERTIES_KEY = "report.granularity";
+    private final List<ReportGranularity> configuredGranularities;
+    private ExtractingStrategy extractor = new ExtractingByMerge();
 
-    public ReportController(ResultsWriter resultsWriter) throws IOException {
+    ReportController(ResultsWriter resultsWriter, List<ReportGranularity> granularities) {
         this.resultsWriter = resultsWriter;
 
-        configuredGranularties = readProperties();
+        configuredGranularities = granularities;
     }
 
-    public ReportController(ResultsWriter resultsWriter, List<ReportGranularity> granularities) {
-        this.resultsWriter = resultsWriter;
-
-        configuredGranularties = granularities;
+    public static ReportController createReportController(ResultsWriter resultsWriter) throws IOException {
+        return new ReportController(resultsWriter, readProperties());
     }
 
-    private List<ReportGranularity> readProperties() throws IOException {
+    private static List<ReportGranularity> readProperties() throws IOException {
+        final String PROPERTIES_FILENAME = "test-smells.properties";
+        final String PROPERTIES_KEY = "report.granularity";
         Properties prop = new Properties();
-        prop.load(getClass().getClassLoader().getResourceAsStream(PROPERTIES_FILENAME));
+        prop.load(Objects.requireNonNull(ReportController.class.getClassLoader().getResourceAsStream(PROPERTIES_FILENAME)));
         String granularityConfig = prop.getProperty(PROPERTIES_KEY);
         return Arrays.stream(granularityConfig.split(",")).map(ReportGranularity::valueOf).collect(Collectors.toList());
     }
 
     public void report(List<TestFile> files) throws IOException {
-        for (ReportGranularity config : configuredGranularties) {
+        for (ReportGranularity config : configuredGranularities) {
             switch (config) {
                 case CLASS:
                     reportTestClasses(files);
@@ -67,71 +69,17 @@ public class ReportController {
         }
     }
 
-    private List<ReportOutput> mergeSmellyElements(List<ReportCell> elements) {
-        List<String> gruopedByElemName = elements.stream().map(c -> c.name).distinct().collect(Collectors.toList());
-        return gruopedByElemName.stream().map(name -> ReportOutput.fromCell(filterByName(elements, name))).collect(Collectors.toList());
-    }
+    private List<Report> mergeSmellyElements(List<AbstractSmell> smells, Class<?> type) {
 
-    private List<ReportCell> filterByName(List<ReportCell> elements, String name) {
-        return elements.stream().filter(c1 -> c1.name.equals(name)).collect(Collectors.toList());
+        return extractor.extract(smells, type);
     }
 
     private void reportSmellyElements(List<AbstractSmell> smells, Class<?> type) throws IOException {
-        List<ReportCell> c = smells.stream().flatMap(s -> s.getSmellyElements().stream().filter(type::isInstance).map(se -> ReportCell.fromSmellElem(se, s.getSmellName()))).collect(Collectors.toList());
-        for (ReportOutput output : mergeSmellyElements(c)) {
-            resultsWriter.exportSmells(output);
+        List<Report> smellyElementReports = mergeSmellyElements(smells, type);
+        for (Report report : smellyElementReports) {
+            resultsWriter.exportSmells(report);
         }
     }
 
-    private static class ReportCell {
-        private String smellType;
-        private String name;
-        private Map<String, String> data;
-        private boolean hasSmell;
-
-        static ReportCell fromSmellElem(SmellyElement elem, String smellType) {
-            ReportCell rc = new ReportCell();
-            rc.smellType = smellType;
-            rc.name = elem.getElementName();
-            rc.data = elem.getData();
-            rc.hasSmell = elem.hasSmell();
-            return rc;
-        }
-    }
-
-    static class ReportOutput {
-        private Map<String, Boolean> smellsPresence;
-        private Map<String, String> data;
-        private String name;
-
-        public static ReportOutput fromCell(List<ReportCell> cells) {
-            ReportOutput output = new ReportOutput();
-
-            String elementName = cells.get(0).name;
-            assert cells.stream().allMatch(s -> s.name.equals(elementName));
-
-            output.name = elementName;
-            output.data = new HashMap<>();
-            output.smellsPresence = new HashMap<>();
-
-            cells.forEach(cell -> {
-                output.data.putAll(cell.data);
-                boolean hasSmell = output.smellsPresence.getOrDefault(cell.smellType, false) || cell.hasSmell;
-                output.smellsPresence.put(cell.smellType, hasSmell);
-            });
-            return output;
-        }
-
-        public Map<String, Boolean> getSmellsPresence() {
-            return smellsPresence;
-        }
-
-        public Map<String, String> getData() {
-            return data;
-        }
-
-        public String getName() {
-            return name;
-        }
-    }
+    enum ReportGranularity {FILE, CLASS, METHOD}
 }

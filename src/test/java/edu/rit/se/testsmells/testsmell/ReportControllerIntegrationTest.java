@@ -72,13 +72,13 @@ public class ReportControllerIntegrationTest {
 
     @Test
     public void testReport() throws IOException {
-        sut = new ReportController(resultsWriter, Arrays.asList(ReportGranularity.FILE));
+        sut = new ReportController(resultsWriter, Arrays.asList(ReportController.ReportGranularity.FILE));
         assertDoesNotThrow(() -> sut.report(Arrays.asList(file)));
     }
 
     @Test
     public void testHeader() throws IOException {
-        sut = new ReportController(resultsWriter, Arrays.asList(ReportGranularity.FILE));
+        sut = new ReportController(resultsWriter, Arrays.asList(ReportController.ReportGranularity.FILE));
         sut.report(Arrays.asList(file));
         assertTrue(outputFile.exists(), "Output file missing!");
 
@@ -93,7 +93,7 @@ public class ReportControllerIntegrationTest {
 
     @Test
     public void testContent_FILE() throws IOException {
-        sut = new ReportController(resultsWriter, Arrays.asList(ReportGranularity.FILE));
+        sut = new ReportController(resultsWriter, Arrays.asList(ReportController.ReportGranularity.FILE));
         sut.report(Arrays.asList(file));
         assertTrue(outputFile.exists(), "Output file missing!");
 
@@ -110,7 +110,7 @@ public class ReportControllerIntegrationTest {
 
     @Test
     public void testContent_METHOD() throws IOException {
-        sut = new ReportController(resultsWriter, Arrays.asList(ReportGranularity.METHOD));
+        sut = new ReportController(resultsWriter, Arrays.asList(ReportController.ReportGranularity.METHOD));
         sut.report(Arrays.asList(file));
         assertTrue(outputFile.exists(), "Output file missing!");
 
@@ -129,7 +129,7 @@ public class ReportControllerIntegrationTest {
 
     @Test
     public void testConsistentColumns() throws IOException {
-        sut = new ReportController(resultsWriter, Arrays.asList(ReportGranularity.FILE));
+        sut = new ReportController(resultsWriter, Arrays.asList(ReportController.ReportGranularity.FILE));
         sut.report(Arrays.asList(file));
         assertTrue(outputFile.exists(), "Output file missing!");
 

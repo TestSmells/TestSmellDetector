@@ -22,7 +22,7 @@ import java.util.List;
  */
 public class MysteryGuest extends AbstractSmell {
 
-
+    private static final boolean doClassLevelVariableCheck = false;
 
     public MysteryGuest() {
         super();
@@ -62,31 +62,6 @@ public class MysteryGuest extends AbstractSmell {
                         "SoapObject"
                 ));
 
-        /*
-                private List<String> databaseMethods = new ArrayList<>(
-                        Arrays.asList(
-                                "getWritableDatabase",
-                                "getReadableDatabase",
-                                "execSQL",
-                                "rawQuery"
-                        ));
-                private List<String> fileMethods = new ArrayList<>(
-                        Arrays.asList(
-                                "getFilesDir",
-                                "getDir",
-                                "getCacheDir",
-                                "createTempFile",
-                                "getExternalStorageState",
-                                "getExternalStoragePublicDirectory",
-                                "getExternalFilesDir",
-                                "getExternalCacheDir",
-                                "getFreeSpace",
-                                "getTotalSpace",
-                                "deleteFile",
-                                "fileList",
-                                "openFileOutput",
-                                "openRawResource"));
-        */
         private MethodDeclaration currentMethod = null;
         private int mysteryCount = 0;
         TestMethod testMethod;
@@ -111,33 +86,10 @@ public class MysteryGuest extends AbstractSmell {
             }
         }
 
-        /*
-        // examine the methods being called within the test method
-        @Override
-        public void visit(MethodCallExpr n, Void arg) {
-            super.visit(n, arg);
-            if (currentMethod != null){
-                for (String methodName: fileMethods) {
-                    if(n.getNameAsString().equals(methodName)){
-                        mysteryCount++;
-                    }
-                }
-                for (String methodName: databaseMethods) {
-                    if(n.getNameAsString().equals(methodName)){
-                        mysteryCount++;
-                    }
-                }
-            }
-        }
-        */
-
         @Override
         public void visit(VariableDeclarationExpr n, Void arg) {
             super.visit(n, arg);
-            //Note: the null check limits the identification of variable types declared within the method body.
-            // Removing it will check for variables declared at the class level.
-            //TODO: to null check or not to null check???
-            if (currentMethod != null) {
+            if (doClassLevelVariableCheck || currentMethod != null) {
                 for (String variableType : mysteryTypes) {
                     //check if the type variable encountered is part of the mystery type collection
                     if ((n.getVariable(0).getType().asString().equals(variableType))) {

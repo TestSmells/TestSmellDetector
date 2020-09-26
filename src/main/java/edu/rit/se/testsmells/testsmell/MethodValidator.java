@@ -4,6 +4,18 @@ import com.github.javaparser.ast.Modifier;
 import com.github.javaparser.ast.body.MethodDeclaration;
 
 public class MethodValidator {
+    private static MethodValidator instance;
+
+    private MethodValidator() {
+    }
+
+    public static MethodValidator getInstance() {
+        if (instance == null) {
+            instance = new MethodValidator();
+        }
+        return instance;
+    }
+
     public boolean isValidTestMethod(MethodDeclaration method) {
         return isVisible(method) && (hasAnnotation(method, "Test") || nameStartsWith(method, "test"));
     }

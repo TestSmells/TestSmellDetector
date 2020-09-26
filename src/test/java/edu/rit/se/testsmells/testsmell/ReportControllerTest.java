@@ -24,7 +24,7 @@ public class ReportControllerTest {
         smell = mock(AbstractSmell.class);
         tf = mock(TestFile.class);
         resultsWriter = mock(ResultsWriter.class);
-        sut = new ReportController(resultsWriter);
+        sut = ReportController.createReportController(resultsWriter);
     }
 
     @Test

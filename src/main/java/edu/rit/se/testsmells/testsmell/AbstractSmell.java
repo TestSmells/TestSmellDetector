@@ -14,7 +14,7 @@ public abstract class AbstractSmell {
     public abstract String getSmellName();
 
     public AbstractSmell() {
-        methodValidator = new MethodValidator(); //TODO: dependency should be injected (or, at least, be a singleton)
+        methodValidator = MethodValidator.getInstance();
         smellyElementList = new CopyOnWriteArrayList<>();
     }
 

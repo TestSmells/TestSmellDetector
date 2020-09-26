@@ -15,7 +15,7 @@ class MethodValidatorTest {
 
     @BeforeEach
     void setUp() {
-        sut = new MethodValidator();
+        sut = MethodValidator.getInstance();
     }
 
     @Test

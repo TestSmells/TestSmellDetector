@@ -46,11 +46,8 @@ public class ResultsWriter {
         writeCSV(headers);
     }
 
-    public void exportSmells(ReportController.ReportOutput data) throws IOException {
-        List<String> entries = new ArrayList<>();
-        entries.add(data.getName());
-        entries.addAll(data.getData().values());
-        data.getSmellsPresence().values().forEach(e -> entries.add(e.toString()));
+    public void exportSmells(Report data) throws IOException {
+        List<String> entries = data.getEntryValues();
         writeCSV(entries);
     }
 
