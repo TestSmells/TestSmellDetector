@@ -22,30 +22,7 @@ public class ReportControllerIntegrationTest {
     TestFile file;
     ReportController sut;
     ResultsWriter resultsWriter;
-    List<String> expectedSmells = Arrays.asList("Lazy Test", "Eager Test", "Exception Catching Throwing");
-    List<AbstractSmell> smells = Arrays.asList(
-            new AssertionRoulette(),
-            new ConditionalTestLogic(),
-            new ConstructorInitialization(),
-            new DefaultTest(),
-            new EmptyTest(),
-            new ExceptionCatchingThrowing(),
-            new GeneralFixture(),
-            new MysteryGuest(),
-            new PrintStatement(),
-            new RedundantAssertion(),
-            new SensitiveEquality(),
-            new VerboseTest(),
-            new SleepyTest(),
-            new EagerTest(),
-            new LazyTest(),
-            new DuplicateAssert(),
-            new UnknownTest(),
-            new IgnoredTest(),
-            new ResourceOptimism(),
-            new MagicNumberTest(),
-            new DependentTest()
-    );
+    List<AbstractSmell> smells = Arrays.asList(new AssertionRoulette(), new ConditionalTestLogic(), new ConstructorInitialization(), new DefaultTest(), new EmptyTest(), new ExceptionCatchingThrowing(), new GeneralFixture(), new MysteryGuest(), new PrintStatement(), new RedundantAssertion(), new SensitiveEquality(), new VerboseTest(), new SleepyTest(), new EagerTest(), new LazyTest(), new DuplicateAssert(), new UnknownTest(), new IgnoredTest(), new ResourceOptimism(), new MagicNumberTest(), new DependentTest());
     String appName = "LazyTest";
     String testFilePath = "/LazyTest/src/test/java/com/github/marmaladesky/tests/CryptographerTest.java";
     String productionFilePath = "/LazyTest/src/main/java/com/github/marmaladesky/Cryptographer.java";
@@ -54,11 +31,7 @@ public class ReportControllerIntegrationTest {
     public void setUp() throws IOException {
         TestSmellDetector testSmellDetector = TestSmellDetector.createTestSmellDetector();
         smells.forEach(testSmellDetector::addDetectableSmell);
-        file = new TestFile(
-                appName,
-                testFilePath,
-                productionFilePath
-        );
+        file = new TestFile(appName, testFilePath, productionFilePath);
         resultsWriter = ResultsWriter.createResultsWriter();
         resultsWriter.writeCSVHeader(testSmellDetector, file);
         testSmellDetector.detectSmells(file);
@@ -101,6 +74,7 @@ public class ReportControllerIntegrationTest {
 
         List<String> expectedEntries = new ArrayList<>(Arrays.asList(appName, "Cryptographer.java", testFilePath, "CryptographerTest.java", "src/main/java/com/github/marmaladesky/Cryptographer.java", "src/test/java/com/github/marmaladesky/tests/CryptographerTest.java", productionFilePath));
 
+        List<String> expectedSmells = Arrays.asList("Lazy Test", "Eager Test", "Exception Catching Throwing");
         List<String> hasSmell = smells.stream().map(x -> expectedSmells.contains(x.getSmellName()) ? "true" : "false").collect(Collectors.toList());
 
         expectedEntries.addAll(hasSmell);
@@ -108,23 +82,43 @@ public class ReportControllerIntegrationTest {
         assertIterableEquals(expectedEntries, contentEntries);
     }
 
+    List<AbstractSmell> getMethodSmells() {
+        List<AbstractSmell> methodSmells = new ArrayList<>();
+        for (AbstractSmell smell : file.getTestSmells()) {
+            long nTestMethods = smell.getSmellyElements().stream().filter(elem -> elem instanceof TestMethod).count();
+            if (nTestMethods != 0) {
+                methodSmells.add(smell);
+            }
+        }
+        return methodSmells;
+    }
+
     @Test
-    public void testContent_METHOD() throws IOException {
+    public void testContent_METHOD_Decrypt() throws IOException {
         sut = new ReportController(resultsWriter, Arrays.asList(ReportController.ReportGranularity.METHOD));
         sut.report(Arrays.asList(file));
+
         assertTrue(outputFile.exists(), "Output file missing!");
 
-        assertEquals("", new BufferedReader(new FileReader(outputFile)).lines().reduce((s, t) -> s.concat("\n").concat(t)).orElse(""));
+        assertEquals(17, getMethodSmells().size());
 
-        /*List<String> contentEntries = Arrays.asList(new BufferedReader(new FileReader(outputFile)).lines().skip(1).findFirst().get().split(","));
+        List<String> contentEntries = Arrays.asList(new BufferedReader(new FileReader(outputFile)).lines().skip(1).findFirst().get().split(","));
+        assertEquals(2, contentEntries.stream().filter(e -> e.equals("true")).count()); // "Lazy Test" and "Exception Catching Throwing"
+        assertEquals(15, contentEntries.stream().filter(e -> e.equals("false")).count()); // 17 methods smells - 2 detected smells
+    }
 
-        List<String> expectedEntries = new ArrayList<>(Arrays.asList(appName,"Cryptographer.java",testFilePath,"CryptographerTest.java","src/main/java/com/github/marmaladesky/Cryptographer.java","src/test/java/com/github/marmaladesky/tests/CryptographerTest.java",productionFilePath));
+    @Test
+    public void testContent_METHOD_Encrypt() throws IOException {
+        sut = new ReportController(resultsWriter, Arrays.asList(ReportController.ReportGranularity.METHOD));
+        sut.report(Arrays.asList(file));
 
-        List<String> hasSmell = smells.stream().map(x-> expectedSmells.contains(x.getSmellName())?"true":"false").collect(Collectors.toList());
+        assertTrue(outputFile.exists(), "Output file missing!");
 
-        expectedEntries.addAll(hasSmell);
+        assertEquals(17, getMethodSmells().size());
 
-        assertIterableEquals(expectedEntries,contentEntries);*/
+        List<String> contentEntries = Arrays.asList(new BufferedReader(new FileReader(outputFile)).lines().skip(2).findFirst().get().split(","));
+        assertEquals(3, contentEntries.stream().filter(e -> e.equals("true")).count()); // "Eager Test", "Lazy Test" and "Exception Catching Throwing"
+        assertEquals(14, contentEntries.stream().filter(e -> e.equals("false")).count()); // 17 methods smells - 3 detected smells
     }
 
     @Test
