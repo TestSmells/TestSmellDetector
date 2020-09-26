@@ -35,7 +35,7 @@ public class ReportControllerTest {
     @Test
     public void testReportNotCallExportSmells() throws IOException {
         sut.report(files);
-        verify(resultsWriter, never()).exportSmells(any());
+        verify(resultsWriter, never()).exportSmells((SmellsContainer) any());
     }
 
     @Test

@@ -67,30 +67,71 @@ public class ReportController {
         }
     }
 
-    private List<SmellyElement> mergeSmellyElements(List<SmellyElement> elements) {
-        List<SmellyElement> result = new ArrayList<>();
-        for (SmellyElement s1 : elements) {
-            boolean have = false;
-            for (SmellyElement s2 : result) {
-                if (s1 == s2) {
-                    have = true;
-                } else if (s1.getElementName().equals(s2.getElementName())) {
-                    have = true;
-                    s2.setHasSmell(s2.hasSmell() || s1.hasSmell());
-                    s1.getData().forEach(s2::addDataItem);
-                }
-            }
-            if (!have) {
-                result.add(s1);
-            }
-        }
-        return result;
+    private List<ReportOutput> mergeSmellyElements(List<ReportCell> elements) {
+        List<String> gruopedByElemName = elements.stream().map(c -> c.name).distinct().collect(Collectors.toList());
+        return gruopedByElemName.stream().map(name -> ReportOutput.fromCell(filterByName(elements, name))).collect(Collectors.toList());
+    }
+
+    private List<ReportCell> filterByName(List<ReportCell> elements, String name) {
+        return elements.stream().filter(c1 -> c1.name.equals(name)).collect(Collectors.toList());
     }
 
     private void reportSmellyElements(List<AbstractSmell> smells, Class<?> type) throws IOException {
-        List<SmellyElement> c = smells.stream().map(AbstractSmell::getSmellyElements).flatMap(Collection::stream).filter(type::isInstance).collect(Collectors.toList());
-        for (SmellyElement elem : mergeSmellyElements(c)) {
-            resultsWriter.exportSmells(elem);
+        List<ReportCell> c = smells.stream().flatMap(s -> s.getSmellyElements().stream().filter(type::isInstance).map(se -> ReportCell.fromSmellElem(se, s.getSmellName()))).collect(Collectors.toList());
+        for (ReportOutput output : mergeSmellyElements(c)) {
+            resultsWriter.exportSmells(output);
+        }
+    }
+
+    private static class ReportCell {
+        private String smellType;
+        private String name;
+        private Map<String, String> data;
+        private boolean hasSmell;
+
+        static ReportCell fromSmellElem(SmellyElement elem, String smellType) {
+            ReportCell rc = new ReportCell();
+            rc.smellType = smellType;
+            rc.name = elem.getElementName();
+            rc.data = elem.getData();
+            rc.hasSmell = elem.hasSmell();
+            return rc;
+        }
+    }
+
+    static class ReportOutput {
+        private Map<String, Boolean> smellsPresence;
+        private Map<String, String> data;
+        private String name;
+
+        public static ReportOutput fromCell(List<ReportCell> cells) {
+            ReportOutput output = new ReportOutput();
+
+            String elementName = cells.get(0).name;
+            assert cells.stream().allMatch(s -> s.name.equals(elementName));
+
+            output.name = elementName;
+            output.data = new HashMap<>();
+            output.smellsPresence = new HashMap<>();
+
+            cells.forEach(cell -> {
+                output.data.putAll(cell.data);
+                boolean hasSmell = output.smellsPresence.getOrDefault(cell.smellType, false) || cell.hasSmell;
+                output.smellsPresence.put(cell.smellType, hasSmell);
+            });
+            return output;
+        }
+
+        public Map<String, Boolean> getSmellsPresence() {
+            return smellsPresence;
+        }
+
+        public Map<String, String> getData() {
+            return data;
+        }
+
+        public String getName() {
+            return name;
         }
     }
 }
