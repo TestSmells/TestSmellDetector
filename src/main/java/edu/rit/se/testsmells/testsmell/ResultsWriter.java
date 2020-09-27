@@ -15,7 +15,6 @@ public class ResultsWriter {
 
     private String outputFile;
     private FileWriter writer;
-    private TestSmellDetector testSmellDetector;
     private List<String> headers;
 
     /**
@@ -23,8 +22,7 @@ public class ResultsWriter {
      *
      * @throws IOException Failed to create/open output file
      */
-    private ResultsWriter(TestSmellDetector detector) throws IOException {
-        testSmellDetector = detector;
+    private ResultsWriter() throws IOException {
         String time = String.valueOf(Calendar.getInstance().getTimeInMillis());
         outputFile = MessageFormat.format("{0}_{1}_{2}.{3}", "Output", "TestSmellDetection", time, "csv");
         writer = new FileWriter(outputFile, false);
@@ -36,8 +34,8 @@ public class ResultsWriter {
      * @return new ResultsWriter instance
      * @throws IOException Failed to create/open output file
      */
-    public static ResultsWriter createResultsWriter(TestSmellDetector testSmellDetector) throws IOException {
-        return new ResultsWriter(testSmellDetector);
+    public static ResultsWriter createResultsWriter() throws IOException {
+        return new ResultsWriter();
     }
 
     String getOutputFile() {
@@ -51,7 +49,7 @@ public class ResultsWriter {
 
     private void writeCSVHeader(SmellsContainer anyFile) throws IOException {
         List<String> headers = new ArrayList<>(anyFile.getTestDescriptionEntries().keySet());
-        headers.addAll(testSmellDetector.getTestSmellNames()); //TODO: remove testSmellDetector dependency
+        headers.addAll(anyFile.getTestSmells().stream().map(AbstractSmell::getSmellName).collect(Collectors.toList()));
         writeCSV(headers);
     }
 

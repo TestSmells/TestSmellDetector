@@ -33,7 +33,7 @@ class ReportControllerIntegrationTest {
         TestSmellDetector testSmellDetector = TestSmellDetector.createTestSmellDetector();
         smells.forEach(testSmellDetector::addDetectableSmell);
         file = new TestFile(appName, testFilePath, productionFilePath);
-        resultsWriter = ResultsWriter.createResultsWriter(testSmellDetector);
+        resultsWriter = ResultsWriter.createResultsWriter();
         testSmellDetector.detectSmells(file);
         outputFile = new File(resultsWriter.getOutputFile());
     }

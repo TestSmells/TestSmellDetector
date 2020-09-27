@@ -43,7 +43,7 @@ public class Main {
 
 //        resultsWriter.writeCSVHeader(testSmellDetector, anyFile);
 
-        return ResultsWriter.createResultsWriter(testSmellDetector);
+        return ResultsWriter.createResultsWriter();
     }
 
     private static List<TestFile> readInputTestFiles(File inputFile) throws IOException {
