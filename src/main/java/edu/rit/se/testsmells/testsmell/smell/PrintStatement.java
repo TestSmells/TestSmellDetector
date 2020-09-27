@@ -18,6 +18,7 @@ This code checks the body of each test method if System.out. print(), println(),
 public class PrintStatement extends AbstractSmell {
 
 
+    private CompilationUnit testFileCompilationUnit;
 
     public PrintStatement() {
         super();
@@ -38,7 +39,8 @@ public class PrintStatement extends AbstractSmell {
     public void runAnalysis(CompilationUnit testFileCompilationUnit, CompilationUnit productionFileCompilationUnit, String testFileName, String productionFileName) throws FileNotFoundException {
         PrintStatement.ClassVisitor classVisitor;
         classVisitor = new PrintStatement.ClassVisitor();
-        classVisitor.visit(testFileCompilationUnit, null);
+        this.testFileCompilationUnit = testFileCompilationUnit;
+        classVisitor.visit(this.testFileCompilationUnit, null);
     }
 
     private class ClassVisitor extends VoidVisitorAdapter<Void> {
@@ -51,7 +53,7 @@ public class PrintStatement extends AbstractSmell {
         public void visit(MethodDeclaration n, Void arg) {
             if (isValidTestMethod(n)) {
                 currentMethod = n;
-                testMethod = new TestMethod(n.getNameAsString());
+                testMethod = new TestMethod(getFullMethodName(testFileCompilationUnit, n));
                 testMethod.setHasSmell(false); //default value is false (i.e. no smell)
                 super.visit(n, arg);
 

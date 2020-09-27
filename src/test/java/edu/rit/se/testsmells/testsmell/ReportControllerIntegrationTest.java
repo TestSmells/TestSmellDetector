@@ -104,8 +104,8 @@ class ReportControllerIntegrationTest {
 
 
         assertEquals("Element Name,WhileCount,ConditionCount,RedundantCount,AssertCount,IfCount,ExceptionCount,ForeachCount,PrintCount,SwitchCount,MysteryCount,ForCount,VerboseCount,ResourceOptimismCount,ThreadSleepCount,SensitiveCount,MagicNumberCount,Assertion Roulette,Eager Test,Mystery Guest,Sleepy Test,Unknown Test,Redundant Assertion,Magic Number Test,Conditional Test Logic,EmptyTest,General Fixture,Sensitive Equality,Verbose Test,Resource Optimism,Duplicate Assert,Exception Catching Throwing,Print Statement,Lazy Test", entries.get(0));
-        assertEquals("testDecrypt,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,false,false,false,false,false,false,false,false,false,false,false,false,false,false,true,false,true", entries.get(1));
-        assertEquals("testEncrypt,0,0,0,1,0,1,0,0,0,0,0,0,0,0,0,0,false,true,false,false,false,false,false,false,false,false,false,false,false,false,true,false,true", entries.get(2));
+        assertEquals("com.github.marmaladesky.tests.CryptographerTest.testDecrypt,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,false,false,false,false,false,false,false,false,false,false,false,false,false,false,true,false,true", entries.get(1));
+        assertEquals("com.github.marmaladesky.tests.CryptographerTest.testEncrypt,0,0,0,1,0,1,0,0,0,0,0,0,0,0,0,0,false,true,false,false,false,false,false,false,false,false,false,false,false,false,true,false,true", entries.get(2));
     }
 
     @Test

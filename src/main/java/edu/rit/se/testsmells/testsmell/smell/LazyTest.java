@@ -25,6 +25,7 @@ public class LazyTest extends AbstractSmell {
 
     private List<MethodUsage> calledProductionMethods;
     private List<MethodDeclaration> productionMethods;
+    private CompilationUnit testFileCompilationUnit;
 
     public LazyTest() {
         super();
@@ -55,7 +56,8 @@ public class LazyTest extends AbstractSmell {
         classVisitor.visit(productionFileCompilationUnit, null);
 
         classVisitor = new LazyTest.ClassVisitor(TEST_FILE);
-        classVisitor.visit(testFileCompilationUnit, null);
+        this.testFileCompilationUnit = testFileCompilationUnit;
+        classVisitor.visit(this.testFileCompilationUnit, null);
 
         for (MethodUsage method : calledProductionMethods) {
             List<MethodUsage> s = calledProductionMethods.stream().filter(x -> x.getProductionMethod().equals(method.getProductionMethod())).collect(Collectors.toList());
@@ -126,7 +128,7 @@ public class LazyTest extends AbstractSmell {
             if (Objects.equals(fileType, TEST_FILE)) {
                 if (isValidTestMethod(n)) {
                     currentMethod = n;
-                    testMethod = new TestMethod(currentMethod.getNameAsString());
+                    testMethod = new TestMethod(getFullMethodName(testFileCompilationUnit, currentMethod));
                     testMethod.setHasSmell(false); //default value is false (i.e. no smell)
                     super.visit(n, arg);
 
@@ -161,7 +163,7 @@ public class LazyTest extends AbstractSmell {
             if (currentMethod != null) {
                 if (productionMethods.stream().anyMatch(i -> i.getNameAsString().equals(n.getNameAsString()) &&
                         i.getParameters().size() == n.getArguments().size())) {
-                    calledProductionMethods.add(new MethodUsage(currentMethod.getNameAsString(), n.getNameAsString()));
+                    calledProductionMethods.add(new MethodUsage(getFullMethodName(testFileCompilationUnit, currentMethod), n.getNameAsString())); // TODO: Should production method name also be in full form?
                 } else {
                     if (n.getScope().isPresent()) {
                         if (n.getScope().get() instanceof NameExpr) {
@@ -170,7 +172,7 @@ public class LazyTest extends AbstractSmell {
                             ///if the scope matches a variable which, in turn, is of type of the production class
                             if (((NameExpr) n.getScope().get()).getNameAsString().equals(productionClassName) ||
                                     productionVariables.contains(((NameExpr) n.getScope().get()).getNameAsString())) {
-                                calledProductionMethods.add(new MethodUsage(currentMethod.getNameAsString(), n.getNameAsString()));
+                                calledProductionMethods.add(new MethodUsage(getFullMethodName(testFileCompilationUnit, currentMethod), n.getNameAsString())); // TODO: Should production method name also be in full form?
                             }
                         }
                     }

@@ -24,6 +24,7 @@ public class GeneralFixture extends AbstractSmell {
     MethodDeclaration setupMethod;
     List<FieldDeclaration> fieldList;
     List<String> setupFields;
+    private CompilationUnit testFileCompilationUnit;
 
     public GeneralFixture() {
         super();
@@ -44,7 +45,8 @@ public class GeneralFixture extends AbstractSmell {
     public void runAnalysis(CompilationUnit testFileCompilationUnit, CompilationUnit productionFileCompilationUnit, String testFileName, String productionFileName) throws FileNotFoundException {
         GeneralFixture.ClassVisitor classVisitor;
         classVisitor = new GeneralFixture.ClassVisitor();
-        classVisitor.visit(testFileCompilationUnit, null); //This call will populate the list of test methods and identify the setup method [visit(ClassOrInterfaceDeclaration n)]
+        this.testFileCompilationUnit = testFileCompilationUnit;
+        classVisitor.visit(this.testFileCompilationUnit, null); //This call will populate the list of test methods and identify the setup method [visit(ClassOrInterfaceDeclaration n)]
 
         //Proceed with general fixture analysis if setup method exists
         if (setupMethod != null) {
@@ -119,7 +121,7 @@ public class GeneralFixture extends AbstractSmell {
                 //call visit(NameExpr) for current method
                 super.visit(n, arg);
 
-                testMethod = new TestMethod(n.getNameAsString());
+                testMethod = new TestMethod(getFullMethodName(testFileCompilationUnit, n));
                 testMethod.setHasSmell(fixtureCount.size() != setupFields.size());
                 addSmellyElement(testMethod);
 

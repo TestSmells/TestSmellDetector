@@ -13,6 +13,7 @@ import java.io.FileNotFoundException;
 public class SensitiveEquality extends AbstractSmell {
 
 
+    private CompilationUnit testFileCompilationUnit;
 
     public SensitiveEquality() {
         super();
@@ -33,7 +34,8 @@ public class SensitiveEquality extends AbstractSmell {
     public void runAnalysis(CompilationUnit testFileCompilationUnit, CompilationUnit productionFileCompilationUnit, String testFileName, String productionFileName) throws FileNotFoundException {
         SensitiveEquality.ClassVisitor classVisitor;
         classVisitor = new SensitiveEquality.ClassVisitor();
-        classVisitor.visit(testFileCompilationUnit, null);
+        this.testFileCompilationUnit = testFileCompilationUnit;
+        classVisitor.visit(this.testFileCompilationUnit, null);
     }
 
     private class ClassVisitor extends VoidVisitorAdapter<Void> {
@@ -46,7 +48,7 @@ public class SensitiveEquality extends AbstractSmell {
         public void visit(MethodDeclaration n, Void arg) {
             if (isValidTestMethod(n)) {
                 currentMethod = n;
-                testMethod = new TestMethod(n.getNameAsString());
+                testMethod = new TestMethod(getFullMethodName(testFileCompilationUnit, n));
                 testMethod.setHasSmell(false); //default value is false (i.e. no smell)
                 super.visit(n, arg);
 

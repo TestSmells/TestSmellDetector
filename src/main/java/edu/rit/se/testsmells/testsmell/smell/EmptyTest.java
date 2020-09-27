@@ -15,6 +15,7 @@ import java.io.FileNotFoundException;
 public class EmptyTest extends AbstractSmell {
 
 
+    private CompilationUnit testFileCompilationUnit;
 
     public EmptyTest() {
         super();
@@ -35,7 +36,8 @@ public class EmptyTest extends AbstractSmell {
     public void runAnalysis(CompilationUnit testFileCompilationUnit, CompilationUnit productionFileCompilationUnit, String testFileName, String productionFileName) throws FileNotFoundException {
         EmptyTest.ClassVisitor classVisitor;
         classVisitor = new EmptyTest.ClassVisitor();
-        classVisitor.visit(testFileCompilationUnit, null);
+        this.testFileCompilationUnit = testFileCompilationUnit;
+        classVisitor.visit(this.testFileCompilationUnit, null);
     }
 
     /**
@@ -50,7 +52,7 @@ public class EmptyTest extends AbstractSmell {
         @Override
         public void visit(MethodDeclaration n, Void arg) {
             if (isValidTestMethod(n)) {
-                testMethod = new TestMethod(n.getNameAsString());
+                testMethod = new TestMethod(getFullMethodName(testFileCompilationUnit, n));
                 testMethod.setHasSmell(false); //default value is false (i.e. no smell)
                 //method should not be abstract
                 if (!n.isAbstract()) {

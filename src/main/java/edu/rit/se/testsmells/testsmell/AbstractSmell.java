@@ -1,7 +1,11 @@
 package edu.rit.se.testsmells.testsmell;
 
 import com.github.javaparser.ast.CompilationUnit;
+import com.github.javaparser.ast.PackageDeclaration;
+import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
+import com.github.javaparser.ast.expr.Name;
+import com.github.javaparser.ast.nodeTypes.NodeWithSimpleName;
 
 import java.io.FileNotFoundException;
 import java.util.List;
@@ -16,6 +20,18 @@ public abstract class AbstractSmell {
     public AbstractSmell() {
         methodValidator = MethodValidator.getInstance();
         smellyElementList = new CopyOnWriteArrayList<>();
+    }
+
+    protected String getFullMethodName(CompilationUnit unit, MethodDeclaration method) {
+        String packageClassPrefixWithDot = getPackageClass(unit);
+
+        String className = method.getParentNode().map(x -> (ClassOrInterfaceDeclaration) x).map(NodeWithSimpleName::getNameAsString).orElse("");
+
+        return packageClassPrefixWithDot + className + "." + method.getNameAsString();
+    }
+
+    private String getPackageClass(CompilationUnit unit) {
+        return unit.getPackageDeclaration().map(PackageDeclaration::getName).map(Name::asString).map(x -> x + ".").orElse("");
     }
 
     public abstract void runAnalysis(CompilationUnit testFileCompilationUnit, CompilationUnit productionFileCompilationUnit, String testFileName, String productionFileName) throws FileNotFoundException;

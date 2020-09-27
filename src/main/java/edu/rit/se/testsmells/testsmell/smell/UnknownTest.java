@@ -18,6 +18,7 @@ import java.util.Optional;
 public class UnknownTest extends AbstractSmell {
 
 
+    private CompilationUnit testFileCompilationUnit;
 
     public UnknownTest() {
         super();
@@ -38,7 +39,8 @@ public class UnknownTest extends AbstractSmell {
     public void runAnalysis(CompilationUnit testFileCompilationUnit, CompilationUnit productionFileCompilationUnit, String testFileName, String productionFileName) throws FileNotFoundException {
         UnknownTest.ClassVisitor classVisitor;
         classVisitor = new UnknownTest.ClassVisitor();
-        classVisitor.visit(testFileCompilationUnit, null);
+        this.testFileCompilationUnit = testFileCompilationUnit;
+        classVisitor.visit(this.testFileCompilationUnit, null);
     }
 
 
@@ -67,7 +69,7 @@ public class UnknownTest extends AbstractSmell {
                     }
                 }
                 currentMethod = n;
-                testMethod = new TestMethod(n.getNameAsString());
+                testMethod = new TestMethod(getFullMethodName(testFileCompilationUnit, n));
                 testMethod.setHasSmell(false); //default value is false (i.e. no smell)
                 super.visit(n, arg);
 

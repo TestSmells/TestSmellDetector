@@ -14,6 +14,7 @@ import java.io.FileNotFoundException;
 public class IgnoredTest extends AbstractSmell {
 
 
+    private CompilationUnit testFileCompilationUnit;
 
     public IgnoredTest() {
         super();
@@ -34,7 +35,8 @@ public class IgnoredTest extends AbstractSmell {
     public void runAnalysis(CompilationUnit testFileCompilationUnit, CompilationUnit productionFileCompilationUnit, String testFileName, String productionFileName) throws FileNotFoundException {
         IgnoredTest.ClassVisitor classVisitor;
         classVisitor = new IgnoredTest.ClassVisitor();
-        classVisitor.visit(testFileCompilationUnit, null);
+        this.testFileCompilationUnit = testFileCompilationUnit;
+        classVisitor.visit(this.testFileCompilationUnit, null);
     }
 
     /**
@@ -67,7 +69,7 @@ public class IgnoredTest extends AbstractSmell {
             //check if test method has Ignore annotation
             if (n.getAnnotationByName("Test").isPresent()) {
                 if (n.getAnnotationByName("Ignore").isPresent()) {
-                    testMethod = new TestMethod(n.getNameAsString());
+                    testMethod = new TestMethod(getFullMethodName(testFileCompilationUnit, n));
                     testMethod.setHasSmell(true);
                     addSmellyElement(testMethod);
                     return;
@@ -78,7 +80,7 @@ public class IgnoredTest extends AbstractSmell {
             //check if test method is not public
             if (n.getNameAsString().toLowerCase().startsWith("test")) {
                 if (!n.getModifiers().contains(Modifier.PUBLIC)) {
-                    testMethod = new TestMethod(n.getNameAsString());
+                    testMethod = new TestMethod(getFullMethodName(testFileCompilationUnit, n));
                     testMethod.setHasSmell(true);
                     addSmellyElement(testMethod);
                     return;

@@ -17,6 +17,7 @@ If this code detects the existence of a catch block or a throw statement in the 
 public class ExceptionCatchingThrowing extends AbstractSmell {
 
 
+    private CompilationUnit testFileCompilationUnit;
 
     public ExceptionCatchingThrowing() {
         super();
@@ -37,7 +38,8 @@ public class ExceptionCatchingThrowing extends AbstractSmell {
     public void runAnalysis(CompilationUnit testFileCompilationUnit, CompilationUnit productionFileCompilationUnit, String testFileName, String productionFileName) throws FileNotFoundException {
         ExceptionCatchingThrowing.ClassVisitor classVisitor;
         classVisitor = new ExceptionCatchingThrowing.ClassVisitor();
-        classVisitor.visit(testFileCompilationUnit, null);
+        this.testFileCompilationUnit = testFileCompilationUnit;
+        classVisitor.visit(this.testFileCompilationUnit, null);
     }
 
     private class ClassVisitor extends VoidVisitorAdapter<Void> {
@@ -51,7 +53,7 @@ public class ExceptionCatchingThrowing extends AbstractSmell {
         public void visit(MethodDeclaration n, Void arg) {
             if (isValidTestMethod(n)) {
                 currentMethod = n;
-                testMethod = new TestMethod(n.getNameAsString());
+                testMethod = new TestMethod(getFullMethodName(testFileCompilationUnit, n));
                 testMethod.setHasSmell(false); //default value is false (i.e. no smell)
                 super.visit(n, arg);
 

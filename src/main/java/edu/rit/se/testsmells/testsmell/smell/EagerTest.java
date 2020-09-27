@@ -25,6 +25,7 @@ public class EagerTest extends AbstractSmell {
 
     private List<MethodDeclaration> productionMethods;
     private int eagerCount;
+    private CompilationUnit testFileCompilationUnit;
 
     public EagerTest() {
         super();
@@ -54,7 +55,8 @@ public class EagerTest extends AbstractSmell {
         classVisitor.visit(productionFileCompilationUnit, null);
 
         classVisitor = new EagerTest.ClassVisitor(TEST_FILE);
-        classVisitor.visit(testFileCompilationUnit, null);
+        this.testFileCompilationUnit = testFileCompilationUnit;
+        classVisitor.visit(this.testFileCompilationUnit, null);
         eagerCount = classVisitor.overallEager;
     }
 
@@ -103,7 +105,7 @@ public class EagerTest extends AbstractSmell {
             if (Objects.equals(fileType, TEST_FILE)) {
                 if (isValidTestMethod(n)) {
                     currentMethod = n;
-                    testMethod = new TestMethod(currentMethod.getNameAsString());
+                    testMethod = new TestMethod(getFullMethodName(testFileCompilationUnit, currentMethod));
                     testMethod.setHasSmell(false); //default value is false (i.e. no smell)
                     super.visit(n, arg);
 

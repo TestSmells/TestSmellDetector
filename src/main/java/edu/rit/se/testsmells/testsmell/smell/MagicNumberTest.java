@@ -14,6 +14,7 @@ import java.io.FileNotFoundException;
 public class MagicNumberTest extends AbstractSmell {
 
 
+    private CompilationUnit testFileCompilationUnit;
 
     public MagicNumberTest() {
         super();
@@ -34,7 +35,8 @@ public class MagicNumberTest extends AbstractSmell {
     public void runAnalysis(CompilationUnit testFileCompilationUnit, CompilationUnit productionFileCompilationUnit, String testFileName, String productionFileName) throws FileNotFoundException {
         MagicNumberTest.ClassVisitor classVisitor;
         classVisitor = new MagicNumberTest.ClassVisitor();
-        classVisitor.visit(testFileCompilationUnit, null);
+        this.testFileCompilationUnit = testFileCompilationUnit;
+        classVisitor.visit(this.testFileCompilationUnit, null);
     }
 
     private class ClassVisitor extends VoidVisitorAdapter<Void> {
@@ -47,7 +49,7 @@ public class MagicNumberTest extends AbstractSmell {
         public void visit(MethodDeclaration n, Void arg) {
             if (isValidTestMethod(n)) {
                 currentMethod = n;
-                testMethod = new TestMethod(n.getNameAsString());
+                testMethod = new TestMethod(getFullMethodName(testFileCompilationUnit, n));
                 testMethod.setHasSmell(false); //default value is false (i.e. no smell)
                 super.visit(n, arg);
 

@@ -40,7 +40,7 @@ public class DependentTest extends AbstractSmell {
 
         for (TestMethod testMethod : testMethods) {
             if (testMethod.getCalledMethods().stream().anyMatch(x -> x.getName().equals(testMethods.stream().map(z -> z.getMethodDeclaration().getNameAsString())))){
-                addSmellyElement(new edu.rit.se.testsmells.testsmell.TestMethod(testMethod.getMethodDeclaration().getNameAsString()));
+                addSmellyElement(new edu.rit.se.testsmells.testsmell.TestMethod(getFullMethodName(testFileCompilationUnit, testMethod.getMethodDeclaration())));
             }
         }
     }
