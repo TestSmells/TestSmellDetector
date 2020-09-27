@@ -15,6 +15,8 @@ This code marks the class as smelly if the class name corresponds to the name of
 public class DefaultTest extends AbstractSmell {
 
 
+    private CompilationUnit testFileCompilationUnit;
+
     public DefaultTest() {
         super();
     }
@@ -31,7 +33,8 @@ public class DefaultTest extends AbstractSmell {
     public void runAnalysis(CompilationUnit testFileCompilationUnit, CompilationUnit productionFileCompilationUnit, String testFileName, String productionFileName) throws FileNotFoundException {
         DefaultTest.ClassVisitor classVisitor;
         classVisitor = new DefaultTest.ClassVisitor();
-        classVisitor.visit(testFileCompilationUnit, null);
+        this.testFileCompilationUnit = testFileCompilationUnit;
+        classVisitor.visit(this.testFileCompilationUnit, null);
     }
 
     private class ClassVisitor extends VoidVisitorAdapter<Void> {
@@ -40,7 +43,7 @@ public class DefaultTest extends AbstractSmell {
         @Override
         public void visit(ClassOrInterfaceDeclaration n, Void arg) {
             if (n.getNameAsString().equals("ExampleUnitTest") || n.getNameAsString().equals("ExampleInstrumentedTest")) {
-                testClass = new TestClass(n.getNameAsString());
+                testClass = new TestClass(getFullClassName(testFileCompilationUnit, n));
                 testClass.setHasSmell(true);
                 addSmellyElement(testClass);
             }

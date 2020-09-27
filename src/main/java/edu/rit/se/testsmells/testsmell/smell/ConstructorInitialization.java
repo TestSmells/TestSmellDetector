@@ -17,6 +17,7 @@ If this code detects the existence of a constructor, it sets the class as smelly
  */
 public class ConstructorInitialization extends AbstractSmell {
     private String testFileName;
+    private CompilationUnit testFileCompilationUnit;
 
     public ConstructorInitialization() {
         super();
@@ -38,7 +39,8 @@ public class ConstructorInitialization extends AbstractSmell {
         this.testFileName = testFileName;
         ConstructorInitialization.ClassVisitor classVisitor;
         classVisitor = new ConstructorInitialization.ClassVisitor();
-        classVisitor.visit(testFileCompilationUnit, null);
+        this.testFileCompilationUnit = testFileCompilationUnit;
+        classVisitor.visit(this.testFileCompilationUnit, null);
     }
 
 
@@ -60,7 +62,7 @@ public class ConstructorInitialization extends AbstractSmell {
             // This check is needed to handle java files that have multiple classes
             if(n.getNameAsString().equals(testFileName)) {
                 if(!constructorAllowed) {
-                    testClass = new TestClass(n.getNameAsString());
+                    testClass = new TestClass(getFullClassName(testFileCompilationUnit, n));
                     testClass.setHasSmell(true);
                     addSmellyElement(testClass);
                 }

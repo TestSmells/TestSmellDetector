@@ -1,6 +1,7 @@
 package edu.rit.se.testsmells.testsmell;
 
 import com.github.javaparser.ast.CompilationUnit;
+import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.PackageDeclaration;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
@@ -22,12 +23,15 @@ public abstract class AbstractSmell {
         smellyElementList = new CopyOnWriteArrayList<>();
     }
 
-    protected String getFullMethodName(CompilationUnit unit, MethodDeclaration method) {
-        String packageClassPrefixWithDot = getPackageClass(unit);
+    protected <T extends Node & NodeWithSimpleName> String getFullMethodName(CompilationUnit unit, T node) {
 
-        String className = method.getParentNode().map(x -> (ClassOrInterfaceDeclaration) x).map(NodeWithSimpleName::getNameAsString).orElse("");
+        String className = node.getParentNode().map(x -> (ClassOrInterfaceDeclaration) x).map(NodeWithSimpleName::getNameAsString).orElse("");
 
-        return packageClassPrefixWithDot + className + "." + method.getNameAsString();
+        return getPackageClass(unit) + className + "." + node.getNameAsString();
+    }
+
+    protected String getFullClassName(CompilationUnit unit, NodeWithSimpleName node) {
+        return getPackageClass(unit) + node.getNameAsString();
     }
 
     private String getPackageClass(CompilationUnit unit) {

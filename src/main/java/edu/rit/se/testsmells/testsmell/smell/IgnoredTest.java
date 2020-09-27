@@ -52,7 +52,7 @@ public class IgnoredTest extends AbstractSmell {
         @Override
         public void visit(ClassOrInterfaceDeclaration n, Void arg) {
             if (n.getAnnotationByName("Ignore").isPresent()) {
-                testClass = new TestClass(n.getNameAsString());
+                testClass = new TestClass(getFullClassName(testFileCompilationUnit, n));
                 testClass.setHasSmell(true);
                 addSmellyElement(testClass);
             }
