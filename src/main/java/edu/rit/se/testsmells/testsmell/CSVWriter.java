@@ -11,35 +11,43 @@ import java.util.stream.Collectors;
 /**
  * This class is utilized to write output to a CSV file
  */
-public class ResultsWriter {
+public class CSVWriter {
 
-    private String outputFile;
+    private String suffix;
     private FileWriter writer;
     private List<String> headers;
+    private String name;
 
     /**
      * Creates the file into which output it to be written into. Results from each file will be stored in a new file
      *
-     * @throws IOException Failed to create/open output file
      */
-    private ResultsWriter() throws IOException {
+    private CSVWriter() {
         String time = String.valueOf(Calendar.getInstance().getTimeInMillis());
-        outputFile = MessageFormat.format("{0}_{1}_{2}.{3}", "Output", "TestSmellDetection", time, "csv");
-        writer = new FileWriter(outputFile, false);
+        suffix = MessageFormat.format("{0}_{1}_{2}.{3}", "Output", "TestSmellDetection", time, "csv");
+        writer = null;
     }
 
     /**
      * Factory method that provides a new instance of the ResultsWriter
      *
      * @return new ResultsWriter instance
-     * @throws IOException Failed to create/open output file
      */
-    public static ResultsWriter createResultsWriter() throws IOException {
-        return new ResultsWriter();
+    public static CSVWriter createResultsWriter() {
+        return new CSVWriter();
     }
 
-    String getOutputFile() {
-        return outputFile;
+    void setOutputFilePrefix(String prefix) throws IOException {
+        name = MessageFormat.format("{0}_{1}", prefix, suffix);
+        writer = new FileWriter(name, true);
+    }
+
+    public String getSuffix() {
+        return suffix;
+    }
+
+    String getFilename() {
+        return name;
     }
 
     private void writeCSVHeader(List<Report> reports) throws IOException {
@@ -84,8 +92,6 @@ public class ResultsWriter {
      * @throws IOException Failed to create/open output file
      */
     private void writeCSV(List<String> dataValues) throws IOException {
-        writer = new FileWriter(outputFile, true);
-
         for (int i = 0; i < dataValues.size(); i++) {
             writer.append(String.valueOf(dataValues.get(i)));
 
@@ -93,6 +99,9 @@ public class ResultsWriter {
             else writer.append(System.lineSeparator());
 
         }
+    }
+
+    void closeFile() throws IOException {
         writer.flush();
         writer.close();
     }

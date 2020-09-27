@@ -22,7 +22,7 @@ class ReportControllerIntegrationTest {
     private File outputFile;
     private TestFile file;
     private ReportController sut;
-    private ResultsWriter resultsWriter;
+    private CSVWriter csvWriter;
     private List<AbstractSmell> smells = Arrays.asList(new AssertionRoulette(), new ConditionalTestLogic(), new ConstructorInitialization(), new DefaultTest(), new EmptyTest(), new ExceptionCatchingThrowing(), new GeneralFixture(), new MysteryGuest(), new PrintStatement(), new RedundantAssertion(), new SensitiveEquality(), new VerboseTest(), new SleepyTest(), new EagerTest(), new LazyTest(), new DuplicateAssert(), new UnknownTest(), new IgnoredTest(), new ResourceOptimism(), new MagicNumberTest(), new DependentTest());
     private String appName = "LazyTest";
     private String testFilePath = "/LazyTest/src/test/java/com/github/marmaladesky/tests/CryptographerTest.java";
@@ -33,9 +33,8 @@ class ReportControllerIntegrationTest {
         TestSmellDetector testSmellDetector = TestSmellDetector.createTestSmellDetector();
         smells.forEach(testSmellDetector::addDetectableSmell);
         file = new TestFile(appName, testFilePath, productionFilePath);
-        resultsWriter = ResultsWriter.createResultsWriter();
+        csvWriter = CSVWriter.createResultsWriter();
         testSmellDetector.detectSmells(file);
-        outputFile = new File(resultsWriter.getOutputFile());
     }
 
     @AfterEach
@@ -45,15 +44,41 @@ class ReportControllerIntegrationTest {
     }
 
     @Test
+    void testMultipleOutput() throws IOException {
+        List<ReportController.ReportGranularity> outputs = Arrays.asList(ReportController.ReportGranularity.METHOD, ReportController.ReportGranularity.CLASS, ReportController.ReportGranularity.FILE);
+        sut = new ReportController(csvWriter, outputs);
+        sut.report(Collections.singletonList(file));
+
+        outputFile = new File("METHOD_" + csvWriter.getSuffix());
+        assertTrue(outputFile.exists(), "Method output file missing!");
+        List<String> fileContent = new BufferedReader(new FileReader(outputFile)).lines().collect(Collectors.toList());
+        assertEquals(3, fileContent.size(), "File with unexpected size received! File's content is: " + System.lineSeparator() + String.join(System.lineSeparator(), fileContent) + System.lineSeparator());
+
+        outputFile = new File("CLASS_" + csvWriter.getSuffix());
+        assertTrue(outputFile.exists(), "Class output file missing!");
+        fileContent = new BufferedReader(new FileReader(outputFile)).lines().collect(Collectors.toList());
+        //assertEquals(2, fileContent.size(), "File with unexpected size received! File's content is: " + System.lineSeparator() + String.join(System.lineSeparator(), fileContent) + System.lineSeparator()); // TODO: FIX class not being reported
+
+        outputFile = new File("FILE_" + csvWriter.getSuffix());
+        assertTrue(outputFile.exists(), "File output file missing!");
+        fileContent = new BufferedReader(new FileReader(outputFile)).lines().collect(Collectors.toList());
+        assertEquals(2, fileContent.size(), "File with unexpected size received! File's content is: " + System.lineSeparator() + String.join(System.lineSeparator(), fileContent) + System.lineSeparator());
+
+
+    }
+
+    @Test
     void testReport() {
-        sut = new ReportController(resultsWriter, Collections.singletonList(ReportController.ReportGranularity.FILE));
+        sut = new ReportController(csvWriter, Collections.singletonList(ReportController.ReportGranularity.FILE));
         assertDoesNotThrow(() -> sut.report(Collections.singletonList(file)));
+        outputFile = new File(csvWriter.getFilename());
     }
 
     @Test
     void testHeader_FILE() throws IOException {
-        sut = new ReportController(resultsWriter, Collections.singletonList(ReportController.ReportGranularity.FILE));
+        sut = new ReportController(csvWriter, Collections.singletonList(ReportController.ReportGranularity.FILE));
         sut.report(Collections.singletonList(file));
+        outputFile = new File(csvWriter.getFilename());
         assertTrue(outputFile.exists(), "Output file missing!");
 
         List<String> headerEntries = Arrays.asList(new BufferedReader(new FileReader(outputFile)).readLine().split(","));
@@ -67,8 +92,9 @@ class ReportControllerIntegrationTest {
 
     @Test
     void testContent_FILE() throws IOException {
-        sut = new ReportController(resultsWriter, Collections.singletonList(ReportController.ReportGranularity.FILE));
+        sut = new ReportController(csvWriter, Collections.singletonList(ReportController.ReportGranularity.FILE));
         sut.report(Collections.singletonList(file));
+        outputFile = new File(csvWriter.getFilename());
         assertTrue(outputFile.exists(), "Output file missing!");
 
         List<String> contentEntries = Arrays.asList(new BufferedReader(new FileReader(outputFile)).lines().skip(1).findFirst().orElse("").split(","));
@@ -96,8 +122,9 @@ class ReportControllerIntegrationTest {
 
     @Test
     void testReport_METHOD() throws IOException {
-        sut = new ReportController(resultsWriter, Collections.singletonList(ReportController.ReportGranularity.METHOD));
+        sut = new ReportController(csvWriter, Collections.singletonList(ReportController.ReportGranularity.METHOD));
         sut.report(Collections.singletonList(file));
+        outputFile = new File(csvWriter.getFilename());
         assertTrue(outputFile.exists(), "Output file missing!");
 
         List<String> entries = new BufferedReader(new FileReader(outputFile)).lines().collect(Collectors.toList());
@@ -110,8 +137,9 @@ class ReportControllerIntegrationTest {
 
     @Test
     void testHeader_METHOD() throws IOException {
-        sut = new ReportController(resultsWriter, Collections.singletonList(ReportController.ReportGranularity.METHOD));
+        sut = new ReportController(csvWriter, Collections.singletonList(ReportController.ReportGranularity.METHOD));
         sut.report(Collections.singletonList(file));
+        outputFile = new File(csvWriter.getFilename());
         assertTrue(outputFile.exists(), "Output file missing!");
 
         List<String> headerEntries = Arrays.asList(new BufferedReader(new FileReader(outputFile)).readLine().split(","));
@@ -121,8 +149,9 @@ class ReportControllerIntegrationTest {
 
     @Test
     void testContent_METHOD_Decrypt() throws IOException {
-        sut = new ReportController(resultsWriter, Collections.singletonList(ReportController.ReportGranularity.METHOD));
+        sut = new ReportController(csvWriter, Collections.singletonList(ReportController.ReportGranularity.METHOD));
         sut.report(Collections.singletonList(file));
+        outputFile = new File(csvWriter.getFilename());
 
         assertTrue(outputFile.exists(), "Output file missing!");
 
@@ -135,8 +164,9 @@ class ReportControllerIntegrationTest {
 
     @Test
     void testContent_METHOD_Encrypt() throws IOException {
-        sut = new ReportController(resultsWriter, Collections.singletonList(ReportController.ReportGranularity.METHOD));
+        sut = new ReportController(csvWriter, Collections.singletonList(ReportController.ReportGranularity.METHOD));
         sut.report(Collections.singletonList(file));
+        outputFile = new File(csvWriter.getFilename());
 
         assertTrue(outputFile.exists(), "Output file missing!");
 
@@ -149,8 +179,9 @@ class ReportControllerIntegrationTest {
 
     @Test
     void testConsistentColumns() throws IOException {
-        sut = new ReportController(resultsWriter, Collections.singletonList(ReportController.ReportGranularity.FILE));
+        sut = new ReportController(csvWriter, Collections.singletonList(ReportController.ReportGranularity.FILE));
         sut.report(Collections.singletonList(file));
+        outputFile = new File(csvWriter.getFilename());
         assertTrue(outputFile.exists(), "Output file missing!");
 
         BufferedReader content = new BufferedReader(new FileReader(outputFile));

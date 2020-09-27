@@ -10,18 +10,18 @@ import java.util.Properties;
 import java.util.stream.Collectors;
 
 public class ReportController {
-    private final ResultsWriter resultsWriter;
+    private final CSVWriter csvWriter;
     private final List<ReportGranularity> configuredGranularities;
     private ExtractingStrategy extractor = new Extractor();
 
-    ReportController(ResultsWriter resultsWriter, List<ReportGranularity> granularities) {
-        this.resultsWriter = resultsWriter;
+    ReportController(CSVWriter csvWriter, List<ReportGranularity> granularities) {
+        this.csvWriter = csvWriter;
 
         configuredGranularities = granularities;
     }
 
-    public static ReportController createReportController(ResultsWriter resultsWriter) throws IOException {
-        return new ReportController(resultsWriter, readProperties());
+    public static ReportController createReportController(CSVWriter csvWriter) throws IOException {
+        return new ReportController(csvWriter, readProperties());
     }
 
     private static List<ReportGranularity> readProperties() throws IOException {
@@ -35,6 +35,7 @@ public class ReportController {
 
     public void report(List<TestFile> files) throws IOException {
         for (ReportGranularity config : configuredGranularities) {
+            csvWriter.setOutputFilePrefix(config.toString());
             switch (config) {
                 case CLASS:
                     reportTestClasses(files);
@@ -48,6 +49,7 @@ public class ReportController {
                 default:
                     throw new IllegalStateException("Unexpected value: " + config);
             }
+            csvWriter.closeFile();
         }
     }
 
@@ -65,7 +67,7 @@ public class ReportController {
 
     private void reportTestFiles(List<TestFile> files) throws IOException {
         for (TestFile file : files) {
-            resultsWriter.exportSmells(file);
+            csvWriter.exportSmells(file);
         }
     }
 
@@ -76,7 +78,7 @@ public class ReportController {
 
     private void reportSmellyElements(List<AbstractSmell> smells, Class<?> type) throws IOException {
         List<Report> smellyElementReports = mergeSmellyElements(smells, type);
-        resultsWriter.exportSmells(smellyElementReports);
+        csvWriter.exportSmells(smellyElementReports);
     }
 
     enum ReportGranularity {FILE, CLASS, METHOD}

@@ -16,15 +16,15 @@ public class ReportControllerTest {
     AbstractSmell smell;
     List<TestFile> files;
     ReportController sut;
-    ResultsWriter resultsWriter;
+    CSVWriter csvWriter;
 
     @BeforeEach
     public void setUp() throws IOException {
         files = new ArrayList<>();
         smell = mock(AbstractSmell.class);
         tf = mock(TestFile.class);
-        resultsWriter = mock(ResultsWriter.class);
-        sut = ReportController.createReportController(resultsWriter);
+        csvWriter = mock(CSVWriter.class);
+        sut = ReportController.createReportController(csvWriter);
     }
 
     @Test
@@ -35,7 +35,7 @@ public class ReportControllerTest {
     @Test
     public void testReportNotCallExportSmells() throws IOException {
         sut.report(files);
-        verify(resultsWriter, never()).exportSmells((SmellsContainer) any());
+        verify(csvWriter, never()).exportSmells((SmellsContainer) any());
     }
 
     @Test
@@ -45,7 +45,7 @@ public class ReportControllerTest {
 
         sut.report(files);
 
-        verify(resultsWriter, atLeastOnce()).exportSmells(tf);
+        verify(csvWriter, atLeastOnce()).exportSmells(tf);
     }
 
     @Test
@@ -57,7 +57,7 @@ public class ReportControllerTest {
 
         sut.report(files);
 
-        verify(resultsWriter, atLeastOnce()).exportSmells(tf);
+        verify(csvWriter, atLeastOnce()).exportSmells(tf);
         //verify(resultsWriter, atLeastOnce()).exportSmells(smellyElem); TODO: make exportSmells(smellyElem) be detectable
     }
 }

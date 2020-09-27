@@ -1,7 +1,7 @@
 package edu.rit.se.testsmells;
 
+import edu.rit.se.testsmells.testsmell.CSVWriter;
 import edu.rit.se.testsmells.testsmell.ReportController;
-import edu.rit.se.testsmells.testsmell.ResultsWriter;
 import edu.rit.se.testsmells.testsmell.TestFile;
 import edu.rit.se.testsmells.testsmell.TestSmellDetector;
 import edu.rit.se.testsmells.testsmell.smell.*;
@@ -22,8 +22,8 @@ public class Main {
         TestSmellDetector testSmellDetector = initializeSmells();
 
         List<TestFile> files = readInputTestFiles(inputFile);
-        ResultsWriter resultsWriter = initializeOutputFile(testSmellDetector);
-        ReportController reportCtrl = ReportController.createReportController(resultsWriter);
+        CSVWriter csvWriter = initializeOutputFile(testSmellDetector);
+        ReportController reportCtrl = ReportController.createReportController(csvWriter);
 
         for (TestFile file : files) {
             System.out.println(getCurrentDateFormatted() + " Processing: " + file.getTestFilePath());
@@ -39,11 +39,11 @@ public class Main {
         return (new SimpleDateFormat("yyyy/MM/dd HH:mm:ss")).format(new Date());
     }
 
-    private static ResultsWriter initializeOutputFile(TestSmellDetector testSmellDetector) throws IOException {
+    private static CSVWriter initializeOutputFile(TestSmellDetector testSmellDetector) throws IOException {
 
 //        resultsWriter.writeCSVHeader(testSmellDetector, anyFile);
 
-        return ResultsWriter.createResultsWriter();
+        return CSVWriter.createResultsWriter();
     }
 
     private static List<TestFile> readInputTestFiles(File inputFile) throws IOException {
