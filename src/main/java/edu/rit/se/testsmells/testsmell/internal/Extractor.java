@@ -12,7 +12,8 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class ExtractingByMerge implements ExtractingStrategy {
+public class Extractor implements ExtractingStrategy {
+
     @Override
     public List<Report> extract(List<AbstractSmell> smells, Class<?> type) {
         return merge(smells.stream().flatMap(smell -> filterAndFlatten(type, smell)).collect(Collectors.toList()));
@@ -68,9 +69,12 @@ public class ExtractingByMerge implements ExtractingStrategy {
      * The final output model
      */
     public static class ReportOutput implements Report {
+        private static final String NAME_KEY = "Element Name";
         private Map<String, Boolean> smellsPresence;
         private Map<String, String> data;
         private String name;
+        private List<String> values = null;
+        private List<String> keys = null;
 
         /**
          * Merge ReportCells into a ReportOutput
@@ -99,25 +103,39 @@ public class ExtractingByMerge implements ExtractingStrategy {
             return output;
         }
 
-        Map<String, Boolean> getSmellsPresence() {
-            return smellsPresence;
-        }
-
-        public Map<String, String> getData() {
-            return data;
-        }
-
-        public String getName() {
-            return name;
+        @Override
+        public List<String> getEntryValues() {
+            if (values == null) {
+                values = new ArrayList<>();
+                values.add(name);
+                values.addAll(data.values());
+                smellsPresence.values().forEach(e -> values.add(e.toString()));
+            }
+            return values;
         }
 
         @Override
-        public List<String> getEntryValues() {
-            List<String> entries = new ArrayList<>();
-            entries.add(getName());
-            entries.addAll(getData().values());
-            getSmellsPresence().values().forEach(e -> entries.add(e.toString()));
-            return entries;
+        public List<String> getEntryKeys() {
+            if (keys == null) {
+                keys = new ArrayList<>();
+                keys.add(NAME_KEY);
+                keys.addAll(data.keySet());
+                keys.addAll(smellsPresence.keySet());
+            }
+            return keys;
+        }
+
+        @Override
+        public String getValue(String key) {
+            if (key.equals(NAME_KEY)) {
+                return name;
+            } else if (data.containsKey(key)) {
+                return data.get(key);
+            } else if (smellsPresence.containsKey(key)) {
+                return smellsPresence.get(key).toString();
+            } else {
+                return null;
+            }
         }
     }
 }

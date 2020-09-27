@@ -1,6 +1,6 @@
 package edu.rit.se.testsmells.testsmell;
 
-import edu.rit.se.testsmells.testsmell.internal.ExtractingByMerge;
+import edu.rit.se.testsmells.testsmell.internal.Extractor;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 public class ReportController {
     private final ResultsWriter resultsWriter;
     private final List<ReportGranularity> configuredGranularities;
-    private ExtractingStrategy extractor = new ExtractingByMerge();
+    private ExtractingStrategy extractor = new Extractor();
 
     ReportController(ResultsWriter resultsWriter, List<ReportGranularity> granularities) {
         this.resultsWriter = resultsWriter;
@@ -76,9 +76,7 @@ public class ReportController {
 
     private void reportSmellyElements(List<AbstractSmell> smells, Class<?> type) throws IOException {
         List<Report> smellyElementReports = mergeSmellyElements(smells, type);
-        for (Report report : smellyElementReports) {
-            resultsWriter.exportSmells(report);
-        }
+        resultsWriter.exportSmells(smellyElementReports);
     }
 
     enum ReportGranularity {FILE, CLASS, METHOD}

@@ -22,7 +22,7 @@ public class Main {
         TestSmellDetector testSmellDetector = initializeSmells();
 
         List<TestFile> files = readInputTestFiles(inputFile);
-        ResultsWriter resultsWriter = initializeOutputFile(testSmellDetector, files.get(0));
+        ResultsWriter resultsWriter = initializeOutputFile(testSmellDetector);
         ReportController reportCtrl = ReportController.createReportController(resultsWriter);
 
         for (TestFile file : files) {
@@ -39,12 +39,11 @@ public class Main {
         return (new SimpleDateFormat("yyyy/MM/dd HH:mm:ss")).format(new Date());
     }
 
-    private static ResultsWriter initializeOutputFile(TestSmellDetector testSmellDetector, TestFile anyFile) throws IOException {
-        ResultsWriter resultsWriter = ResultsWriter.createResultsWriter();
+    private static ResultsWriter initializeOutputFile(TestSmellDetector testSmellDetector) throws IOException {
 
-        resultsWriter.writeCSVHeader(testSmellDetector, anyFile);
+//        resultsWriter.writeCSVHeader(testSmellDetector, anyFile);
 
-        return resultsWriter;
+        return ResultsWriter.createResultsWriter(testSmellDetector);
     }
 
     private static List<TestFile> readInputTestFiles(File inputFile) throws IOException {

@@ -33,8 +33,7 @@ class ReportControllerIntegrationTest {
         TestSmellDetector testSmellDetector = TestSmellDetector.createTestSmellDetector();
         smells.forEach(testSmellDetector::addDetectableSmell);
         file = new TestFile(appName, testFilePath, productionFilePath);
-        resultsWriter = ResultsWriter.createResultsWriter();
-        resultsWriter.writeCSVHeader(testSmellDetector, file);
+        resultsWriter = ResultsWriter.createResultsWriter(testSmellDetector);
         testSmellDetector.detectSmells(file);
         outputFile = new File(resultsWriter.getOutputFile());
     }
@@ -52,7 +51,7 @@ class ReportControllerIntegrationTest {
     }
 
     @Test
-    void testHeader() throws IOException {
+    void testHeader_FILE() throws IOException {
         sut = new ReportController(resultsWriter, Collections.singletonList(ReportController.ReportGranularity.FILE));
         sut.report(Collections.singletonList(file));
         assertTrue(outputFile.exists(), "Output file missing!");
@@ -93,6 +92,31 @@ class ReportControllerIntegrationTest {
             }
         }
         return methodSmells;
+    }
+
+    @Test
+    void testReport_METHOD() throws IOException {
+        sut = new ReportController(resultsWriter, Collections.singletonList(ReportController.ReportGranularity.METHOD));
+        sut.report(Collections.singletonList(file));
+        assertTrue(outputFile.exists(), "Output file missing!");
+
+        List<String> entries = new BufferedReader(new FileReader(outputFile)).lines().collect(Collectors.toList());
+
+
+        assertEquals("Element Name,WhileCount,ConditionCount,RedundantCount,AssertCount,IfCount,ExceptionCount,ForeachCount,PrintCount,SwitchCount,MysteryCount,ForCount,VerboseCount,ResourceOptimismCount,ThreadSleepCount,SensitiveCount,MagicNumberCount,Assertion Roulette,Eager Test,Mystery Guest,Sleepy Test,Unknown Test,Redundant Assertion,Magic Number Test,Conditional Test Logic,EmptyTest,General Fixture,Sensitive Equality,Verbose Test,Resource Optimism,Duplicate Assert,Exception Catching Throwing,Print Statement,Lazy Test", entries.get(0));
+        assertEquals("testDecrypt,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,false,false,false,false,false,false,false,false,false,false,false,false,false,false,true,false,true", entries.get(1));
+        assertEquals("testEncrypt,0,0,0,1,0,1,0,0,0,0,0,0,0,0,0,0,false,true,false,false,false,false,false,false,false,false,false,false,false,false,true,false,true", entries.get(2));
+    }
+
+    @Test
+    void testHeader_METHOD() throws IOException {
+        sut = new ReportController(resultsWriter, Collections.singletonList(ReportController.ReportGranularity.METHOD));
+        sut.report(Collections.singletonList(file));
+        assertTrue(outputFile.exists(), "Output file missing!");
+
+        List<String> headerEntries = Arrays.asList(new BufferedReader(new FileReader(outputFile)).readLine().split(","));
+
+        assertEquals("Element Name,WhileCount,ConditionCount,RedundantCount,AssertCount,IfCount,ExceptionCount,ForeachCount,PrintCount,SwitchCount,MysteryCount,ForCount,VerboseCount,ResourceOptimismCount,ThreadSleepCount,SensitiveCount,MagicNumberCount,Assertion Roulette,Eager Test,Mystery Guest,Sleepy Test,Unknown Test,Redundant Assertion,Magic Number Test,Conditional Test Logic,EmptyTest,General Fixture,Sensitive Equality,Verbose Test,Resource Optimism,Duplicate Assert,Exception Catching Throwing,Print Statement,Lazy Test", String.join(",", headerEntries)/*, String.join(",",expectedEntries)*/);
     }
 
     @Test
