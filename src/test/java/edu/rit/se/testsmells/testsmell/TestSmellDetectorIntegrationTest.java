@@ -21,7 +21,7 @@ public class TestSmellDetectorIntegrationTest {
         testSmellDetector.addDetectableSmell(new AssertionRoulette());
         testSmellDetector.addDetectableSmell(new ConditionalTestLogic());
 
-        testSmellDetector.addDetectableSmell(new ConstructorInitialization()); // Constructor Initialization gives false positives
+        testSmellDetector.addDetectableSmell(new ConstructorInitialization());
         testSmellDetector.addDetectableSmell(new DefaultTest());
         testSmellDetector.addDetectableSmell(new EmptyTest());
         testSmellDetector.addDetectableSmell(new ExceptionCatchingThrowing());
