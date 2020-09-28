@@ -43,7 +43,7 @@ public class ConstructorInitializationIntegrationTest {
         boolean expectedSmellDetected = false;
         for (AbstractSmell testSmell : file.getTestSmells()) {
             if (testSmell != null) {
-                if (testSmell.getSmellName().equals(new ConditionalTestLogic().getSmellName())) {
+                if (testSmell.getSmellName().equals(new ConstructorInitialization().getSmellName())) {
                     expectedSmellDetected = testSmell.hasSmell();
                 }
             }

@@ -72,7 +72,6 @@ public class ReportController {
     }
 
     private List<Report> mergeSmellyElements(List<AbstractSmell> smells, Class<?> type) {
-
         return extractor.extract(smells, type);
     }
 

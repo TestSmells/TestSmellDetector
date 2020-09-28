@@ -3,7 +3,6 @@ package edu.rit.se.testsmells.testsmell;
 import edu.rit.se.testsmells.testsmell.smell.*;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -17,34 +16,7 @@ public class TestSmellDetectorIntegrationTest {
 
     @BeforeEach
     void setUp() {
-        testSmellDetector = initializeSmells();
-    }
-
-    @AfterEach
-    void tearDown() {
-        testSmellDetector.clear();
-        testSmellDetector = null;
-    }
-
-    @Disabled
-    @Test
-    public void testSmellsFreeProject() throws IOException {
-        TestFile file = new TestFile(
-                "SmellsFreeProject",
-                "/Queue/src/test/java/br/ufmg/aserg/victorveloso/queue/QueueTest.java",
-                "/Queue/src/main/java/br/ufmg/aserg/victorveloso/queue/Queue.java"
-        );
-        testSmellDetector.detectSmells(file);
-
-        for (AbstractSmell testSmell : file.getTestSmells()) {
-            if (testSmell != null) {
-                assertFalse(testSmell.hasSmell(), String.format("Detected smell named %s", testSmell.getSmellName()));
-            }
-        }
-    }
-
-    private TestSmellDetector initializeSmells() {
-        TestSmellDetector testSmellDetector = TestSmellDetector.createTestSmellDetector();
+        testSmellDetector = TestSmellDetector.createTestSmellDetector();
 
         testSmellDetector.addDetectableSmell(new AssertionRoulette());
         testSmellDetector.addDetectableSmell(new ConditionalTestLogic());
@@ -68,7 +40,27 @@ public class TestSmellDetectorIntegrationTest {
         testSmellDetector.addDetectableSmell(new ResourceOptimism());
         testSmellDetector.addDetectableSmell(new MagicNumberTest());
         testSmellDetector.addDetectableSmell(new DependentTest());
+    }
 
-        return testSmellDetector;
+    @AfterEach
+    void tearDown() {
+        testSmellDetector.clear();
+        testSmellDetector = null;
+    }
+
+    @Test
+    public void testSmellsFreeProject() throws IOException {
+        TestFile file = new TestFile(
+                "SmellsFreeProject",
+                "/Queue/src/test/java/br/ufmg/aserg/victorveloso/queue/QueueTest.java",
+                "/Queue/src/main/java/br/ufmg/aserg/victorveloso/queue/Queue.java"
+        );
+        testSmellDetector.detectSmells(file);
+
+        for (AbstractSmell testSmell : file.getTestSmells()) {
+            if (testSmell != null) {
+                assertFalse(testSmell.hasSmell(), String.format("Detected smell named %s", testSmell.getSmellName()));
+            }
+        }
     }
 }
