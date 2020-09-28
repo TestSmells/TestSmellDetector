@@ -22,7 +22,7 @@ public class Main {
         TestSmellDetector testSmellDetector = initializeSmells();
 
         List<TestFile> files = readInputTestFiles(inputFile);
-        CSVWriter csvWriter = initializeOutputFile(testSmellDetector);
+        CSVWriter csvWriter = CSVWriter.createResultsWriter();
         ReportController reportCtrl = ReportController.createReportController(csvWriter);
 
         for (TestFile file : files) {
@@ -37,13 +37,6 @@ public class Main {
 
     private static Object getCurrentDateFormatted() {
         return (new SimpleDateFormat("yyyy/MM/dd HH:mm:ss")).format(new Date());
-    }
-
-    private static CSVWriter initializeOutputFile(TestSmellDetector testSmellDetector) throws IOException {
-
-//        resultsWriter.writeCSVHeader(testSmellDetector, anyFile);
-
-        return CSVWriter.createResultsWriter();
     }
 
     private static List<TestFile> readInputTestFiles(File inputFile) throws IOException {
