@@ -65,19 +65,19 @@ public class TestSmellDetector {
     /**
      * Loads the java source code file into an AST and then analyzes it for the existence of the different types of test smells
      */
-    public void detectSmells(TestFile testFile) throws IOException {
+    public void detectSmells(TestFile testFile) {
         CompilationUnit testFileCompilationUnit = parseIntoCompilationUnit(testFile.getTestFilePath());
 
         CompilationUnit productionFileCompilationUnit = parseIntoCompilationUnit(testFile.getProductionFilePath());
 
-        for (AbstractSmell smell : testSmells) {
+        for (AbstractSmell smellPrototype : testSmells) {
+            AbstractSmell smell = smellPrototype.recreate();
             try {
                 smell.runAnalysis(testFileCompilationUnit, productionFileCompilationUnit, testFile.getTestFileNameWithoutExtension(), testFile.getProductionFileNameWithoutExtension());
             } catch (FileNotFoundException ignored) {
             }
 
             testFile.addDetectedSmell(smell);
-            //smell.clear(); TODO: Old files analysis interfering on current. It must clear smells, but after report!
         }
 
     }

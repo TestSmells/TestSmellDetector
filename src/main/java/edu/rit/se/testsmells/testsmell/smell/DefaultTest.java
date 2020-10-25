@@ -21,6 +21,11 @@ public class DefaultTest extends AbstractSmell {
         super();
     }
 
+    @Override
+    public AbstractSmell recreate() {
+        return new DefaultTest();
+    }
+
     /**
      * Checks of 'Default Test' smell
      */

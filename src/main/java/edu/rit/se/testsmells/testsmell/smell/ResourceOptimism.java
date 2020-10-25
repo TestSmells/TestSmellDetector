@@ -25,6 +25,11 @@ public class ResourceOptimism extends AbstractSmell {
         super();
     }
 
+    @Override
+    public AbstractSmell recreate() {
+        return new ResourceOptimism();
+    }
+
     /**
      * Checks of 'Resource Optimism' smell
      */

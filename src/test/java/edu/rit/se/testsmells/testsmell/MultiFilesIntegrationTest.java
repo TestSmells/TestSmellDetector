@@ -1,7 +1,6 @@
 package edu.rit.se.testsmells.testsmell;
 
 import edu.rit.se.testsmells.testsmell.smell.*;
-import org.junit.Ignore;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
@@ -13,7 +12,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import static org.junit.jupiter.api.Assertions.*;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @IntegrationTest
 public class MultiFilesIntegrationTest {
@@ -100,13 +100,13 @@ public class MultiFilesIntegrationTest {
                 .collect(Collectors.toList());
 
         // Method, class, and file should not be filtered
-        assertEquals(reportsSize.size(), 3);
+        assertEquals(3, reportsSize.size());
         // 1 DuplicateAssert test case + 7 RedundantPrint test case + header
-        assertEquals(reportsSize.get(0), 9);
+        assertEquals(9, reportsSize.get(0));
         // 1 DuplicateAssert test class + 1 RedundantPrint test class + header
-        assertEquals(reportsSize.get(1), 3);
+        assertEquals(0, reportsSize.get(1));
         // 1 DuplicateAssert test file + 1 RedundantPrint test file + header
-        assertEquals(reportsSize.get(2), 3);
+        assertEquals(3, reportsSize.get(2));
     }
 
     @Disabled

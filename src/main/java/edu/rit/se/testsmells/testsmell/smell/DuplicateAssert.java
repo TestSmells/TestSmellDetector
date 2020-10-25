@@ -22,6 +22,11 @@ public class DuplicateAssert extends AbstractSmell {
         super();
     }
 
+    @Override
+    public AbstractSmell recreate() {
+        return new DuplicateAssert();
+    }
+
     /**
      * Checks of 'Duplicate Assert' smell
      */
@@ -58,13 +63,13 @@ public class DuplicateAssert extends AbstractSmell {
                 super.visit(n, arg);
 
                 // if there are duplicate messages, then the smell exists
-                Set<String> set1 = new HashSet<String>(assertMessage);
+                Set<String> set1 = new HashSet<>(assertMessage);
                 if (set1.size() < assertMessage.size()) {
                     testMethod.setHasSmell(true);
                 }
 
                 // if there are duplicate assert methods, then the smell exists
-                Set<String> set2 = new HashSet<String>(assertMethod);
+                Set<String> set2 = new HashSet<>(assertMethod);
                 if (set2.size() < assertMethod.size()) {
                     testMethod.setHasSmell(true);
                 }

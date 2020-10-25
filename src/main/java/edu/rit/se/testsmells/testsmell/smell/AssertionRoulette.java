@@ -23,6 +23,11 @@ public class AssertionRoulette extends AbstractSmell {
         super();
     }
 
+    @Override
+    public AbstractSmell recreate() {
+        return new AssertionRoulette();
+    }
+
     /**
      * Checks of 'Assertion Roulette' smell
      */

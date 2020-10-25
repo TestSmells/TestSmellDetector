@@ -24,6 +24,11 @@ public class PrintStatement extends AbstractSmell {
         super();
     }
 
+    @Override
+    public AbstractSmell recreate() {
+        return new PrintStatement();
+    }
+
     /**
      * Checks of 'Print Statement' smell
      */

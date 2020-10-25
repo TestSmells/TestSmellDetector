@@ -33,6 +33,11 @@ public class GeneralFixture extends AbstractSmell {
         setupFields = new ArrayList<>();
     }
 
+    @Override
+    public AbstractSmell recreate() {
+        return new GeneralFixture();
+    }
+
     /**
      * Checks of 'General Fixture' smell
      */

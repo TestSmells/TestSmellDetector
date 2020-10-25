@@ -20,6 +20,11 @@ public class IgnoredTest extends AbstractSmell {
         super();
     }
 
+    @Override
+    public AbstractSmell recreate() {
+        return new IgnoredTest();
+    }
+
     /**
      * Checks of 'Ignored Test' smell
      */

@@ -20,6 +20,11 @@ public class MagicNumberTest extends AbstractSmell {
         super();
     }
 
+    @Override
+    public AbstractSmell recreate() {
+        return new MagicNumberTest();
+    }
+
     /**
      * Checks of 'MagicNumberTest' smell
      */

@@ -32,6 +32,11 @@ public class EagerTest extends AbstractSmell {
         productionMethods = new ArrayList<>();
     }
 
+    @Override
+    public AbstractSmell recreate() {
+        return new EagerTest();
+    }
+
     /**
      * Checks of 'Eager Test' smell
      */

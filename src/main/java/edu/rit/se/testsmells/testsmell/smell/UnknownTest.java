@@ -24,6 +24,11 @@ public class UnknownTest extends AbstractSmell {
         super();
     }
 
+    @Override
+    public AbstractSmell recreate() {
+        return new UnknownTest();
+    }
+
     /**
      * Checks of 'Unknown Test' smell
      */

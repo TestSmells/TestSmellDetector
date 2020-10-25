@@ -23,6 +23,11 @@ public class SleepyTest extends AbstractSmell {
         super();
     }
 
+    @Override
+    public AbstractSmell recreate() {
+        return new SleepyTest();
+    }
+
     /**
      * Checks of 'SleepyTest' smell
      */

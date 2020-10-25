@@ -3,7 +3,7 @@ package edu.rit.se.testsmells.testsmell;
 import java.util.HashMap;
 import java.util.Map;
 
-public abstract class SmellyElement implements SmellsContainer {
+public abstract class SmellyElement extends SmellsContainer {
     private final String name;
     private final Map<String, String> data;
     private boolean hasSmell;

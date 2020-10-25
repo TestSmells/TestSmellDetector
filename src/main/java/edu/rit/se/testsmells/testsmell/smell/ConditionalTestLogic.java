@@ -21,6 +21,11 @@ public class ConditionalTestLogic extends AbstractSmell {
         super();
     }
 
+    @Override
+    public AbstractSmell recreate() {
+        return new ConditionalTestLogic();
+    }
+
     /**
      * Checks of 'Conditional Test Logic' smell
      */

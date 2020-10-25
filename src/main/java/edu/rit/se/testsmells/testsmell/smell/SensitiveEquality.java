@@ -19,6 +19,11 @@ public class SensitiveEquality extends AbstractSmell {
         super();
     }
 
+    @Override
+    public AbstractSmell recreate() {
+        return new SensitiveEquality();
+    }
+
     /**
      * Checks of 'Sensitive Equality' smell
      */

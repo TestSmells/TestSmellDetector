@@ -33,6 +33,11 @@ public class LazyTest extends AbstractSmell {
         calledProductionMethods = new ArrayList<>();
     }
 
+    @Override
+    public AbstractSmell recreate() {
+        return new LazyTest();
+    }
+
     /**
      * Checks of 'Lazy Test' smell
      */

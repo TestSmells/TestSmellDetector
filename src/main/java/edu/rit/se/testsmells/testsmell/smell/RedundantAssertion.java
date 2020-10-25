@@ -23,6 +23,11 @@ public class RedundantAssertion extends AbstractSmell {
         super();
     }
 
+    @Override
+    public AbstractSmell recreate() {
+        return new RedundantAssertion();
+    }
+
     /**
      * Checks of 'Redundant Assertion' smell
      */

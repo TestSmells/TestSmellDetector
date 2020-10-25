@@ -4,7 +4,7 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
-public class TestFile implements SmellsContainer {
+public class TestFile extends SmellsContainer {
     private final String app, testFilePath, productionFilePath;
     private boolean isProductionFileOmitted = false;
 

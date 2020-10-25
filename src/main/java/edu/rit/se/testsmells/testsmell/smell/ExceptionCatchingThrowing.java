@@ -23,6 +23,11 @@ public class ExceptionCatchingThrowing extends AbstractSmell {
         super();
     }
 
+    @Override
+    public AbstractSmell recreate() {
+        return new ExceptionCatchingThrowing();
+    }
+
     /**
      * Checks of 'Exception Catching Throwing' smell
      */

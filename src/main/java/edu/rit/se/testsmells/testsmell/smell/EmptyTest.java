@@ -21,6 +21,11 @@ public class EmptyTest extends AbstractSmell {
         super();
     }
 
+    @Override
+    public AbstractSmell recreate() {
+        return new EmptyTest();
+    }
+
     /**
      * Checks of 'Empty Test' smell
      */

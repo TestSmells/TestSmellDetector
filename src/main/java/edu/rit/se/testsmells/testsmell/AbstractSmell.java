@@ -26,6 +26,8 @@ public abstract class AbstractSmell {
         smellyElementList = new CopyOnWriteArraySet<>();
     }
 
+    public abstract AbstractSmell recreate();
+
     protected <T extends Node & NodeWithSimpleName> String getFullMethodName(CompilationUnit unit, T node) {
 
         String className = node.getParentNode().map(x -> (ClassOrInterfaceDeclaration) x).map(NodeWithSimpleName::getNameAsString).orElse("");

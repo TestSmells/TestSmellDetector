@@ -21,6 +21,11 @@ public class DependentTest extends AbstractSmell {
         testMethods = new ArrayList<>();
     }
 
+    @Override
+    public AbstractSmell recreate() {
+        return new DependentTest();
+    }
+
     /**
      * Checks of 'DependentTest' smell
      */

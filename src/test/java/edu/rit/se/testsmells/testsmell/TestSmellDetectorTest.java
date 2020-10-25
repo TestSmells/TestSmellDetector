@@ -36,7 +36,7 @@ class TestSmellDetectorTest {
     @Test
     void detectSmells() throws IOException {
         TestFile tf = new TestFileStub("app", "", "");
-        List<AbstractSmell> smells = new ArrayList<>();
+        List<AbstractSmell> smells;
 
         this.sut.detectSmells(tf);
         smells = tf.getTestSmells();
@@ -70,6 +70,11 @@ class TestSmellDetectorTest {
         @Override
         public String getSmellName() {
             return TSStubName;
+        }
+
+        @Override
+        public AbstractSmell recreate() {
+            return new TestSmellStub();
         }
 
         @Override

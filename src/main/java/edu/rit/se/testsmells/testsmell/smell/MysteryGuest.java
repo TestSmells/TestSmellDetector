@@ -29,6 +29,11 @@ public class MysteryGuest extends AbstractSmell {
         super();
     }
 
+    @Override
+    public AbstractSmell recreate() {
+        return new MysteryGuest();
+    }
+
     /**
      * Checks of 'Mystery Guest' smell
      */

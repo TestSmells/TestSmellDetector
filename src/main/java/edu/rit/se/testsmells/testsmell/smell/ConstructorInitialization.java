@@ -23,6 +23,11 @@ public class ConstructorInitialization extends AbstractSmell {
         super();
     }
 
+    @Override
+    public AbstractSmell recreate() {
+        return new ConstructorInitialization();
+    }
+
     /**
      * Checks of 'Constructor Initialization' smell
      */

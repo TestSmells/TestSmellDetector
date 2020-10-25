@@ -20,6 +20,11 @@ public class VerboseTest extends AbstractSmell {
         super();
     }
 
+    @Override
+    public AbstractSmell recreate() {
+        return new VerboseTest();
+    }
+
     /**
      * Checks of 'Verbose Test' smell
      */
