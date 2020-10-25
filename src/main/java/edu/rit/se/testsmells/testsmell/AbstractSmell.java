@@ -9,18 +9,21 @@ import com.github.javaparser.ast.expr.Name;
 import com.github.javaparser.ast.nodeTypes.NodeWithSimpleName;
 
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.CopyOnWriteArraySet;
 
 public abstract class AbstractSmell {
     private final MethodValidator methodValidator;
-    private final List<SmellyElement> smellyElementList;
+    private final Set<SmellyElement> smellyElementList;
 
     public abstract String getSmellName();
 
     public AbstractSmell() {
         methodValidator = MethodValidator.getInstance();
-        smellyElementList = new CopyOnWriteArrayList<>();
+        smellyElementList = new CopyOnWriteArraySet<>();
     }
 
     protected <T extends Node & NodeWithSimpleName> String getFullMethodName(CompilationUnit unit, T node) {
@@ -51,11 +54,12 @@ public abstract class AbstractSmell {
      * Returns the set of analyzed elements (i.e. test methods)
      */
     public List<SmellyElement> getSmellyElements() {
-        return smellyElementList;
+        return new ArrayList<>(smellyElementList);
     }
 
     public void addSmellyElement(SmellyElement elem) {
         smellyElementList.add(elem);
+        elem.addDetectedSmell(this);
     }
 
     /**

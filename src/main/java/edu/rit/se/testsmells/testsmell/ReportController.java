@@ -54,20 +54,29 @@ public class ReportController {
     }
 
     private void reportTestMethods(List<TestFile> files) throws IOException {
-        for (TestFile file : files) {
-            reportSmellyElements(file.getTestSmells(), TestMethod.class);
+        if (files.size() > 0) {
+            csvWriter.writeCSVHeader(mergeSmellyElements(files.get(0).getTestSmells(), TestMethod.class));
+            for (TestFile file : files) {
+                reportSmellyElements(file.getTestSmells(), TestMethod.class);
+            }
         }
     }
 
     private void reportTestClasses(List<TestFile> files) throws IOException {
-        for (TestFile file : files) {
-            reportSmellyElements(file.getTestSmells(), TestClass.class);
+        if (files.size() > 0) {
+            csvWriter.writeCSVHeader(mergeSmellyElements(files.get(0).getTestSmells(), TestClass.class));
+            for (TestFile file : files) {
+                reportSmellyElements(file.getTestSmells(), TestClass.class);
+            }
         }
     }
 
     private void reportTestFiles(List<TestFile> files) throws IOException {
-        for (TestFile file : files) {
-            csvWriter.exportSmells(file);
+        if (files.size() > 0) {
+            csvWriter.writeCSVHeader(files.get(0));
+            for (TestFile file : files) {
+                csvWriter.exportSmells(file);
+            }
         }
     }
 

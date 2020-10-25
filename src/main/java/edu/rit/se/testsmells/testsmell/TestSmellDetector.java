@@ -77,9 +77,7 @@ public class TestSmellDetector {
             }
 
             testFile.addDetectedSmell(smell);
-            for (SmellsContainer element : smell.getSmellyElements()) {
-                element.addDetectedSmell(smell);
-            }
+            //smell.clear(); TODO: Old files analysis interfering on current. It must clear smells, but after report!
         }
 
     }

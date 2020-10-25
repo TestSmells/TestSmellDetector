@@ -50,19 +50,18 @@ public class CSVWriter {
         return name;
     }
 
-    private void writeCSVHeader(List<Report> reports) throws IOException {
+    public void writeCSVHeader(List<Report> reports) throws IOException {
         headers = reports.stream().flatMap(report -> report.getEntryKeys().stream()).distinct().collect(Collectors.toList());
         writeCSV(headers);
     }
 
-    private void writeCSVHeader(SmellsContainer anyFile) throws IOException {
+    public void writeCSVHeader(SmellsContainer anyFile) throws IOException {
         List<String> headers = new ArrayList<>(anyFile.getTestDescriptionEntries().keySet());
         headers.addAll(anyFile.getTestSmells().stream().map(AbstractSmell::getSmellName).collect(Collectors.toList()));
         writeCSV(headers);
     }
 
     void exportSmells(List<Report> reports) throws IOException {
-        writeCSVHeader(reports);
         for (Report report : reports) {
             List<String> entries = new ArrayList<>();
             for (String column : headers) {
@@ -73,7 +72,6 @@ public class CSVWriter {
     }
 
     void exportSmells(SmellsContainer fileTestSmells) throws IOException {
-        writeCSVHeader(fileTestSmells);
         List<String> entries = new ArrayList<>(fileTestSmells.getTestDescriptionEntries().values());
         for (AbstractSmell smell : fileTestSmells.getTestSmells()) {
             try {
