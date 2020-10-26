@@ -68,34 +68,34 @@ class ReportControllerMethodIntegrationTest {
         List<String> entries = new BufferedReader(new FileReader(outputFile)).lines().collect(Collectors.toList());
 
 
-        assertEquals("Element Name,WhileCount,ConditionCount,RedundantCount,AssertCount,IfCount,ExceptionCount,ForeachCount,PrintCount,SwitchCount,MysteryCount,ForCount,VerboseCount,ResourceOptimismCount,ThreadSleepCount,SensitiveCount,MagicNumberCount,Assertion Roulette,Eager Test,Mystery Guest,Sleepy Test,Unknown Test,Redundant Assertion,Magic Number Test,Conditional Test Logic,EmptyTest,General Fixture,Sensitive Equality,Verbose Test,Resource Optimism,Duplicate Assert,Exception Catching Throwing,Print Statement,Lazy Test", entries.get(0));
-        assertEquals("com.github.marmaladesky.tests.CryptographerTest.testDecrypt,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,false,false,false,false,false,false,false,false,false,false,false,false,false,false,true,false,true", entries.get(1));
-        assertEquals("com.github.marmaladesky.tests.CryptographerTest.testEncrypt,0,0,0,1,0,1,0,0,0,0,0,0,0,0,0,0,false,true,false,false,false,false,false,false,false,false,false,false,false,false,true,false,true", entries.get(2));
+        assertEquals("Element Name,WhileCount,ConditionCount,RedundantCount,AssertCount,IfCount,ExceptionCount,ForeachCount,PrintCount,SwitchCount,MysteryCount,ForCount,VerboseCount,ResourceOptimismCount,ThreadSleepCount,SensitiveCount,MagicNumberCount,Assertion Roulette,Eager Test,Mystery Guest,Sleepy Test,Unknown Test,Redundant Assertion,Dependent Test,Magic Number Test,Conditional Test Logic,EmptyTest,General Fixture,Sensitive Equality,Verbose Test,Resource Optimism,Duplicate Assert,Exception Catching Throwing,Print Statement,Lazy Test", entries.get(0));
+        assertEquals("com.github.marmaladesky.tests.CryptographerTest.testDecrypt,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,true,false,true", entries.get(1));
+        assertEquals("com.github.marmaladesky.tests.CryptographerTest.testEncrypt,0,0,0,1,0,1,0,0,0,0,0,0,0,0,0,0,false,true,false,false,false,false,false,false,false,false,false,false,false,false,false,true,false,true", entries.get(2));
     }
 
     @Test
     void testHeader_METHOD() throws IOException {
         List<String> headerEntries = Arrays.asList(new BufferedReader(new FileReader(outputFile)).readLine().split(","));
 
-        assertEquals("Element Name,WhileCount,ConditionCount,RedundantCount,AssertCount,IfCount,ExceptionCount,ForeachCount,PrintCount,SwitchCount,MysteryCount,ForCount,VerboseCount,ResourceOptimismCount,ThreadSleepCount,SensitiveCount,MagicNumberCount,Assertion Roulette,Eager Test,Mystery Guest,Sleepy Test,Unknown Test,Redundant Assertion,Magic Number Test,Conditional Test Logic,EmptyTest,General Fixture,Sensitive Equality,Verbose Test,Resource Optimism,Duplicate Assert,Exception Catching Throwing,Print Statement,Lazy Test", String.join(",", headerEntries)/*, String.join(",",expectedEntries)*/);
+        assertEquals("Element Name,WhileCount,ConditionCount,RedundantCount,AssertCount,IfCount,ExceptionCount,ForeachCount,PrintCount,SwitchCount,MysteryCount,ForCount,VerboseCount,ResourceOptimismCount,ThreadSleepCount,SensitiveCount,MagicNumberCount,Assertion Roulette,Eager Test,Mystery Guest,Sleepy Test,Unknown Test,Redundant Assertion,Dependent Test,Magic Number Test,Conditional Test Logic,EmptyTest,General Fixture,Sensitive Equality,Verbose Test,Resource Optimism,Duplicate Assert,Exception Catching Throwing,Print Statement,Lazy Test", String.join(",", headerEntries)/*, String.join(",",expectedEntries)*/);
     }
 
     @Test
     void testContent_METHOD_Decrypt() throws IOException {
-        assertEquals(17, getMethodSmells().size());
+        assertEquals(18, getMethodSmells().size());
 
         List<String> contentEntries = Arrays.asList(new BufferedReader(new FileReader(outputFile)).lines().skip(1).findFirst().orElse("").split(","));
         assertEquals(2, contentEntries.stream().filter(e -> e.equals("true")).count()); // "Lazy Test" and "Exception Catching Throwing"
-        assertEquals(15, contentEntries.stream().filter(e -> e.equals("false")).count()); // 17 methods smells - 2 detected smells
+        assertEquals(16, contentEntries.stream().filter(e -> e.equals("false")).count()); // 18 methods smells - 2 detected smells
     }
 
     @Test
     void testContent_METHOD_Encrypt() throws IOException {
-        assertEquals(17, getMethodSmells().size());
+        assertEquals(18, getMethodSmells().size());
 
         List<String> contentEntries = Arrays.asList(new BufferedReader(new FileReader(outputFile)).lines().skip(2).findFirst().orElse("").split(","));
         assertEquals(3, contentEntries.stream().filter(e -> e.equals("true")).count()); // "Eager Test", "Lazy Test" and "Exception Catching Throwing"
-        assertEquals(14, contentEntries.stream().filter(e -> e.equals("false")).count()); // 17 methods smells - 3 detected smells
+        assertEquals(15, contentEntries.stream().filter(e -> e.equals("false")).count()); // 18 methods smells - 3 detected smells
     }
 }
 

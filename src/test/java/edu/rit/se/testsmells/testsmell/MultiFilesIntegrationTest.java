@@ -3,7 +3,6 @@ package edu.rit.se.testsmells.testsmell;
 import edu.rit.se.testsmells.testsmell.smell.*;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.io.*;
@@ -13,7 +12,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 @IntegrationTest
 public class MultiFilesIntegrationTest {
@@ -28,7 +27,6 @@ public class MultiFilesIntegrationTest {
 
         testSmellDetector.addDetectableSmell(new AssertionRoulette());
         testSmellDetector.addDetectableSmell(new ConditionalTestLogic());
-
         testSmellDetector.addDetectableSmell(new ConstructorInitialization());
         testSmellDetector.addDetectableSmell(new DefaultTest());
         testSmellDetector.addDetectableSmell(new EmptyTest());
@@ -58,10 +56,7 @@ public class MultiFilesIntegrationTest {
     }
 
     @Test
-    public void testBothDuplicateAssertAndRedundantPrint() throws IOException {
-        CSVWriter csvWriter = CSVWriter.createResultsWriter();
-        ReportController reportCtrl = ReportController.createReportController(csvWriter);
-
+    public void testTwoMethodOrientedSmells() throws IOException {
         List<TestFile> testFiles = Arrays.asList(
                 new TestFile(
                         "RedundantPrintProject",
@@ -73,6 +68,108 @@ public class MultiFilesIntegrationTest {
                         "/DuplicateAssert/src/test/java/org/openbmap/utils/XmlSanitizerTest.java",
                         ""
                 ));
+
+        List<Integer> reportsSize = detectAndReportLOC(testFiles);
+
+        // Method, class, and file should not be filtered
+        assertEquals(3, reportsSize.size());
+        // 1 DuplicateAssert test case + 7 RedundantPrint test case + header
+        assertEquals(9, reportsSize.get(0));
+        // 1 DuplicateAssert test class + 1 RedundantPrint test class + header
+        assertEquals(3, reportsSize.get(1)); // TODO: FIX Empty file being created
+        // 1 DuplicateAssert test file + 1 RedundantPrint test file + header
+        assertEquals(3, reportsSize.get(2));
+    }
+
+    @Test
+    public void testTwoClassOrientedSmells() throws IOException {
+        List<TestFile> testFiles = Arrays.asList(
+                new TestFile(
+                        "DefaultTestProject",
+                        "/DefaultTest/src/test/java/com/app/missednotificationsreminder/ExampleUnitTest.java",
+                        ""
+                ),
+                new TestFile(
+                        "ConstructorInitializationProject",
+                        "/ConstructorInitialization/src/test/java/org/briarproject/bramble/crypto/TagEncodingTest.java",
+                        ""
+                ));
+
+        List<Integer> reportsSize = detectAndReportLOC(testFiles);
+
+        // Method, class, and file should not be filtered
+        assertEquals(3, reportsSize.size());
+        // 1 DuplicateAssert test case + 7 RedundantPrint test case + header
+        assertEquals(6, reportsSize.get(0));
+        // 1 DefaultTest test class + 1 ConstructorInitialization test class + header
+        assertEquals(3, reportsSize.get(1)); //TODO: FIX ConstructorInitialization column missing (CLASS report)
+        // 1 DuplicateAssert test file + 1 RedundantPrint test file + header
+        assertEquals(3, reportsSize.get(2));
+    }
+
+    @Test
+    public void testBothClassAndMethodOrientedSmells() throws IOException {
+        List<TestFile> testFiles = Arrays.asList(
+                new TestFile(
+                        "DefaultTestProject",
+                        "/DefaultTest/src/test/java/com/app/missednotificationsreminder/ExampleUnitTest.java",
+                        ""
+                ),
+                new TestFile(
+                        "DuplicateAssertProject",
+                        "/DuplicateAssert/src/test/java/org/openbmap/utils/XmlSanitizerTest.java",
+                        ""
+                ));
+
+        List<Integer> reportsSize = detectAndReportLOC(testFiles);
+
+        // Method, class, and file should not be filtered
+        assertEquals(3, reportsSize.size());
+        // 1 DuplicateAssert test case + 7 RedundantPrint test case + header
+        assertEquals(4, reportsSize.get(0));
+        // 1 DefaultTest test class + 1 DuplicateAssert test class + header
+        assertEquals(3, reportsSize.get(1)); // TODO: FIX DuplicateAssert entry missing (CLASS report)
+        // 1 DuplicateAssert test file + 1 RedundantPrint test file + header
+        assertEquals(3, reportsSize.get(2));
+    }
+
+    @Test
+    public void testBothClassAndMethodOrientedSmells_csvColumns() throws IOException {
+        List<TestFile> testFiles = Arrays.asList(
+                new TestFile(
+                        "DefaultTestProject",
+                        "/DefaultTest/src/test/java/com/app/missednotificationsreminder/ExampleUnitTest.java",
+                        ""
+                ),
+                new TestFile(
+                        "DuplicateAssertProject",
+                        "/DuplicateAssert/src/test/java/org/openbmap/utils/XmlSanitizerTest.java",
+                        ""
+                ));
+
+        detectAndReportLOC(testFiles);
+
+        assertEquals(3, outputFiles.size(), "Not generated all three reports");
+
+        String expectedMethodHeader = "Element Name,WhileCount,ConditionCount,RedundantCount,AssertCount,IfCount,ExceptionCount,ForeachCount,PrintCount,SwitchCount,MysteryCount,ForCount,VerboseCount,ResourceOptimismCount,ThreadSleepCount,SensitiveCount,MagicNumberCount,Assertion Roulette,Mystery Guest,Sleepy Test,Unknown Test,Redundant Assertion,Dependent Test,Magic Number Test,Conditional Test Logic,EmptyTest,General Fixture,Sensitive Equality,Verbose Test,Resource Optimism,Duplicate Assert,Exception Catching Throwing,Print Statement";
+        String expectedFileHeader = "App,ProductionFileName,TestFilePath,TestFileName,RelativeProductionFilePath,RelativeTestFilePath,ProductionFilePath,Assertion Roulette,Conditional Test Logic,Constructor Initialization,Default Test,EmptyTest,Exception Catching Throwing,General Fixture,Print Statement,Redundant Assertion,Mystery Guest,Sensitive Equality,Verbose Test,Sleepy Test,Eager Test,Lazy Test,Duplicate Assert,Unknown Test,IgnoredTest,Resource Optimism,Magic Number Test,Dependent Test";
+        String expectedClassHeader = "Element Name,Default Test,Constructor Initialization,IgnoredTest";
+
+        List<Long> expectedCounts = Stream.of(expectedMethodHeader,expectedClassHeader,expectedFileHeader).map(s-> Arrays.stream(s.split(",")).count()).collect(Collectors.toList());
+
+        for (int i = 0; i < outputFiles.size(); i++) {
+            BufferedReader reader = new BufferedReader(new FileReader(outputFiles.get(i)));
+            List<Long> colCounts = reader.lines().map(line -> Arrays.stream(line.split(",")).count()).distinct().collect(Collectors.toList());
+            assertEquals(1, colCounts.size(), "Lines with different number of columns");
+            Long[] expected = {expectedCounts.get(i)};
+            assertArrayEquals(expected,colCounts.toArray());
+        }
+    }
+
+    private List<Integer> detectAndReportLOC(List<TestFile> testFiles) throws IOException {
+        CSVWriter csvWriter = CSVWriter.createResultsWriter();
+        ReportController reportCtrl = ReportController.createReportController(csvWriter);
+
         for (TestFile file : testFiles) {
             testSmellDetector.detectSmells(file);
         }
@@ -98,42 +195,6 @@ public class MultiFilesIntegrationTest {
                     }
                 })
                 .collect(Collectors.toList());
-
-        // Method, class, and file should not be filtered
-        assertEquals(3, reportsSize.size());
-        // 1 DuplicateAssert test case + 7 RedundantPrint test case + header
-        assertEquals(9, reportsSize.get(0));
-        // 1 DuplicateAssert test class + 1 RedundantPrint test class + header
-        assertEquals(0, reportsSize.get(1));
-        // 1 DuplicateAssert test file + 1 RedundantPrint test file + header
-        assertEquals(3, reportsSize.get(2));
-    }
-
-    @Disabled
-    @Test
-    public void testZxingSmells() throws IOException {
-        String inputFile = "/zxing/UniqueTestFiles.txt";
-        BufferedReader in = new BufferedReader(new FileReader(inputFile));
-        String str;
-
-        String[] lineItem;
-        TestFile testFile;
-        List<TestFile> testFiles = new ArrayList<>();
-        while ((str = in.readLine()) != null) {
-            // use comma as separator
-            lineItem = str.split(",");
-
-            //check if the test file has an associated production file
-            if (lineItem.length == 2) {
-                testFile = new TestFile(lineItem[0], lineItem[1], "");
-            } else {
-                testFile = new TestFile(lineItem[0], lineItem[1], lineItem[2]);
-            }
-
-            testFiles.add(testFile);
-        }
-        for (TestFile file : testFiles) {
-            testSmellDetector.detectSmells(file);
-        }
+        return reportsSize;
     }
 }

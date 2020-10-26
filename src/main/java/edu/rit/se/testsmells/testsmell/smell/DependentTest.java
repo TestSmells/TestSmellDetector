@@ -5,6 +5,7 @@ import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
 import edu.rit.se.testsmells.testsmell.AbstractSmell;
+import edu.rit.se.testsmells.testsmell.TestMethod;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -44,9 +45,16 @@ public class DependentTest extends AbstractSmell {
         classVisitor.visit(testFileCompilationUnit, null);
 
         for (TestMethod testMethod : testMethods) {
-            if (testMethod.getCalledMethods().stream().anyMatch(x -> x.getName().equals(testMethods.stream().map(z -> z.getMethodDeclaration().getNameAsString())))){
-                addSmellyElement(new edu.rit.se.testsmells.testsmell.TestMethod(getFullMethodName(testFileCompilationUnit, testMethod.getMethodDeclaration())));
+            edu.rit.se.testsmells.testsmell.TestMethod smell = new edu.rit.se.testsmells.testsmell.TestMethod(getFullMethodName(testFileCompilationUnit, testMethod.getMethodDeclaration()));
+            smell.setHasSmell(false);
+            for (TestMethod otherTestMethod : testMethods) {
+                if (testMethod != otherTestMethod) {
+                    if (testMethod.getCalledMethods().stream().anyMatch(x -> x.getName().equals(otherTestMethod.getMethodDeclaration().getNameAsString()))) {
+                        smell.setHasSmell(true);
+                    }
+                }
             }
+            addSmellyElement(smell);
         }
     }
 
