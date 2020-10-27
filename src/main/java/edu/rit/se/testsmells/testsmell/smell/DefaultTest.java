@@ -43,15 +43,12 @@ public class DefaultTest extends AbstractSmell {
     }
 
     private class ClassVisitor extends VoidVisitorAdapter<Void> {
-        TestClass testClass;
 
         @Override
         public void visit(ClassOrInterfaceDeclaration n, Void arg) {
-            if (n.getNameAsString().equals("ExampleUnitTest") || n.getNameAsString().equals("ExampleInstrumentedTest")) {
-                testClass = new TestClass(getFullClassName(testFileCompilationUnit, n));
-                testClass.setHasSmell(true);
-                addSmellyElement(testClass);
-            }
+            TestClass testClass = new TestClass(getFullClassName(testFileCompilationUnit, n));
+            testClass.setHasSmell(n.getNameAsString().equals("ExampleUnitTest") || n.getNameAsString().equals("ExampleInstrumentedTest"));
+            addSmellyElement(testClass);
             super.visit(n, arg);
         }
     }

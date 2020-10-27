@@ -76,7 +76,7 @@ public class MultiFilesIntegrationTest {
         // 1 DuplicateAssert test case + 7 RedundantPrint test case + header
         assertEquals(9, reportsSize.get(0));
         // 1 DuplicateAssert test class + 1 RedundantPrint test class + header
-        assertEquals(3, reportsSize.get(1)); // TODO: FIX Empty file being created
+        assertEquals(3, reportsSize.get(1));
         // 1 DuplicateAssert test file + 1 RedundantPrint test file + header
         assertEquals(3, reportsSize.get(2));
     }
@@ -101,8 +101,8 @@ public class MultiFilesIntegrationTest {
         assertEquals(3, reportsSize.size());
         // 1 DuplicateAssert test case + 7 RedundantPrint test case + header
         assertEquals(6, reportsSize.get(0));
-        // 1 DefaultTest test class + 1 ConstructorInitialization test class + header
-        assertEquals(3, reportsSize.get(1)); //TODO: FIX ConstructorInitialization column missing (CLASS report)
+        // 10 DefaultTest test classes (1 top level + 9 inner classes) + 1 ConstructorInitialization test class + header
+        assertEquals(11, reportsSize.get(1));
         // 1 DuplicateAssert test file + 1 RedundantPrint test file + header
         assertEquals(3, reportsSize.get(2));
     }
@@ -127,8 +127,8 @@ public class MultiFilesIntegrationTest {
         assertEquals(3, reportsSize.size());
         // 1 DuplicateAssert test case + 7 RedundantPrint test case + header
         assertEquals(4, reportsSize.get(0));
-        // 1 DefaultTest test class + 1 DuplicateAssert test class + header
-        assertEquals(3, reportsSize.get(1)); // TODO: FIX DuplicateAssert entry missing (CLASS report)
+        // 10 DefaultTest test classes (1 top level + 9 inner classes) + 1 DuplicateAssert test class + header
+        assertEquals(11, reportsSize.get(1));
         // 1 DuplicateAssert test file + 1 RedundantPrint test file + header
         assertEquals(3, reportsSize.get(2));
     }
@@ -151,9 +151,9 @@ public class MultiFilesIntegrationTest {
 
         assertEquals(3, outputFiles.size(), "Not generated all three reports");
 
-        String expectedMethodHeader = "Element Name,WhileCount,ConditionCount,RedundantCount,AssertCount,IfCount,ExceptionCount,ForeachCount,PrintCount,SwitchCount,MysteryCount,ForCount,VerboseCount,ResourceOptimismCount,ThreadSleepCount,SensitiveCount,MagicNumberCount,Assertion Roulette,Mystery Guest,Sleepy Test,Unknown Test,Redundant Assertion,Dependent Test,Magic Number Test,Conditional Test Logic,EmptyTest,General Fixture,Sensitive Equality,Verbose Test,Resource Optimism,Duplicate Assert,Exception Catching Throwing,Print Statement";
+        String expectedMethodHeader = "Element Name,WhileCount,ConditionCount,RedundantCount,AssertCount,IfCount,ExceptionCount,ForeachCount,PrintCount,SwitchCount,MysteryCount,ForCount,VerboseCount,ResourceOptimismCount,ThreadSleepCount,SensitiveCount,MagicNumberCount,Assertion Roulette,Mystery Guest,Sleepy Test,Unknown Test,Redundant Assertion,Dependent Test,Magic Number Test,Conditional Test Logic,EmptyTest,General Fixture,Sensitive Equality,Verbose Test,IgnoredTest,Resource Optimism,Duplicate Assert,Exception Catching Throwing,Print Statement";
         String expectedFileHeader = "App,ProductionFileName,TestFilePath,TestFileName,RelativeProductionFilePath,RelativeTestFilePath,ProductionFilePath,Assertion Roulette,Conditional Test Logic,Constructor Initialization,Default Test,EmptyTest,Exception Catching Throwing,General Fixture,Print Statement,Redundant Assertion,Mystery Guest,Sensitive Equality,Verbose Test,Sleepy Test,Eager Test,Lazy Test,Duplicate Assert,Unknown Test,IgnoredTest,Resource Optimism,Magic Number Test,Dependent Test";
-        String expectedClassHeader = "Element Name,Default Test,Constructor Initialization,IgnoredTest";
+        String expectedClassHeader = "Element Name,IgnoredTest,Constructor Initialization,Default Test";
 
         List<Long> expectedCounts = Stream.of(expectedMethodHeader,expectedClassHeader,expectedFileHeader).map(s-> Arrays.stream(s.split(",")).count()).collect(Collectors.toList());
 

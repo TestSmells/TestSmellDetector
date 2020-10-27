@@ -57,14 +57,11 @@ public class ConstructorInitialization extends AbstractSmell {
 
         @Override
         public void visit(ClassOrInterfaceDeclaration n, Void arg) {
-            for (int i = 0; i < n.getExtendedTypes().size(); i++) {
-                ClassOrInterfaceType node = n.getExtendedTypes().get(i);
-                constructorAllowed = node.getNameAsString().equals("ActivityInstrumentationTestCase2");
-            }
+            constructorAllowed = n.getExtendedTypes().stream().anyMatch(c->c.getNameAsString().equals("ActivityInstrumentationTestCase2"));
             testClass = new TestClass(getFullClassName(testFileCompilationUnit, n));
             testClass.setHasSmell(false);
-            super.visit(n, arg);
             addSmellyElement(testClass);
+            super.visit(n, arg);
         }
 
         @Override

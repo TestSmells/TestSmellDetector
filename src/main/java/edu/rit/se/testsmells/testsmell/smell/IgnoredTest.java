@@ -4,6 +4,7 @@ import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.Modifier;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
+import com.github.javaparser.ast.nodeTypes.NodeWithAnnotations;
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
 import edu.rit.se.testsmells.testsmell.AbstractSmell;
 import edu.rit.se.testsmells.testsmell.TestClass;
@@ -44,6 +45,9 @@ public class IgnoredTest extends AbstractSmell {
         classVisitor.visit(this.testFileCompilationUnit, null);
     }
 
+    private boolean isIgnored(NodeWithAnnotations<?> n) {
+        return n.getAnnotationByName("Ignore").isPresent() || n.getAnnotationByName("Disabled").isPresent();
+    }
     /**
      * Visitor class
      */
@@ -56,11 +60,9 @@ public class IgnoredTest extends AbstractSmell {
          */
         @Override
         public void visit(ClassOrInterfaceDeclaration n, Void arg) {
-            if (n.getAnnotationByName("Ignore").isPresent()) {
-                testClass = new TestClass(getFullClassName(testFileCompilationUnit, n));
-                testClass.setHasSmell(true);
-                addSmellyElement(testClass);
-            }
+            testClass = new TestClass(getFullClassName(testFileCompilationUnit, n));
+            testClass.setHasSmell(isIgnored(n));
+            addSmellyElement(testClass);
             super.visit(n, arg);
         }
 
@@ -69,29 +71,19 @@ public class IgnoredTest extends AbstractSmell {
          */
         @Override
         public void visit(MethodDeclaration n, Void arg) {
-
+            //JUnit 5
+            //check if test method has Disabled annotation
             //JUnit 4
             //check if test method has Ignore annotation
-            if (n.getAnnotationByName("Test").isPresent()) {
-                if (n.getAnnotationByName("Ignore").isPresent()) {
-                    testMethod = new TestMethod(getFullMethodName(testFileCompilationUnit, n));
-                    testMethod.setHasSmell(true);
-                    addSmellyElement(testMethod);
-                    return;
-                }
-            }
-
             //JUnit 3
             //check if test method is not public
-            if (n.getNameAsString().toLowerCase().startsWith("test")) {
-                if (!n.getModifiers().contains(Modifier.PUBLIC)) {
-                    testMethod = new TestMethod(getFullMethodName(testFileCompilationUnit, n));
-                    testMethod.setHasSmell(true);
-                    addSmellyElement(testMethod);
-                    return;
-                }
+            if (n.getAnnotationByName("Test").isPresent() || n.getNameAsString().toLowerCase().startsWith("test")) {
+                testMethod = new TestMethod(getFullMethodName(testFileCompilationUnit, n));
+                testMethod.setHasSmell(isIgnored(n) || !n.getModifiers().contains(Modifier.PUBLIC));
+                addSmellyElement(testMethod);
             }
         }
+
 
     }
 }
