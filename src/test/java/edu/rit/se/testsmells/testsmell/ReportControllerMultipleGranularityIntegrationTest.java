@@ -60,7 +60,7 @@ class ReportControllerMultipleGranularityIntegrationTest {
         File outputFile = outputFiles.get(1);
         assertTrue(outputFile.exists(), "Class output file missing!");
         List<String> fileContent = new BufferedReader(new FileReader(outputFile)).lines().collect(Collectors.toList());
-        assertEquals(0, fileContent.size(), "File with unexpected size received! File's content is: " + System.lineSeparator() + String.join(System.lineSeparator(), fileContent) + System.lineSeparator());
+        assertEquals(2, fileContent.size(), "File with unexpected size received! File's content is: " + System.lineSeparator() + String.join(System.lineSeparator(), fileContent) + System.lineSeparator());
 
     }
 

@@ -9,6 +9,8 @@ import edu.rit.se.testsmells.testsmell.AbstractSmell;
 import edu.rit.se.testsmells.testsmell.TestClass;
 
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
+import java.util.List;
 
 
 /*
@@ -40,7 +42,7 @@ public class ConstructorInitialization extends AbstractSmell {
      * Analyze the test file for Constructor Initialization smell
      */
     @Override
-    public void runAnalysis(CompilationUnit testFileCompilationUnit,CompilationUnit productionFileCompilationUnit, String testFileName, String productionFileName) throws FileNotFoundException {
+    public void runAnalysis(CompilationUnit testFileCompilationUnit, CompilationUnit productionFileCompilationUnit, String testFileName, String productionFileName) throws FileNotFoundException {
         this.testFileName = testFileName;
         ConstructorInitialization.ClassVisitor classVisitor;
         classVisitor = new ConstructorInitialization.ClassVisitor();
@@ -51,26 +53,25 @@ public class ConstructorInitialization extends AbstractSmell {
 
     private class ClassVisitor extends VoidVisitorAdapter<Void> {
         TestClass testClass;
-        boolean constructorAllowed=false;
+        boolean constructorAllowed = false;
 
         @Override
         public void visit(ClassOrInterfaceDeclaration n, Void arg) {
-            for(int i=0;i<n.getExtendedTypes().size();i++){
+            for (int i = 0; i < n.getExtendedTypes().size(); i++) {
                 ClassOrInterfaceType node = n.getExtendedTypes().get(i);
                 constructorAllowed = node.getNameAsString().equals("ActivityInstrumentationTestCase2");
             }
+            testClass = new TestClass(getFullClassName(testFileCompilationUnit, n));
+            testClass.setHasSmell(false);
             super.visit(n, arg);
+            addSmellyElement(testClass);
         }
 
         @Override
         public void visit(ConstructorDeclaration n, Void arg) {
             // This check is needed to handle java files that have multiple classes
-            if(n.getNameAsString().equals(testFileName)) {
-                if(!constructorAllowed) {
-                    testClass = new TestClass(getFullClassName(testFileCompilationUnit, n));
-                    testClass.setHasSmell(true);
-                    addSmellyElement(testClass);
-                }
+            if (n.getNameAsString().equals(testFileName)) {
+                testClass.setHasSmell(!constructorAllowed);
             }
         }
     }
