@@ -6,13 +6,13 @@ import com.github.javaparser.ast.PackageDeclaration;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.expr.Name;
+import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.nodeTypes.NodeWithSimpleName;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.CopyOnWriteArraySet;
 
 public abstract class AbstractSmell {
@@ -29,8 +29,18 @@ public abstract class AbstractSmell {
     public abstract AbstractSmell recreate();
 
     protected <T extends Node & NodeWithSimpleName> String getFullMethodName(CompilationUnit unit, T node) {
-
-        String className = node.getParentNode().map(x -> (ClassOrInterfaceDeclaration) x).map(NodeWithSimpleName::getNameAsString).orElse("");
+        String className;
+        try {
+            className = node.getParentNode().map(x -> (ClassOrInterfaceDeclaration) x).map(NodeWithSimpleName::getNameAsString).orElse("");
+        } catch (ClassCastException exception) {
+            if (node.getParentNode().isPresent() && node.getParentNode().get() instanceof ObjectCreationExpr) {
+                className = ((ObjectCreationExpr) node.getParentNode().get()).getType().getNameAsString() + "##AnonymousClass";
+                System.err.println("Anonymous function detected! Using interface name with \"##AnonymousClass\" suffix.");
+            } else {
+                System.err.println("Failed solving " + node.getNameAsString() + " parent's class name. Expected method within a class and received " + node.getClass() + " whose parent is " + (node.getParentNode().isPresent() ? "of type " + node.getParentNode().get().getClass() : "unavailable."));
+                throw exception;
+            }
+        }
 
         return getPackageClass(unit) + className + "." + node.getNameAsString();
     }
