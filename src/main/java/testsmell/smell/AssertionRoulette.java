@@ -15,7 +15,7 @@ import java.util.List;
  * If one of the assertions fails, you do not know which one it is.
  * A. van Deursen, L. Moonen, A. Bergh, G. Kok, “Refactoring Test Code”, Technical Report, CWI, 2001.
  */
-public class AssertionRoulette extends AbstractSmell {
+public class AssertionRoulette extends MethodGranularitySmell {
 
     private List<SmellyElement> smellyElementList;
     private int assertionsCount = 0;
@@ -61,6 +61,11 @@ public class AssertionRoulette extends AbstractSmell {
     @Override
     public List<SmellyElement> getSmellyElements() {
         return smellyElementList;
+    }
+
+    @Override
+    public int getNumberOfSmellyTests() {
+        return smellyElementList.size();
     }
 
 

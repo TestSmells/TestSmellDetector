@@ -9,6 +9,7 @@ import java.util.List;
 public class TestFile {
     private String app, testFilePath, productionFilePath;
     private List<AbstractSmell> testSmells;
+    private int numberOfTestMethods = 0;
 
     public String getApp() {
         return app;
@@ -46,37 +47,38 @@ public class TestFile {
      * Returns the "N.I.Y", Not Implemented Yet string
      * todo: not implemented in any way yet
      */
-    public String getTagName(){
+    public String getTagName() {
         return "N.I.Y";
     }
 
-    public String getTestFileName(){
+    public String getTestFileName() {
         int lastIndex = testFilePath.lastIndexOf(File.separator);
-        return testFilePath.substring(lastIndex+1);
+        return testFilePath.substring(lastIndex + 1);
     }
 
-    public String getTestFileNameWithoutExtension(){
+    public String getTestFileNameWithoutExtension() {
         int lastIndex = getTestFileName().lastIndexOf(".");
-        return getTestFileName().substring(0,lastIndex);
+        return getTestFileName().substring(0, lastIndex);
     }
 
-    public String getProductionFileNameWithoutExtension(){
+    public String getProductionFileNameWithoutExtension() {
         int lastIndex = getProductionFileName().lastIndexOf(".");
-        if(lastIndex==-1)
+        if (lastIndex == -1)
             return "";
-        return getProductionFileName().substring(0,lastIndex);
+        return getProductionFileName().substring(0, lastIndex);
     }
 
-    public String getProductionFileName(){
+    public String getProductionFileName() {
         int lastIndex = productionFilePath.lastIndexOf(File.separator);
-        if(lastIndex==-1)
+        if (lastIndex == -1)
             return "";
-        return productionFilePath.substring(lastIndex+1);
+        return productionFilePath.substring(lastIndex + 1);
     }
 
     /**
      * Returns the path of the test file relative to the folder with the name of the project.
      * If the project directory has a different name, returns an empty string.
+     *
      * @return the relative test file path
      */
     public String getRelativeTestFilePath() {
@@ -84,7 +86,7 @@ public class TestFile {
             int projectNameIndex = testFilePath.lastIndexOf(app);
             if (projectNameIndex == -1)
                 return "";
-            return testFilePath.substring(projectNameIndex+app.length()+File.separator.length());
+            return testFilePath.substring(projectNameIndex + app.length() + File.separator.length());
         } else
             return "";
     }
@@ -92,16 +94,31 @@ public class TestFile {
     /**
      * Returns the path of the production file relative to the folder with the name of the project.
      * If the project directory has a different name, returns an empty string.
-     * @return the relative production file path
      *
+     * @return the relative production file path
      */
     public String getRelativeProductionFilePath() {
         if (!StringUtils.isEmpty(productionFilePath)) {
             int projectNameIndex = productionFilePath.lastIndexOf(app);
             if (projectNameIndex == -1)
                 return "";
-            return productionFilePath.substring(projectNameIndex+app.length()+File.separator.length());
+            return productionFilePath.substring(projectNameIndex + app.length() + File.separator.length());
         } else
             return "";
+    }
+
+    /**
+     * Returns the number of test methods in a test suite
+     */
+    public int getNumberOfTestMethods() {
+        return numberOfTestMethods;
+    }
+
+    /**
+     * Sets the number of test methods in a test suite
+     * @param numberOfTestMethods
+     */
+    public void setNumberOfTestMethods(int numberOfTestMethods) {
+        this.numberOfTestMethods = numberOfTestMethods;
     }
 }

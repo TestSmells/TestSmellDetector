@@ -2,6 +2,7 @@ package testsmell;
 
 import com.github.javaparser.JavaParser;
 import com.github.javaparser.ast.CompilationUnit;
+import com.github.javaparser.ast.body.TypeDeclaration;
 import org.apache.commons.lang3.StringUtils;
 import testsmell.smell.*;
 
@@ -20,12 +21,20 @@ public class TestSmellDetector {
      * Instantiates the various test smell analyzer classes and loads the objects into an List
      */
     public TestSmellDetector() {
-        initializeSmells();
+//        initializeSmells();
+        initializeGranularSmells();
     }
 
-    public TestSmellDetector(boolean initialize) {}
+    public TestSmellDetector(boolean initialize) {
+    }
 
-    private void initializeSmells(){
+    private void initializeGranularSmells() {
+        testSmells = new ArrayList<>();
+        testSmells.add(new EagerTest());
+        testSmells.add(new AssertionRoulette());
+    }
+
+    private void initializeSmells() {
         testSmells = new ArrayList<>();
         testSmells.add(new AssertionRoulette());
         testSmells.add(new ConditionalTestLogic());
@@ -76,15 +85,18 @@ public class TestSmellDetector {
      * Loads the java source code file into an AST and then analyzes it for the existence of the different types of test smells
      */
     public TestFile detectSmells(TestFile testFile) throws IOException {
-        CompilationUnit testFileCompilationUnit=null, productionFileCompilationUnit=null;
+        CompilationUnit testFileCompilationUnit = null;
+        CompilationUnit productionFileCompilationUnit = null;
         FileInputStream testFileInputStream, productionFileInputStream;
 
-        if(!StringUtils.isEmpty(testFile.getTestFilePath())) {
+        if (!StringUtils.isEmpty(testFile.getTestFilePath())) {
             testFileInputStream = new FileInputStream(testFile.getTestFilePath());
             testFileCompilationUnit = JavaParser.parse(testFileInputStream);
+            TypeDeclaration typeDeclaration = testFileCompilationUnit.getTypes().get(0);
+            testFile.setNumberOfTestMethods(typeDeclaration.getMethods().size());
         }
 
-        if(!StringUtils.isEmpty(testFile.getProductionFilePath())){
+        if (!StringUtils.isEmpty(testFile.getProductionFilePath())) {
             productionFileInputStream = new FileInputStream(testFile.getProductionFilePath());
             productionFileCompilationUnit = JavaParser.parse(productionFileInputStream);
         }
@@ -92,7 +104,7 @@ public class TestSmellDetector {
 //        initializeSmells();
         for (AbstractSmell smell : testSmells) {
             try {
-                smell.runAnalysis(testFileCompilationUnit, productionFileCompilationUnit,testFile.getTestFileNameWithoutExtension(),testFile.getProductionFileNameWithoutExtension());
+                smell.runAnalysis(testFileCompilationUnit, productionFileCompilationUnit, testFile.getTestFileNameWithoutExtension(), testFile.getProductionFileNameWithoutExtension());
             } catch (FileNotFoundException e) {
                 testFile.addSmell(null);
                 continue;

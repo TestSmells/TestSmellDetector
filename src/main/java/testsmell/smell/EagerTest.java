@@ -8,7 +8,6 @@ import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.body.VariableDeclarator;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
-import com.github.javaparser.ast.expr.VariableDeclarationExpr;
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
 import testsmell.*;
 
@@ -17,7 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class EagerTest extends AbstractSmell {
+public class EagerTest extends MethodGranularitySmell {
 
     private static final String TEST_FILE = "Test";
     private static final String PRODUCTION_FILE = "Production";
@@ -76,6 +75,11 @@ public class EagerTest extends AbstractSmell {
 
     public int getEagerCount() {
         return eagerCount;
+    }
+
+    @Override
+    public int getNumberOfSmellyTests() {
+        return smellyElementList.size();
     }
 
     /**
