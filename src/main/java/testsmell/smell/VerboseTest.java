@@ -3,10 +3,7 @@ package testsmell.smell;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
-import testsmell.AbstractSmell;
-import testsmell.SmellyElement;
-import testsmell.TestMethod;
-import testsmell.Util;
+import testsmell.*;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -80,7 +77,7 @@ public class VerboseTest extends AbstractSmell {
                         }
                     }
                 }
-                testMethod.setHasSmell(verboseCount >= 1);
+                testMethod.setHasSmell(verboseCount >= DetectionThresholds.VERBOSE_TEST);
                 testMethod.addDataItem("VerboseCount", String.valueOf(verboseCount));
 
                 smellyElementList.add(testMethod);

@@ -5,10 +5,7 @@ import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.expr.AnnotationExpr;
 import com.github.javaparser.ast.expr.VariableDeclarationExpr;
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
-import testsmell.AbstractSmell;
-import testsmell.SmellyElement;
-import testsmell.TestMethod;
-import testsmell.Util;
+import testsmell.*;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -118,7 +115,7 @@ public class MysteryGuest extends AbstractSmell {
                 testMethod.setHasSmell(false); //default value is false (i.e. no smell)
                 super.visit(n, arg);
 
-                testMethod.setHasSmell(mysteryCount > 0);
+                testMethod.setHasSmell(mysteryCount > DetectionThresholds.MYSTERY_GUEST);
                 testMethod.addDataItem("MysteryCount", String.valueOf(mysteryCount));
 
                 smellyElementList.add(testMethod);

@@ -5,10 +5,7 @@ import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
-import testsmell.AbstractSmell;
-import testsmell.SmellyElement;
-import testsmell.TestMethod;
-import testsmell.Util;
+import testsmell.*;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -74,7 +71,7 @@ public class SleepyTest extends AbstractSmell {
                 testMethod.setHasSmell(false); //default value is false (i.e. no smell)
                 super.visit(n, arg);
 
-                testMethod.setHasSmell(sleepCount >= 1);
+                testMethod.setHasSmell(sleepCount > DetectionThresholds.SLEEPY_TEST);
                 testMethod.addDataItem("ThreadSleepCount", String.valueOf(sleepCount));
 
                 smellyElementList.add(testMethod);

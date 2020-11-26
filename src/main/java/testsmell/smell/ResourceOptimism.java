@@ -4,12 +4,12 @@ import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.FieldDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.body.VariableDeclarator;
-import com.github.javaparser.ast.expr.*;
+import com.github.javaparser.ast.expr.MethodCallExpr;
+import com.github.javaparser.ast.expr.NameExpr;
+import com.github.javaparser.ast.expr.ObjectCreationExpr;
+import com.github.javaparser.ast.expr.VariableDeclarationExpr;
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
-import testsmell.AbstractSmell;
-import testsmell.SmellyElement;
-import testsmell.TestMethod;
-import testsmell.Util;
+import testsmell.*;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -76,7 +76,7 @@ public class ResourceOptimism extends AbstractSmell {
                 testMethod.setHasSmell(false); //default value is false (i.e. no smell)
                 super.visit(n, arg);
 
-                testMethod.setHasSmell(methodVariables.size() >= 1 || hasSmell==true);
+                testMethod.setHasSmell(methodVariables.size() > DetectionThresholds.RESOURCE_OPTIMISM || hasSmell == true);
                 testMethod.addDataItem("ResourceOptimismCount", String.valueOf(resourceOptimismCount));
 
                 smellyElementList.add(testMethod);
@@ -150,7 +150,7 @@ public class ResourceOptimism extends AbstractSmell {
                         n.getNameAsString().equals("isFile") ||
                         n.getNameAsString().equals("notExists")) {
                     if (n.getScope().isPresent()) {
-                        if(n.getScope().get() instanceof NameExpr) {
+                        if (n.getScope().get() instanceof NameExpr) {
                             if (methodVariables.contains(((NameExpr) n.getScope().get()).getNameAsString())) {
                                 methodVariables.remove(((NameExpr) n.getScope().get()).getNameAsString());
                             }

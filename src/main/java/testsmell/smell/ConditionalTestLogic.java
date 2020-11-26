@@ -5,10 +5,7 @@ import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.expr.ConditionalExpr;
 import com.github.javaparser.ast.stmt.*;
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
-import testsmell.AbstractSmell;
-import testsmell.SmellyElement;
-import testsmell.TestMethod;
-import testsmell.Util;
+import testsmell.*;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -73,7 +70,12 @@ public class ConditionalTestLogic extends AbstractSmell {
                 testMethod.setHasSmell(false); //default value is false (i.e. no smell)
                 super.visit(n, arg);
 
-                testMethod.setHasSmell(conditionCount > 0 | ifCount > 0 | switchCount > 0 | foreachCount > 0 | forCount > 0 | whileCount > 0);
+                testMethod.setHasSmell(conditionCount > DetectionThresholds.CONDITIONAL_TEST_LOGIC |
+                        ifCount > DetectionThresholds.CONDITIONAL_TEST_LOGIC |
+                        switchCount > DetectionThresholds.CONDITIONAL_TEST_LOGIC |
+                        foreachCount > DetectionThresholds.CONDITIONAL_TEST_LOGIC |
+                        forCount > DetectionThresholds.CONDITIONAL_TEST_LOGIC |
+                        whileCount > DetectionThresholds.CONDITIONAL_TEST_LOGIC);
 
                 testMethod.addDataItem("ConditionCount", String.valueOf(conditionCount));
                 testMethod.addDataItem("IfCount", String.valueOf(ifCount));

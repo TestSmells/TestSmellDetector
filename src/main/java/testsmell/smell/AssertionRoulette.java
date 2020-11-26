@@ -4,10 +4,7 @@ import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
-import testsmell.AbstractSmell;
-import testsmell.SmellyElement;
-import testsmell.TestMethod;
-import testsmell.Util;
+import testsmell.*;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -87,7 +84,7 @@ public class AssertionRoulette extends AbstractSmell {
                 // if there is only 1 assert statement in the method, then a explanation message is not needed
                 if (assertCount == 1)
                     testMethod.setHasSmell(false);
-                else if (assertNoMessageCount >= 1) //if there is more than one assert statement, then all the asserts need to have an explanation message
+                else if (assertNoMessageCount >= DetectionThresholds.ASSERTION_ROULETTE) //if there is more than one assert statement, then all the asserts need to have an explanation message
                     testMethod.setHasSmell(true);
 
                 testMethod.addDataItem("AssertCount", String.valueOf(assertNoMessageCount));
