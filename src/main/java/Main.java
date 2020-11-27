@@ -1,7 +1,4 @@
-import testsmell.AbstractSmell;
-import testsmell.ResultsWriter;
-import testsmell.TestFile;
-import testsmell.TestSmellDetector;
+import testsmell.*;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -95,7 +92,7 @@ public class Main {
             columnValues.add(String.valueOf(file.getNumberOfTestMethods()));
             for (AbstractSmell smell : tempFile.getTestSmells()) {
                 try {
-                    columnValues.add(String.valueOf(smell.getHasSmell()));
+                    columnValues.add(String.valueOf(((MethodGranularitySmell)smell).getNumberOfSmellyTests()));
                 } catch (NullPointerException e) {
                     columnValues.add("");
                 }
