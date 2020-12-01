@@ -5,6 +5,7 @@ import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.TypeDeclaration;
 import org.apache.commons.lang3.StringUtils;
 import testsmell.smell.*;
+import thresholds.Thresholds;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -16,60 +17,46 @@ import java.util.stream.Collectors;
 public class TestSmellDetector {
 
     private List<AbstractSmell> testSmells;
+    private Thresholds thresholds;
 
     /**
-     * Instantiates the various test smell analyzer classes and loads the objects into an List
+     * Instantiates the various test smell analyzer classes and loads the objects into an list.
+     * Each smell analyzer is initialized with a threshold object to set the most appropriate rule for the detection
+     *
+     * @param thresholds it could be the default threshold of the ones defined by Spadini
      */
-    public TestSmellDetector() {
-//        initializeSmells();
-        initializeGranularSmells();
-    }
-
-    public TestSmellDetector(boolean initialize) {
-    }
-
-    private void initializeGranularSmells() {
-        testSmells = new ArrayList<>();
-        testSmells.add(new EagerTest());
-        testSmells.add(new AssertionRoulette());
+    public TestSmellDetector(Thresholds thresholds) {
+        this.thresholds = thresholds;
+        initializeSmells();
     }
 
     private void initializeSmells() {
         testSmells = new ArrayList<>();
-        testSmells.add(new AssertionRoulette());
-        testSmells.add(new ConditionalTestLogic());
-        testSmells.add(new ConstructorInitialization());
-        testSmells.add(new DefaultTest());
-        testSmells.add(new EmptyTest());
-        testSmells.add(new ExceptionCatchingThrowing());
-        testSmells.add(new GeneralFixture());
-        testSmells.add(new MysteryGuest());
-        testSmells.add(new PrintStatement());
-        testSmells.add(new RedundantAssertion());
-        testSmells.add(new SensitiveEquality());
-        testSmells.add(new VerboseTest());
-        testSmells.add(new SleepyTest());
-        testSmells.add(new EagerTest());
-        testSmells.add(new LazyTest());
-        testSmells.add(new DuplicateAssert());
-        testSmells.add(new UnknownTest());
-        testSmells.add(new IgnoredTest());
-        testSmells.add(new ResourceOptimism());
-        testSmells.add(new MagicNumberTest());
-        testSmells.add(new DependentTest());
+        testSmells.add(new AssertionRoulette(thresholds));
+        testSmells.add(new ConditionalTestLogic(thresholds));
+        testSmells.add(new ConstructorInitialization(thresholds));
+        testSmells.add(new DefaultTest(thresholds));
+        testSmells.add(new EmptyTest(thresholds));
+        testSmells.add(new ExceptionCatchingThrowing(thresholds));
+        testSmells.add(new GeneralFixture(thresholds));
+        testSmells.add(new MysteryGuest(thresholds));
+        testSmells.add(new PrintStatement(thresholds));
+        testSmells.add(new RedundantAssertion(thresholds));
+        testSmells.add(new SensitiveEquality(thresholds));
+        testSmells.add(new VerboseTest(thresholds));
+        testSmells.add(new SleepyTest(thresholds));
+        testSmells.add(new EagerTest(thresholds));
+        testSmells.add(new LazyTest(thresholds));
+        testSmells.add(new DuplicateAssert(thresholds));
+        testSmells.add(new UnknownTest(thresholds));
+        testSmells.add(new IgnoredTest(thresholds));
+        testSmells.add(new ResourceOptimism(thresholds));
+        testSmells.add(new MagicNumberTest(thresholds));
+        testSmells.add(new DependentTest(thresholds));
     }
 
     public void setTestSmells(List<AbstractSmell> testSmells) {
         this.testSmells = testSmells;
-    }
-
-    /**
-     * Factory method that provides a new instance of the TestSmellDetector
-     *
-     * @return new TestSmellDetector instance
-     */
-    public static TestSmellDetector createTestSmellDetector() {
-        return new TestSmellDetector();
     }
 
     /**
@@ -82,7 +69,8 @@ public class TestSmellDetector {
     }
 
     /**
-     * Loads the java source code file into an AST and then analyzes it for the existence of the different types of test smells
+     * Loads the java source code file into an AST and then analyzes it for the existence of the different types of
+     * test smells
      */
     public TestFile detectSmells(TestFile testFile) throws IOException {
         CompilationUnit testFileCompilationUnit = null;
@@ -101,20 +89,17 @@ public class TestSmellDetector {
             productionFileCompilationUnit = JavaParser.parse(productionFileInputStream);
         }
 
-//        initializeSmells();
         for (AbstractSmell smell : testSmells) {
             try {
-                smell.runAnalysis(testFileCompilationUnit, productionFileCompilationUnit, testFile.getTestFileNameWithoutExtension(), testFile.getProductionFileNameWithoutExtension());
+                smell.runAnalysis(testFileCompilationUnit, productionFileCompilationUnit,
+                        testFile.getTestFileNameWithoutExtension(),
+                        testFile.getProductionFileNameWithoutExtension());
             } catch (FileNotFoundException e) {
                 testFile.addSmell(null);
                 continue;
             }
             testFile.addSmell(smell);
         }
-
         return testFile;
-
     }
-
-
 }

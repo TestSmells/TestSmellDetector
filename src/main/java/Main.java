@@ -1,4 +1,9 @@
-import testsmell.*;
+import testsmell.AbstractSmell;
+import testsmell.ResultsWriter;
+import testsmell.TestFile;
+import testsmell.TestSmellDetector;
+import thresholds.DefaultThresholds;
+import thresholds.Thresholds;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -24,7 +29,7 @@ public class Main {
             }
         }
 
-        TestSmellDetector testSmellDetector = new TestSmellDetector();
+        TestSmellDetector testSmellDetector = new TestSmellDetector(new DefaultThresholds());
 
         /*
           Read the input file and build the TestFile objects
@@ -92,7 +97,7 @@ public class Main {
             columnValues.add(String.valueOf(file.getNumberOfTestMethods()));
             for (AbstractSmell smell : tempFile.getTestSmells()) {
                 try {
-                    columnValues.add(String.valueOf(((MethodGranularitySmell)smell).getNumberOfSmellyTests()));
+                    columnValues.add(String.valueOf(smell.getNumberOfSmellyTests()));
                 } catch (NullPointerException e) {
                     columnValues.add("");
                 }
