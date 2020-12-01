@@ -8,6 +8,7 @@ import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
 import testsmell.AbstractSmell;
 import testsmell.SmellyElement;
 import testsmell.TestClass;
+import thresholds.Thresholds;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -20,11 +21,10 @@ If this code detects the existence of a constructor, it sets the class as smelly
  */
 public class ConstructorInitialization extends AbstractSmell {
 
-    private List<SmellyElement> smellyElementList;
     private String testFileName;
 
-    public ConstructorInitialization() {
-        smellyElementList = new ArrayList<>();
+    public ConstructorInitialization(Thresholds thresholds) {
+        super(thresholds);
     }
 
     /**
@@ -33,14 +33,6 @@ public class ConstructorInitialization extends AbstractSmell {
     @Override
     public String getSmellName() {
         return "Constructor Initialization";
-    }
-
-    /**
-     * Returns true if any of the elements has a smell
-     */
-    @Override
-    public boolean getHasSmell() {
-        return smellyElementList.stream().filter(x -> x.getHasSmell()).count() >= 1;
     }
 
     /**
@@ -62,6 +54,10 @@ public class ConstructorInitialization extends AbstractSmell {
         return smellyElementList;
     }
 
+    @Override
+    public int getNumberOfSmellyTests() {
+        return 0;
+    }
 
     private class ClassVisitor extends VoidVisitorAdapter<Void> {
         TestClass testClass;

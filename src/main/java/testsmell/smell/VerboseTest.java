@@ -4,9 +4,9 @@ import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
 import testsmell.*;
+import thresholds.Thresholds;
 
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
 import java.util.List;
 
 /*
@@ -14,10 +14,8 @@ If a test methods contains a statements that exceeds a certain threshold, the me
  */
 public class VerboseTest extends AbstractSmell {
 
-    private List<SmellyElement> smellyElementList;
-
-    public VerboseTest() {
-        smellyElementList = new ArrayList<>();
+    public VerboseTest(Thresholds thresholds) {
+        super(thresholds);
     }
 
     /**
@@ -26,14 +24,6 @@ public class VerboseTest extends AbstractSmell {
     @Override
     public String getSmellName() {
         return "Verbose Test";
-    }
-
-    /**
-     * Returns true if any of the elements has a smell
-     */
-    @Override
-    public boolean getHasSmell() {
-        return smellyElementList.stream().filter(x -> x.getHasSmell()).count() >= 1;
     }
 
     /**

@@ -8,12 +8,12 @@ import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.body.VariableDeclarator;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
-import com.github.javaparser.ast.expr.VariableDeclarationExpr;
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
 import testsmell.AbstractSmell;
 import testsmell.SmellyElement;
 import testsmell.TestMethod;
 import testsmell.Util;
+import thresholds.Thresholds;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -25,11 +25,11 @@ public class LazyTest extends AbstractSmell {
     private static final String TEST_FILE = "Test";
     private static final String PRODUCTION_FILE = "Production";
     private String productionClassName;
-    private List<SmellyElement> smellyElementList;
     private List<MethodUsage> calledProductionMethods;
     private List<MethodDeclaration> productionMethods;
 
-    public LazyTest() {
+    public LazyTest(Thresholds thresholds) {
+        super(thresholds);
         productionMethods = new ArrayList<>();
         smellyElementList = new ArrayList<>();
         calledProductionMethods = new ArrayList<>();
@@ -41,14 +41,6 @@ public class LazyTest extends AbstractSmell {
     @Override
     public String getSmellName() {
         return "Lazy Test";
-    }
-
-    /**
-     * Returns true if any of the elements has a smell
-     */
-    @Override
-    public boolean getHasSmell() {
-        return smellyElementList.stream().filter(x -> x.getHasSmell()).count() >= 1;
     }
 
     /**

@@ -9,17 +9,15 @@ import testsmell.AbstractSmell;
 import testsmell.SmellyElement;
 import testsmell.TestClass;
 import testsmell.TestMethod;
+import thresholds.Thresholds;
 
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
 import java.util.List;
 
 public class IgnoredTest extends AbstractSmell {
 
-    private List<SmellyElement> smellyElementList;
-
-    public IgnoredTest() {
-        smellyElementList = new ArrayList<>();
+    public IgnoredTest(Thresholds thresholds) {
+        super(thresholds);
     }
 
     /**
@@ -28,14 +26,6 @@ public class IgnoredTest extends AbstractSmell {
     @Override
     public String getSmellName() {
         return "IgnoredTest";
-    }
-
-    /**
-     * Returns true if any of the elements has a smell
-     */
-    @Override
-    public boolean getHasSmell() {
-        return smellyElementList.stream().filter(x -> x.getHasSmell()).count() >= 1;
     }
 
     /**

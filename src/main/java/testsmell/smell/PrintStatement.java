@@ -10,9 +10,9 @@ import testsmell.AbstractSmell;
 import testsmell.SmellyElement;
 import testsmell.TestMethod;
 import testsmell.Util;
+import thresholds.Thresholds;
 
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
 import java.util.List;
 
 /*
@@ -21,10 +21,8 @@ This code checks the body of each test method if System.out. print(), println(),
  */
 public class PrintStatement extends AbstractSmell {
 
-    private List<SmellyElement> smellyElementList;
-
-    public PrintStatement() {
-        smellyElementList = new ArrayList<>();
+    public PrintStatement(Thresholds thresholds) {
+        super(thresholds);
     }
 
     /**
@@ -33,14 +31,6 @@ public class PrintStatement extends AbstractSmell {
     @Override
     public String getSmellName() {
         return "Print Statement";
-    }
-
-    /**
-     * Returns true if any of the elements has a smell
-     */
-    @Override
-    public boolean getHasSmell() {
-        return smellyElementList.stream().filter(x -> x.getHasSmell()).count() >= 1;
     }
 
     /**

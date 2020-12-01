@@ -8,16 +8,18 @@ import testsmell.AbstractSmell;
 import testsmell.SmellyElement;
 import testsmell.TestMethod;
 import testsmell.Util;
+import thresholds.Thresholds;
 
 import java.io.FileNotFoundException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 public class DuplicateAssert extends AbstractSmell {
 
-    private List<SmellyElement> smellyElementList;
-
-    public DuplicateAssert() {
-        smellyElementList = new ArrayList<>();
+    public DuplicateAssert(Thresholds thresholds) {
+        super(thresholds);
     }
 
     /**
@@ -26,14 +28,6 @@ public class DuplicateAssert extends AbstractSmell {
     @Override
     public String getSmellName() {
         return "Duplicate Assert";
-    }
-
-    /**
-     * Returns true if any of the elements has a smell
-     */
-    @Override
-    public boolean getHasSmell() {
-        return smellyElementList.stream().filter(x -> x.getHasSmell()).count() >= 1;
     }
 
     /**

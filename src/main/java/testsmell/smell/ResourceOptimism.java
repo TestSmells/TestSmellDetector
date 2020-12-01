@@ -10,6 +10,7 @@ import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.expr.VariableDeclarationExpr;
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
 import testsmell.*;
+import thresholds.Thresholds;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -17,10 +18,8 @@ import java.util.List;
 
 public class ResourceOptimism extends AbstractSmell {
 
-    private List<SmellyElement> smellyElementList;
-
-    public ResourceOptimism() {
-        smellyElementList = new ArrayList<>();
+    public ResourceOptimism(Thresholds thresholds) {
+        super(thresholds);
     }
 
     /**
@@ -29,14 +28,6 @@ public class ResourceOptimism extends AbstractSmell {
     @Override
     public String getSmellName() {
         return "Resource Optimism";
-    }
-
-    /**
-     * Returns true if any of the elements has a smell
-     */
-    @Override
-    public boolean getHasSmell() {
-        return smellyElementList.stream().filter(x -> x.getHasSmell()).count() >= 1;
     }
 
     /**

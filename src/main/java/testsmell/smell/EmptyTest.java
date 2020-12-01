@@ -7,6 +7,7 @@ import testsmell.AbstractSmell;
 import testsmell.SmellyElement;
 import testsmell.TestMethod;
 import testsmell.Util;
+import thresholds.Thresholds;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -18,10 +19,8 @@ import java.util.List;
  */
 public class EmptyTest extends AbstractSmell {
 
-    private List<SmellyElement> smellyElementList;
-
-    public EmptyTest() {
-        smellyElementList = new ArrayList<>();
+    public EmptyTest(Thresholds thresholds) {
+        super(thresholds);
     }
 
     /**
@@ -30,14 +29,6 @@ public class EmptyTest extends AbstractSmell {
     @Override
     public String getSmellName() {
         return "EmptyTest";
-    }
-
-    /**
-     * Returns true if any of the elements has a smell
-     */
-    @Override
-    public boolean getHasSmell() {
-        return smellyElementList.stream().filter(x -> x.getHasSmell()).count() >= 1;
     }
 
     /**

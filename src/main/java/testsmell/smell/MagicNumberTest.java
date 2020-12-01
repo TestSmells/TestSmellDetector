@@ -7,6 +7,7 @@ import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
 import testsmell.*;
+import thresholds.Thresholds;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -16,8 +17,8 @@ public class MagicNumberTest  extends AbstractSmell {
 
     private List<SmellyElement> smellyElementList;
 
-    public MagicNumberTest() {
-        smellyElementList = new ArrayList<>();
+    public MagicNumberTest(Thresholds thresholds) {
+        super(thresholds);
     }
 
     /**
@@ -26,14 +27,6 @@ public class MagicNumberTest  extends AbstractSmell {
     @Override
     public String getSmellName() {
         return "Magic Number Test";
-    }
-
-    /**
-     * Returns true if any of the elements has a smell
-     */
-    @Override
-    public boolean getHasSmell() {
-        return smellyElementList.stream().filter(x -> x.getHasSmell()).count() >= 1;
     }
 
     /**

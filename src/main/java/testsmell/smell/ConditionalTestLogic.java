@@ -6,19 +6,18 @@ import com.github.javaparser.ast.expr.ConditionalExpr;
 import com.github.javaparser.ast.stmt.*;
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
 import testsmell.*;
+import thresholds.Thresholds;
 
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
 import java.util.List;
 
 /*
 This class check a test method for the existence of loops and conditional statements in the methods body
  */
 public class ConditionalTestLogic extends AbstractSmell {
-    private List<SmellyElement> smellyElementList;
 
-    public ConditionalTestLogic() {
-        smellyElementList = new ArrayList<>();
+    public ConditionalTestLogic(Thresholds thresholds) {
+        super(thresholds);
     }
 
     /**
@@ -27,14 +26,6 @@ public class ConditionalTestLogic extends AbstractSmell {
     @Override
     public String getSmellName() {
         return "Conditional Test Logic";
-    }
-
-    /**
-     * Returns true if any of the elements has a smell
-     */
-    @Override
-    public boolean getHasSmell() {
-        return smellyElementList.stream().filter(x -> x.getHasSmell()).count() >= 1;
     }
 
     /**
@@ -55,6 +46,10 @@ public class ConditionalTestLogic extends AbstractSmell {
         return smellyElementList;
     }
 
+    @Override
+    public int getNumberOfSmellyTests() {
+        return 0;
+    }
 
     private class ClassVisitor extends VoidVisitorAdapter<Void> {
         private MethodDeclaration currentMethod = null;

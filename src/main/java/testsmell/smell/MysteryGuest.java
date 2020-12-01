@@ -6,6 +6,7 @@ import com.github.javaparser.ast.expr.AnnotationExpr;
 import com.github.javaparser.ast.expr.VariableDeclarationExpr;
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
 import testsmell.*;
+import thresholds.Thresholds;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -21,9 +22,8 @@ import java.util.List;
  */
 public class MysteryGuest extends AbstractSmell {
 
-    private List<SmellyElement> smellyElementList;
-
-    public MysteryGuest() {
+    public MysteryGuest(Thresholds thresholds) {
+        super(thresholds);
         smellyElementList = new ArrayList<>();
     }
 
@@ -33,14 +33,6 @@ public class MysteryGuest extends AbstractSmell {
     @Override
     public String getSmellName() {
         return "Mystery Guest";
-    }
-
-    /**
-     * Returns true if any of the elements has a smell
-     */
-    @Override
-    public boolean getHasSmell() {
-        return smellyElementList.stream().filter(x -> x.getHasSmell()).count() >= 1;
     }
 
     /**

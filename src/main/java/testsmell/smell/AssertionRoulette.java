@@ -4,10 +4,13 @@ import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
-import testsmell.*;
+import testsmell.AbstractSmell;
+import testsmell.SmellyElement;
+import testsmell.TestMethod;
+import testsmell.Util;
+import thresholds.Thresholds;
 
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -15,13 +18,12 @@ import java.util.List;
  * If one of the assertions fails, you do not know which one it is.
  * A. van Deursen, L. Moonen, A. Bergh, G. Kok, “Refactoring Test Code”, Technical Report, CWI, 2001.
  */
-public class AssertionRoulette extends MethodGranularitySmell {
+public class AssertionRoulette extends AbstractSmell {
 
-    private List<SmellyElement> smellyElementList;
     private int assertionsCount = 0;
 
-    public AssertionRoulette() {
-        smellyElementList = new ArrayList<>();
+    public AssertionRoulette(Thresholds thresholds) {
+        super(thresholds);
     }
 
     /**
@@ -30,14 +32,6 @@ public class AssertionRoulette extends MethodGranularitySmell {
     @Override
     public String getSmellName() {
         return "Assertion Roulette";
-    }
-
-    /**
-     * Returns true if any of the elements has a smell
-     */
-    @Override
-    public boolean getHasSmell() {
-        return smellyElementList.stream().filter(x -> x.getHasSmell()).count() >= 1;
     }
 
     /**
@@ -89,7 +83,7 @@ public class AssertionRoulette extends MethodGranularitySmell {
                 // if there is only 1 assert statement in the method, then a explanation message is not needed
                 if (assertCount == 1)
                     testMethod.setHasSmell(false);
-                else if (assertNoMessageCount >= DetectionThresholds.ASSERTION_ROULETTE) //if there is more than one assert statement, then all the asserts need to have an explanation message
+                else if (assertNoMessageCount >= thresholds.getAssertionRoulette()) //if there is more than one assert statement, then all the asserts need to have an explanation message
                     testMethod.setHasSmell(true);
 
                 testMethod.addDataItem("AssertCount", String.valueOf(assertNoMessageCount));

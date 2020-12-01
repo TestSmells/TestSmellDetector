@@ -10,13 +10,14 @@ import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
 import testsmell.*;
+import thresholds.Thresholds;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class EagerTest extends MethodGranularitySmell {
+public class EagerTest extends AbstractSmell {
 
     private static final String TEST_FILE = "Test";
     private static final String PRODUCTION_FILE = "Production";
@@ -25,7 +26,8 @@ public class EagerTest extends MethodGranularitySmell {
     private List<MethodDeclaration> productionMethods;
     private int eagerCount;
 
-    public EagerTest() {
+    public EagerTest(Thresholds thresholds) {
+        super(thresholds);
         productionMethods = new ArrayList<>();
         smellyElementList = new ArrayList<>();
     }
@@ -40,9 +42,10 @@ public class EagerTest extends MethodGranularitySmell {
 
     /**
      * Returns true if any of the elements has a smell
+     * @return
      */
     @Override
-    public boolean getHasSmell() {
+    public int getHasSmell() {
         return smellyElementList.stream().filter(x -> x.getHasSmell()).count() >= 1;
     }
 

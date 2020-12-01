@@ -6,9 +6,9 @@ import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
 import testsmell.*;
+import thresholds.Thresholds;
 
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
 import java.util.List;
 
 /*
@@ -17,10 +17,8 @@ This code marks a method as smelly if the method body calls Thread.sleep()
  */
 public class SleepyTest extends AbstractSmell {
 
-    private List<SmellyElement> smellyElementList;
-
-    public SleepyTest() {
-        smellyElementList = new ArrayList<>();
+    public SleepyTest(Thresholds thresholds) {
+        super(thresholds);
     }
 
     /**
@@ -29,14 +27,6 @@ public class SleepyTest extends AbstractSmell {
     @Override
     public String getSmellName() {
         return "Sleepy Test";
-    }
-
-    /**
-     * Returns true if any of the elements has a smell
-     */
-    @Override
-    public boolean getHasSmell() {
-        return smellyElementList.stream().filter(x -> x.getHasSmell()).count() >= 1;
     }
 
     /**
