@@ -5,7 +5,10 @@ import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.expr.AnnotationExpr;
 import com.github.javaparser.ast.expr.VariableDeclarationExpr;
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
-import testsmell.*;
+import testsmell.AbstractSmell;
+import testsmell.SmellyElement;
+import testsmell.TestMethod;
+import testsmell.Util;
 import thresholds.Thresholds;
 
 import java.io.FileNotFoundException;
@@ -24,7 +27,6 @@ public class MysteryGuest extends AbstractSmell {
 
     public MysteryGuest(Thresholds thresholds) {
         super(thresholds);
-        smellyElementList = new ArrayList<>();
     }
 
     /**
@@ -43,14 +45,6 @@ public class MysteryGuest extends AbstractSmell {
         MysteryGuest.ClassVisitor classVisitor;
         classVisitor = new MysteryGuest.ClassVisitor();
         classVisitor.visit(testFileCompilationUnit, null);
-    }
-
-    /**
-     * Returns the set of analyzed elements (i.e. test methods)
-     */
-    @Override
-    public List<SmellyElement> getSmellyElements() {
-        return smellyElementList;
     }
 
     private class ClassVisitor extends VoidVisitorAdapter<Void> {
@@ -104,13 +98,14 @@ public class MysteryGuest extends AbstractSmell {
             if (Util.isValidTestMethod(n)) {
                 currentMethod = n;
                 testMethod = new TestMethod(n.getNameAsString());
-                testMethod.setHasSmell(false); //default value is false (i.e. no smell)
+                testMethod.setSmell(false); //default value is false (i.e. no smell)
                 super.visit(n, arg);
 
-                testMethod.setHasSmell(mysteryCount > DetectionThresholds.MYSTERY_GUEST);
+                boolean isSmelly = mysteryCount > thresholds.getMysteryGuest();
+                testMethod.setSmell(isSmelly);
                 testMethod.addDataItem("MysteryCount", String.valueOf(mysteryCount));
 
-                smellyElementList.add(testMethod);
+                smellyElementsSet.add(testMethod);
 
                 //reset values for next method
                 currentMethod = null;

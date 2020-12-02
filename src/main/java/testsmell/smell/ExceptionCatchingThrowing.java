@@ -6,13 +6,11 @@ import com.github.javaparser.ast.stmt.CatchClause;
 import com.github.javaparser.ast.stmt.ThrowStmt;
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
 import testsmell.AbstractSmell;
-import testsmell.SmellyElement;
 import testsmell.TestMethod;
 import testsmell.Util;
 import thresholds.Thresholds;
 
 import java.io.FileNotFoundException;
-import java.util.List;
 
 /*
 This class checks if test methods in the class either catch or throw exceptions. Use Junit's exception handling to automatically pass/fail the test
@@ -42,14 +40,6 @@ public class ExceptionCatchingThrowing extends AbstractSmell {
         classVisitor.visit(testFileCompilationUnit, null);
     }
 
-    /**
-     * Returns the set of analyzed elements (i.e. test methods)
-     */
-    @Override
-    public List<SmellyElement> getSmellyElements() {
-        return smellyElementList;
-    }
-
     private class ClassVisitor extends VoidVisitorAdapter<Void> {
         private MethodDeclaration currentMethod = null;
         private int exceptionCount = 0;
@@ -62,16 +52,18 @@ public class ExceptionCatchingThrowing extends AbstractSmell {
             if (Util.isValidTestMethod(n)) {
                 currentMethod = n;
                 testMethod = new TestMethod(n.getNameAsString());
-                testMethod.setHasSmell(false); //default value is false (i.e. no smell)
+                testMethod.setSmell(false); //default value is false (i.e. no smell)
                 super.visit(n, arg);
 
                 if (n.getThrownExceptions().size() >= 1)
                     exceptionCount++;
 
-                testMethod.setHasSmell(exceptionCount >= 1);
+                boolean isSmelly = exceptionCount > thresholds.getExceptionCatchingThrowing();
+
+                testMethod.setSmell(isSmelly);
                 testMethod.addDataItem("ExceptionCount", String.valueOf(exceptionCount));
 
-                smellyElementList.add(testMethod);
+                smellyElementsSet.add(testMethod);
 
                 //reset values for next method
                 currentMethod = null;

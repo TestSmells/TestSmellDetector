@@ -31,7 +31,6 @@ public class LazyTest extends AbstractSmell {
     public LazyTest(Thresholds thresholds) {
         super(thresholds);
         productionMethods = new ArrayList<>();
-        smellyElementList = new ArrayList<>();
         calledProductionMethods = new ArrayList<>();
     }
 
@@ -67,19 +66,11 @@ public class LazyTest extends AbstractSmell {
                     // If counts don not match, this production method is used by multiple test methods. Hence, there is a Lazy Test smell.
                     // If the counts were equal it means that the production method is only used (called from) inside one test method
                     TestMethod testClass = new TestMethod(method.getTestMethod());
-                    testClass.setHasSmell(true);
-                    smellyElementList.add(testClass);
+                    testClass.setSmell(true);
+                    smellyElementsSet.add(testClass);
                 }
             }
         }
-    }
-
-    /**
-     * Returns the set of analyzed elements (i.e. test methods)
-     */
-    @Override
-    public List<SmellyElement> getSmellyElements() {
-        return smellyElementList;
     }
 
     private class MethodUsage {
@@ -138,7 +129,7 @@ public class LazyTest extends AbstractSmell {
                 if (Util.isValidTestMethod(n)) {
                     currentMethod = n;
                     testMethod = new TestMethod(currentMethod.getNameAsString());
-                    testMethod.setHasSmell(false); //default value is false (i.e. no smell)
+                    testMethod.setSmell(false); //default value is false (i.e. no smell)
                     super.visit(n, arg);
 
                     //reset values for next method

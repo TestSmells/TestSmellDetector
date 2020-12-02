@@ -49,20 +49,6 @@ public class AssertionRoulette extends AbstractSmell {
         return assertionsCount;
     }
 
-    /**
-     * Returns the set of analyzed elements (i.e. test methods)
-     */
-    @Override
-    public List<SmellyElement> getSmellyElements() {
-        return smellyElementList;
-    }
-
-    @Override
-    public int getNumberOfSmellyTests() {
-        return smellyElementList.size();
-    }
-
-
     private class ClassVisitor extends VoidVisitorAdapter<Void> {
         private MethodDeclaration currentMethod = null;
         private int assertNoMessageCount = 0;
@@ -76,19 +62,23 @@ public class AssertionRoulette extends AbstractSmell {
             if (Util.isValidTestMethod(n)) {
                 currentMethod = n;
                 testMethod = new TestMethod(n.getNameAsString());
-                testMethod.setHasSmell(false); //default value is false (i.e. no smell)
+                testMethod.setSmell(false); //default value is false (i.e. no smell)
                 super.visit(n, arg);
 
+                boolean isSmelly = assertNoMessageCount >= thresholds.getAssertionRoulette();
 
+                //the method has a smell if there is more than 1 call to production methods
+                testMethod.setSmell(isSmelly);
                 // if there is only 1 assert statement in the method, then a explanation message is not needed
                 if (assertCount == 1)
-                    testMethod.setHasSmell(false);
-                else if (assertNoMessageCount >= thresholds.getAssertionRoulette()) //if there is more than one assert statement, then all the asserts need to have an explanation message
-                    testMethod.setHasSmell(true);
+                    testMethod.setSmell(false);
+                //if there is more than one assert statement, then all the asserts need to have an explanation message
+                else if (isSmelly) {
+                    testMethod.setSmell(true);
+                }
 
                 testMethod.addDataItem("AssertCount", String.valueOf(assertNoMessageCount));
-
-                smellyElementList.add(testMethod);
+                smellyElementsSet.add(testMethod);
 
                 //reset values for next method
                 currentMethod = null;

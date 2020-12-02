@@ -30,18 +30,15 @@ public class DefaultTest extends AbstractSmell {
     }
 
     @Override
+    public int getNumberOfSmellyTests() {
+        return super.hasSmell();
+    }
+
+    @Override
     public void runAnalysis(CompilationUnit testFileCompilationUnit, CompilationUnit productionFileCompilationUnit, String testFileName, String productionFileName) throws FileNotFoundException {
         DefaultTest.ClassVisitor classVisitor;
         classVisitor = new DefaultTest.ClassVisitor();
         classVisitor.visit(testFileCompilationUnit, null);
-    }
-
-    /**
-     * Returns the set of analyzed elements (i.e. test methods)
-     */
-    @Override
-    public List<SmellyElement> getSmellyElements() {
-        return smellyElementList;
     }
 
     private class ClassVisitor extends VoidVisitorAdapter<Void> {
@@ -52,7 +49,7 @@ public class DefaultTest extends AbstractSmell {
             if (n.getNameAsString().equals("ExampleUnitTest") || n.getNameAsString().equals("ExampleInstrumentedTest")) {
                 testClass = new TestClass(n.getNameAsString());
                 testClass.setHasSmell(true);
-                smellyElementList.add(testClass);
+                smellyElementsSet.add(testClass);
             }
             super.visit(n, arg);
         }

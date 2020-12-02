@@ -10,7 +10,6 @@ import testsmell.*;
 import thresholds.Thresholds;
 
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
 import java.util.List;
 
 public class MagicNumberTest  extends AbstractSmell {
@@ -39,14 +38,6 @@ public class MagicNumberTest  extends AbstractSmell {
         classVisitor.visit(testFileCompilationUnit, null);
     }
 
-    /**
-     * Returns the set of analyzed elements (i.e. test methods)
-     */
-    @Override
-    public List<SmellyElement> getSmellyElements() {
-        return smellyElementList;
-    }
-
     private class ClassVisitor extends VoidVisitorAdapter<Void> {
         private MethodDeclaration currentMethod = null;
         TestMethod testMethod;
@@ -58,10 +49,10 @@ public class MagicNumberTest  extends AbstractSmell {
             if (Util.isValidTestMethod(n)) {
                 currentMethod = n;
                 testMethod = new TestMethod(n.getNameAsString());
-                testMethod.setHasSmell(false); //default value is false (i.e. no smell)
+                testMethod.setSmell(false); //default value is false (i.e. no smell)
                 super.visit(n, arg);
 
-                testMethod.setHasSmell(magicCount >= DetectionThresholds.MAGIC_NUMBER_TEST);
+                testMethod.setSmell(magicCount >= thresholds.getMagicNumberTest());
                 testMethod.addDataItem("MagicNumberCount", String.valueOf(magicCount));
 
                 smellyElementList.add(testMethod);

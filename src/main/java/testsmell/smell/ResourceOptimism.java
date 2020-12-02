@@ -40,15 +40,6 @@ public class ResourceOptimism extends AbstractSmell {
         classVisitor.visit(testFileCompilationUnit, null);
     }
 
-    /**
-     * Returns the set of analyzed elements (i.e. test methods)
-     */
-    @Override
-    public List<SmellyElement> getSmellyElements() {
-        return smellyElementList;
-    }
-
-
     private class ClassVisitor extends VoidVisitorAdapter<Void> {
         private MethodDeclaration currentMethod = null;
         private int resourceOptimismCount = 0;
@@ -64,13 +55,13 @@ public class ResourceOptimism extends AbstractSmell {
             if (Util.isValidTestMethod(n) || Util.isValidSetupMethod(n)) {
                 currentMethod = n;
                 testMethod = new TestMethod(n.getNameAsString());
-                testMethod.setHasSmell(false); //default value is false (i.e. no smell)
+                testMethod.setSmell(false); //default value is false (i.e. no smell)
                 super.visit(n, arg);
 
-                testMethod.setHasSmell(methodVariables.size() > DetectionThresholds.RESOURCE_OPTIMISM || hasSmell == true);
+                testMethod.setSmell(methodVariables.size() > thresholds.getResourceOptimism() || hasSmell == true);
                 testMethod.addDataItem("ResourceOptimismCount", String.valueOf(resourceOptimismCount));
 
-                smellyElementList.add(testMethod);
+                smellyElementsSet.add(testMethod);
 
                 //reset values for next method
                 currentMethod = null;
@@ -150,11 +141,7 @@ public class ResourceOptimism extends AbstractSmell {
                 }
             }
         }
-
-
     }
-
-
 }
 
 

@@ -3,7 +3,10 @@ package testsmell.smell;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
-import testsmell.*;
+import testsmell.AbstractSmell;
+import testsmell.SmellyElement;
+import testsmell.TestMethod;
+import testsmell.Util;
 import thresholds.Thresholds;
 
 import java.io.FileNotFoundException;
@@ -36,14 +39,6 @@ public class VerboseTest extends AbstractSmell {
         classVisitor.visit(testFileCompilationUnit, null);
     }
 
-    /**
-     * Returns the set of analyzed elements (i.e. test methods)
-     */
-    @Override
-    public List<SmellyElement> getSmellyElements() {
-        return smellyElementList;
-    }
-
     private class ClassVisitor extends VoidVisitorAdapter<Void> {
         final int MAX_STATEMENTS = 123;
         private MethodDeclaration currentMethod = null;
@@ -56,7 +51,7 @@ public class VerboseTest extends AbstractSmell {
             if (Util.isValidTestMethod(n)) {
                 currentMethod = n;
                 testMethod = new TestMethod(n.getNameAsString());
-                testMethod.setHasSmell(false); //default value is false (i.e. no smell)
+                testMethod.setSmell(false); //default value is false (i.e. no smell)
 
                 //method should not be abstract
                 if (!currentMethod.isAbstract()) {
@@ -67,10 +62,11 @@ public class VerboseTest extends AbstractSmell {
                         }
                     }
                 }
-                testMethod.setHasSmell(verboseCount >= DetectionThresholds.VERBOSE_TEST);
+                boolean isSmelly = verboseCount > thresholds.getVerboseTest();
+                testMethod.setSmell(isSmelly);
                 testMethod.addDataItem("VerboseCount", String.valueOf(verboseCount));
 
-                smellyElementList.add(testMethod);
+                smellyElementsSet.add(testMethod);
 
                 //reset values for next method
                 currentMethod = null;

@@ -9,7 +9,10 @@ import com.github.javaparser.ast.body.VariableDeclarator;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
-import testsmell.*;
+import testsmell.AbstractSmell;
+import testsmell.SmellyElement;
+import testsmell.TestMethod;
+import testsmell.Util;
 import thresholds.Thresholds;
 
 import java.io.FileNotFoundException;
@@ -22,14 +25,12 @@ public class EagerTest extends AbstractSmell {
     private static final String TEST_FILE = "Test";
     private static final String PRODUCTION_FILE = "Production";
     private String productionClassName;
-    private List<SmellyElement> smellyElementList;
     private List<MethodDeclaration> productionMethods;
     private int eagerCount;
 
     public EagerTest(Thresholds thresholds) {
         super(thresholds);
         productionMethods = new ArrayList<>();
-        smellyElementList = new ArrayList<>();
     }
 
     /**
@@ -38,15 +39,6 @@ public class EagerTest extends AbstractSmell {
     @Override
     public String getSmellName() {
         return "Eager Test";
-    }
-
-    /**
-     * Returns true if any of the elements has a smell
-     * @return
-     */
-    @Override
-    public int getHasSmell() {
-        return smellyElementList.stream().filter(x -> x.getHasSmell()).count() >= 1;
     }
 
     /**
@@ -68,21 +60,8 @@ public class EagerTest extends AbstractSmell {
         eagerCount = classVisitor.overallEager;
     }
 
-    /**
-     * Returns the set of analyzed elements (i.e. test methods)
-     */
-    @Override
-    public List<SmellyElement> getSmellyElements() {
-        return smellyElementList;
-    }
-
     public int getEagerCount() {
         return eagerCount;
-    }
-
-    @Override
-    public int getNumberOfSmellyTests() {
-        return smellyElementList.size();
     }
 
     /**
@@ -127,11 +106,13 @@ public class EagerTest extends AbstractSmell {
                 if (Util.isValidTestMethod(n)) {
                     currentMethod = n;
                     testMethod = new TestMethod(currentMethod.getNameAsString());
-                    testMethod.setHasSmell(false); //default value is false (i.e. no smell)
+                    testMethod.setSmell(false); //default value is false (i.e. no smell)
                     super.visit(n, arg);
 
-                    testMethod.setHasSmell(eagerCount > DetectionThresholds.EAGER_TEST); //the method has a smell if there is more than 1 call to production methods
-                    smellyElementList.add(testMethod);
+                    boolean isSmelly = eagerCount > thresholds.getEagerTest();
+                    //the method has a smell if there is more than 1 call to production methods
+                    testMethod.setSmell(isSmelly);
+                    smellyElementsSet.add(testMethod);
 
                     //reset values for next method
                     currentMethod = null;

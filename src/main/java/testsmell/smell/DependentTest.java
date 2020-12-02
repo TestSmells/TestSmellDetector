@@ -5,7 +5,6 @@ import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
 import testsmell.AbstractSmell;
-import testsmell.SmellyElement;
 import testsmell.Util;
 import thresholds.Thresholds;
 
@@ -41,7 +40,7 @@ public class DependentTest extends AbstractSmell {
 
         for (TestMethod testMethod : testMethods) {
             if (testMethod.getCalledMethods().stream().anyMatch(x -> x.getName().equals(testMethods.stream().map(z -> z.getMethodDeclaration().getNameAsString())))) {
-                smellyElementList.add(new testsmell.TestMethod(testMethod.getMethodDeclaration().getNameAsString()));
+                smellyElementsSet.add(new testsmell.TestMethod(testMethod.getMethodDeclaration().getNameAsString()));
             }
         }
 
@@ -53,14 +52,6 @@ public class DependentTest extends AbstractSmell {
                 }
             }
         }*/
-    }
-
-    /**
-     * Returns the set of analyzed elements (i.e. test methods)
-     */
-    @Override
-    public List<SmellyElement> getSmellyElements() {
-        return smellyElementList;
     }
 
     private class ClassVisitor extends VoidVisitorAdapter<Void> {

@@ -6,14 +6,11 @@ import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
 import testsmell.AbstractSmell;
-import testsmell.SmellyElement;
 import testsmell.TestMethod;
 import testsmell.Util;
 import thresholds.Thresholds;
 
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
-import java.util.List;
 
 public class SensitiveEquality extends AbstractSmell {
 
@@ -39,14 +36,6 @@ public class SensitiveEquality extends AbstractSmell {
         classVisitor.visit(testFileCompilationUnit, null);
     }
 
-    /**
-     * Returns the set of analyzed elements (i.e. test methods)
-     */
-    @Override
-    public List<SmellyElement> getSmellyElements() {
-        return smellyElementList;
-    }
-
     private class ClassVisitor extends VoidVisitorAdapter<Void> {
         private MethodDeclaration currentMethod = null;
         private int sensitiveCount = 0;
@@ -58,13 +47,14 @@ public class SensitiveEquality extends AbstractSmell {
             if (Util.isValidTestMethod(n)) {
                 currentMethod = n;
                 testMethod = new TestMethod(n.getNameAsString());
-                testMethod.setHasSmell(false); //default value is false (i.e. no smell)
+                testMethod.setSmell(false); //default value is false (i.e. no smell)
                 super.visit(n, arg);
 
-                testMethod.setHasSmell(sensitiveCount >= 1);
+                boolean isSmelly = sensitiveCount > thresholds.getSensitiveEquality();
+                testMethod.setSmell(isSmelly);
                 testMethod.addDataItem("SensitiveCount", String.valueOf(sensitiveCount));
 
-                smellyElementList.add(testMethod);
+                smellyElementsSet.add(testMethod);
 
                 //reset values for next method
                 currentMethod = null;

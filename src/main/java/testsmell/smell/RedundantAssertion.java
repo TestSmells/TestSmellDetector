@@ -7,13 +7,11 @@ import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NullLiteralExpr;
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
 import testsmell.AbstractSmell;
-import testsmell.SmellyElement;
 import testsmell.TestMethod;
 import testsmell.Util;
 import thresholds.Thresholds;
 
 import java.io.FileNotFoundException;
-import java.util.List;
 
 /*
 If a test method contains an assert statement that explicitly returns a true or false, the method is marked as smelly
@@ -42,14 +40,6 @@ public class RedundantAssertion extends AbstractSmell {
         classVisitor.visit(testFileCompilationUnit, null);
     }
 
-    /**
-     * Returns the set of analyzed elements (i.e. test methods)
-     */
-    @Override
-    public List<SmellyElement> getSmellyElements() {
-        return smellyElementList;
-    }
-
     private class ClassVisitor extends VoidVisitorAdapter<Void> {
         private MethodDeclaration currentMethod = null;
         private int redundantCount = 0;
@@ -61,13 +51,14 @@ public class RedundantAssertion extends AbstractSmell {
             if (Util.isValidTestMethod(n)) {
                 currentMethod = n;
                 testMethod = new TestMethod(n.getNameAsString());
-                testMethod.setHasSmell(false); //default value is false (i.e. no smell)
+                testMethod.setSmell(false); //default value is false (i.e. no smell)
                 super.visit(n, arg);
 
-                testMethod.setHasSmell(redundantCount >= 1);
+                boolean isSmelly = redundantCount > thresholds.getRedundantAssertion();
+                testMethod.setSmell(isSmelly);
                 testMethod.addDataItem("RedundantCount", String.valueOf(redundantCount));
 
-                smellyElementList.add(testMethod);
+                smellyElementsSet.add(testMethod);
 
                 //reset values for next method
                 currentMethod = null;

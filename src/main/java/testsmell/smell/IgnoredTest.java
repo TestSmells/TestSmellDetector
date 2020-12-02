@@ -39,14 +39,6 @@ public class IgnoredTest extends AbstractSmell {
     }
 
     /**
-     * Returns the set of analyzed elements (i.e. test methods)
-     */
-    @Override
-    public List<SmellyElement> getSmellyElements() {
-        return smellyElementList;
-    }
-
-    /**
      * Visitor class
      */
     private class ClassVisitor extends VoidVisitorAdapter<Void> {
@@ -61,7 +53,7 @@ public class IgnoredTest extends AbstractSmell {
             if (n.getAnnotationByName("Ignore").isPresent()) {
                 testClass = new TestClass(n.getNameAsString());
                 testClass.setHasSmell(true);
-                smellyElementList.add(testClass);
+                smellyElementsSet.add(testClass);
             }
             super.visit(n, arg);
         }
@@ -77,8 +69,8 @@ public class IgnoredTest extends AbstractSmell {
             if (n.getAnnotationByName("Test").isPresent()) {
                 if (n.getAnnotationByName("Ignore").isPresent()) {
                     testMethod = new TestMethod(n.getNameAsString());
-                    testMethod.setHasSmell(true);
-                    smellyElementList.add(testMethod);
+                    testMethod.setSmell(true);
+                    smellyElementsSet.add(testMethod);
                     return;
                 }
             }
@@ -88,8 +80,8 @@ public class IgnoredTest extends AbstractSmell {
             if (n.getNameAsString().toLowerCase().startsWith("test")) {
                 if (!n.getModifiers().contains(Modifier.PUBLIC)) {
                     testMethod = new TestMethod(n.getNameAsString());
-                    testMethod.setHasSmell(true);
-                    smellyElementList.add(testMethod);
+                    testMethod.setSmell(true);
+                    smellyElementsSet.add(testMethod);
                     return;
                 }
             }

@@ -11,9 +11,7 @@ import testsmell.TestClass;
 import thresholds.Thresholds;
 
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
 import java.util.List;
-
 
 /*
 This class checks if the code file contains a Constructor. Ideally, the test suite should not have a constructor. Initialization of fields should be in the setUP() method
@@ -25,6 +23,11 @@ public class ConstructorInitialization extends AbstractSmell {
 
     public ConstructorInitialization(Thresholds thresholds) {
         super(thresholds);
+    }
+
+    @Override
+    public int getNumberOfSmellyTests() {
+        return super.hasSmell();
     }
 
     /**
@@ -39,33 +42,20 @@ public class ConstructorInitialization extends AbstractSmell {
      * Analyze the test file for Constructor Initialization smell
      */
     @Override
-    public void runAnalysis(CompilationUnit testFileCompilationUnit,CompilationUnit productionFileCompilationUnit, String testFileName, String productionFileName) throws FileNotFoundException {
+    public void runAnalysis(CompilationUnit testFileCompilationUnit, CompilationUnit productionFileCompilationUnit, String testFileName, String productionFileName) throws FileNotFoundException {
         this.testFileName = testFileName;
         ConstructorInitialization.ClassVisitor classVisitor;
         classVisitor = new ConstructorInitialization.ClassVisitor();
         classVisitor.visit(testFileCompilationUnit, null);
     }
 
-    /**
-     * Returns the set of analyzed elements (i.e. test methods)
-     */
-    @Override
-    public List<SmellyElement> getSmellyElements() {
-        return smellyElementList;
-    }
-
-    @Override
-    public int getNumberOfSmellyTests() {
-        return 0;
-    }
-
     private class ClassVisitor extends VoidVisitorAdapter<Void> {
         TestClass testClass;
-        boolean constructorAllowed=false;
+        boolean constructorAllowed = false;
 
         @Override
         public void visit(ClassOrInterfaceDeclaration n, Void arg) {
-            for(int i=0;i<n.getExtendedTypes().size();i++){
+            for (int i = 0; i < n.getExtendedTypes().size(); i++) {
                 ClassOrInterfaceType node = n.getExtendedTypes().get(i);
                 constructorAllowed = node.getNameAsString().equals("ActivityInstrumentationTestCase2");
             }
@@ -75,11 +65,11 @@ public class ConstructorInitialization extends AbstractSmell {
         @Override
         public void visit(ConstructorDeclaration n, Void arg) {
             // This check is needed to handle java files that have multiple classes
-            if(n.getNameAsString().equals(testFileName)) {
-                if(!constructorAllowed) {
+            if (n.getNameAsString().equals(testFileName)) {
+                if (!constructorAllowed) {
                     testClass = new TestClass(n.getNameAsString());
                     testClass.setHasSmell(true);
-                    smellyElementList.add(testClass);
+                    smellyElementsSet.add(testClass);
                 }
             }
         }

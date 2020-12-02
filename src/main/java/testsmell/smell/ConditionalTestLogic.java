@@ -5,7 +5,10 @@ import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.expr.ConditionalExpr;
 import com.github.javaparser.ast.stmt.*;
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
-import testsmell.*;
+import testsmell.AbstractSmell;
+import testsmell.SmellyElement;
+import testsmell.TestMethod;
+import testsmell.Util;
 import thresholds.Thresholds;
 
 import java.io.FileNotFoundException;
@@ -38,19 +41,6 @@ public class ConditionalTestLogic extends AbstractSmell {
         classVisitor.visit(testFileCompilationUnit, null);
     }
 
-    /**
-     * Returns the set of analyzed elements (i.e. test methods)
-     */
-    @Override
-    public List<SmellyElement> getSmellyElements() {
-        return smellyElementList;
-    }
-
-    @Override
-    public int getNumberOfSmellyTests() {
-        return 0;
-    }
-
     private class ClassVisitor extends VoidVisitorAdapter<Void> {
         private MethodDeclaration currentMethod = null;
         private int conditionCount, ifCount, switchCount, forCount, foreachCount, whileCount = 0;
@@ -62,15 +52,17 @@ public class ConditionalTestLogic extends AbstractSmell {
             if (Util.isValidTestMethod(n)) {
                 currentMethod = n;
                 testMethod = new TestMethod(n.getNameAsString());
-                testMethod.setHasSmell(false); //default value is false (i.e. no smell)
+                testMethod.setSmell(false); //default value is false (i.e. no smell)
                 super.visit(n, arg);
 
-                testMethod.setHasSmell(conditionCount > DetectionThresholds.CONDITIONAL_TEST_LOGIC |
-                        ifCount > DetectionThresholds.CONDITIONAL_TEST_LOGIC |
-                        switchCount > DetectionThresholds.CONDITIONAL_TEST_LOGIC |
-                        foreachCount > DetectionThresholds.CONDITIONAL_TEST_LOGIC |
-                        forCount > DetectionThresholds.CONDITIONAL_TEST_LOGIC |
-                        whileCount > DetectionThresholds.CONDITIONAL_TEST_LOGIC);
+                boolean isSmelly = conditionCount > thresholds.getConditionalTestLogic() |
+                        ifCount > thresholds.getConditionalTestLogic() |
+                        switchCount > thresholds.getConditionalTestLogic() |
+                        foreachCount > thresholds.getConditionalTestLogic() |
+                        forCount > thresholds.getConditionalTestLogic() |
+                        whileCount > thresholds.getConditionalTestLogic();
+
+                testMethod.setSmell(isSmelly);
 
                 testMethod.addDataItem("ConditionCount", String.valueOf(conditionCount));
                 testMethod.addDataItem("IfCount", String.valueOf(ifCount));
@@ -79,7 +71,7 @@ public class ConditionalTestLogic extends AbstractSmell {
                 testMethod.addDataItem("ForCount", String.valueOf(forCount));
                 testMethod.addDataItem("WhileCount", String.valueOf(whileCount));
 
-                smellyElementList.add(testMethod);
+                smellyElementsSet.add(testMethod);
 
                 //reset values for next method
                 currentMethod = null;

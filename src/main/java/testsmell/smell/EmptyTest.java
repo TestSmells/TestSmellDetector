@@ -4,14 +4,11 @@ import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
 import testsmell.AbstractSmell;
-import testsmell.SmellyElement;
 import testsmell.TestMethod;
 import testsmell.Util;
 import thresholds.Thresholds;
 
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * This class checks if a test method is empty (i.e. the method does not contain statements in its body)
@@ -42,14 +39,6 @@ public class EmptyTest extends AbstractSmell {
     }
 
     /**
-     * Returns the set of analyzed elements (i.e. test methods)
-     */
-    @Override
-    public List<SmellyElement> getSmellyElements() {
-        return smellyElementList;
-    }
-
-    /**
      * Visitor class
      */
     private class ClassVisitor extends VoidVisitorAdapter<Void> {
@@ -62,17 +51,16 @@ public class EmptyTest extends AbstractSmell {
         public void visit(MethodDeclaration n, Void arg) {
             if (Util.isValidTestMethod(n)) {
                 testMethod = new TestMethod(n.getNameAsString());
-                testMethod.setHasSmell(false); //default value is false (i.e. no smell)
+                testMethod.setSmell(false); //default value is false (i.e. no smell)
                 //method should not be abstract
                 if (!n.isAbstract()) {
                     if (n.getBody().isPresent()) {
                         //get the total number of statements contained in the method
-                        if (n.getBody().get().getStatements().size() == 0) {
-                            testMethod.setHasSmell(true); //the method has no statements (i.e no body)
-                        }
+                        boolean isSmelly = n.getBody().get().getStatements().size() == thresholds.getEmptyTest();
+                        testMethod.setSmell(isSmelly); //the method has no statements (i.e no body)
                     }
                 }
-                smellyElementList.add(testMethod);
+                smellyElementsSet.add(testMethod);
             }
         }
     }

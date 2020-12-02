@@ -78,15 +78,6 @@ public class GeneralFixture extends AbstractSmell {
         }
     }
 
-    /**
-     * Returns the set of analyzed elements (i.e. test methods)
-     */
-    @Override
-    public List<SmellyElement> getSmellyElements() {
-        return smellyElementList;
-    }
-
-
     private class ClassVisitor extends VoidVisitorAdapter<Void> {
         private MethodDeclaration methodDeclaration = null;
         private MethodDeclaration currentMethod = null;
@@ -131,10 +122,11 @@ public class GeneralFixture extends AbstractSmell {
                 super.visit(n, arg);
 
                 testMethod = new TestMethod(n.getNameAsString());
-                testMethod.setHasSmell(fixtureCount.size() != setupFields.size());
-                smellyElementList.add(testMethod);
+                boolean isSmelly = fixtureCount.size() != setupFields.size();
+                testMethod.setSmell(isSmelly);
+                smellyElementsSet.add(testMethod);
 
-                fixtureCount = new HashSet();;
+                fixtureCount = new HashSet();
                 currentMethod = null;
             }
         }
@@ -144,7 +136,7 @@ public class GeneralFixture extends AbstractSmell {
             if (currentMethod != null) {
                 //check if the variable contained in the current test method is also contained in the setup method
                 if (setupFields.contains(n.getNameAsString())) {
-                    if(!fixtureCount.contains(n.getNameAsString())){
+                    if (!fixtureCount.contains(n.getNameAsString())) {
                         fixtureCount.add(n.getNameAsString());
                     }
                     //System.out.println(currentMethod.getNameAsString() + " : " + n.getName().toString());

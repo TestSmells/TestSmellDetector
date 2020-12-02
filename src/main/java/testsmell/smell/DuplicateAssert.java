@@ -40,15 +40,6 @@ public class DuplicateAssert extends AbstractSmell {
         classVisitor.visit(testFileCompilationUnit, null);
     }
 
-    /**
-     * Returns the set of analyzed elements (i.e. test methods)
-     */
-    @Override
-    public List<SmellyElement> getSmellyElements() {
-        return smellyElementList;
-    }
-
-
     private class ClassVisitor extends VoidVisitorAdapter<Void> {
         private MethodDeclaration currentMethod = null;
         TestMethod testMethod;
@@ -61,22 +52,22 @@ public class DuplicateAssert extends AbstractSmell {
             if (Util.isValidTestMethod(n)) {
                 currentMethod = n;
                 testMethod = new TestMethod(n.getNameAsString());
-                testMethod.setHasSmell(false); //default value is false (i.e. no smell)
+                testMethod.setSmell(false); //default value is false (i.e. no smell)
                 super.visit(n, arg);
 
                 // if there are duplicate messages, then the smell exists
-                Set<String> set1 = new HashSet<String>(assertMessage);
+                Set<String> set1 = new HashSet<>(assertMessage);
                 if (set1.size() < assertMessage.size()) {
-                    testMethod.setHasSmell(true);
+                    testMethod.setSmell(true);
                 }
 
                 // if there are duplicate assert methods, then the smell exists
-                Set<String> set2 = new HashSet<String>(assertMethod);
+                Set<String> set2 = new HashSet<>(assertMethod);
                 if (set2.size() < assertMethod.size()) {
-                    testMethod.setHasSmell(true);
+                    testMethod.setSmell(true);
                 }
 
-                smellyElementList.add(testMethod);
+                smellyElementsSet.add(testMethod);
 
                 //reset values for next method
                 currentMethod = null;
