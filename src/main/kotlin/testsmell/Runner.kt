@@ -6,6 +6,9 @@ import com.github.ajalt.clikt.parameters.options.option
 import com.github.ajalt.clikt.parameters.types.choice
 import com.github.ajalt.clikt.parameters.types.file
 import com.github.doyaaaaaken.kotlincsv.dsl.csvReader
+import detection.Detection
+import detection.DetectionResult
+import io.CSVWriter
 import io.InputData
 import thresholds.DefaultThresholds
 import thresholds.SpadiniThresholds
@@ -16,19 +19,31 @@ class DetectorRunner : CliktCommand() {
     private val inputFile: File? by option("-f", "--file", help = "The csv input file").file()
     val thresholds: String by option("-t", "--thresholds", help = "The threshold to use for the detection")
             .choice("default", "spadini").default("default")
-    val granularity: String by option("-g", "--granularity", help = "Boolean value of numerical for the detection")
+    private val granularity: String by option("-g", "--granularity", help = "Boolean value of numerical for the detection")
             .choice("boolean", "numerical").default("boolean")
 
     override fun run() {
+        val thresholdStrategy: Thresholds = if (thresholds == "default") DefaultThresholds() else SpadiniThresholds()
+        val granularityFunction: ((AbstractSmell) -> Int) = {
+            if (granularity == "boolean") {
+                it.hasSmell()
+            } else {
+                it.numberOfSmellyTests
+            }
+        }
+
         inputFile?.let {
             val inputData: List<InputData> = readInputFile()
-            val thresholdStrategy: Thresholds = if (thresholds == "default") DefaultThresholds() else SpadiniThresholds()
-            val granularityFunction: ((TestFile) -> Int) = {
-                if (granularity == "boolean") {
-                    it.numberOfTestMethods
-                } else {
-                    it.numberOfTestMethods
-                }
+            val writer = CSVWriter("test-smells.csv")
+            for (input in inputData) {
+                val detection = Detection(
+                        project = input.application,
+                        testClassPath = input.testPath,
+                        productionClassPath = input.productionPath,
+                        testSmellDetector = TestSmellDetector(thresholdStrategy)
+                )
+                val detectedSmell: DetectionResult = detection.detectSmells(granularityFunction)
+                writer.writeResult(detectedSmell)
             }
         } ?: println("No input file specified")
     }
