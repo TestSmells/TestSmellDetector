@@ -107,7 +107,7 @@
                             <archive>
                                 <manifest>
                                     <mainClass>
-                                        Main
+                                        testsmell.RunnerKt
                                     </mainClass>
                                 </manifest>
                             </archive>
