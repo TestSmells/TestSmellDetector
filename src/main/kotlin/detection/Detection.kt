@@ -21,9 +21,8 @@ class Detection(private val project: String,
 
         val smellLists: List<String> = testSmellDetector.testSmellNames
         val smellValues: List<Int> = tempFile.testSmells.map { getSmellValue.invoke(it) }
-        val outputs: List<Pair<String, Int>> = smellLists.flatMap { name ->
-            smellValues.map { name to it }
-        }
+
+        val outputs: List<Pair<String, Int>> = smellLists.zip(smellValues)
 
         return DetectionResult(
                 application = project,
