@@ -21,6 +21,13 @@ Visit the project website: https://testsmells.github.io/
 
 Running the jar with `--help` will print its usage.
 
+* A CSV input file always need to be given as parameter, specified with `-f`;
+* A detection threshold can also be specified. Possible values are `default` and `spadini`. The flag is `-t`.
+By default, the tool uses the thresholds that have been originally implemented; 
+with `spadini`, sensibility thresholds published by Spadini et.al. will be used.
+* One can specify the granularity of the detection. `boolean` will return either true or false, respectively if a 
+given smell is present or not in the test; `numerical` will return instead the number of smelly instances detected.  
+
 ```
 Options:
   -f, --file PATH                  The csv input file
