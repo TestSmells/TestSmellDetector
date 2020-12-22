@@ -27,7 +27,7 @@ public class ConstructorInitialization extends AbstractSmell {
 
     @Override
     public int getNumberOfSmellyTests() {
-        return super.hasSmell();
+        return super.getNumberOfSmellyTests();
     }
 
     /**

@@ -11,5 +11,5 @@ data class DetectionResult(
         val relativeTestFilePath: String,
         val relativeProductionFilePath: String,
         val numberOfTestMethods: Int,
-        val smellResult: List<Pair<String, Int>>
+        val smellResult: List<Pair<String, String>>
 )

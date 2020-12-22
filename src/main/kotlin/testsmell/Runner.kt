@@ -24,7 +24,7 @@ class DetectorRunner : CliktCommand() {
 
     override fun run() {
         val thresholdStrategy: Thresholds = if (thresholds == "default") DefaultThresholds() else SpadiniThresholds()
-        val granularityFunction: ((AbstractSmell) -> Int) = {
+        val granularityFunction: ((AbstractSmell) -> Any) = {
             if (granularity == "boolean") {
                 it.hasSmell()
             } else {

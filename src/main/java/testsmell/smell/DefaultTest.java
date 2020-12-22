@@ -31,7 +31,7 @@ public class DefaultTest extends AbstractSmell {
 
     @Override
     public int getNumberOfSmellyTests() {
-        return super.hasSmell();
+        return super.getNumberOfSmellyTests();
     }
 
     @Override

@@ -22,9 +22,8 @@ public abstract class AbstractSmell {
     /**
      * Return 1 if any of the elements has a smell; 0 otherwise
      */
-    public int hasSmell() {
-        boolean isSmelly = smellyElementsSet.stream().filter(x -> x.isSmelly()).count() >= 1;
-        return isSmelly ? 1 : 0;
+    public boolean hasSmell() {
+        return smellyElementsSet.stream().filter(SmellyElement::isSmelly).count() >= 1;
     }
 
     public abstract void runAnalysis(CompilationUnit testFileCompilationUnit,
@@ -44,6 +43,6 @@ public abstract class AbstractSmell {
      * In theory, it counts all the smelly elements (i.e., the methods), that are smelly
      */
     public int getNumberOfSmellyTests() {
-        return smellyElementsSet.stream().filter(element -> element.isSmelly()).collect(Collectors.toList()).size();
+        return (int) smellyElementsSet.stream().filter(SmellyElement::isSmelly).count();
     }
 }

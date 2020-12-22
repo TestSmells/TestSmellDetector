@@ -15,14 +15,14 @@ class Detection(private val project: String,
     /**
      * Analyze a given pair and return a DetectionResult
      */
-    fun detectSmells(getSmellValue: (AbstractSmell) -> Int): DetectionResult {
+    fun detectSmells(getSmellValue: (AbstractSmell) -> Any): DetectionResult {
         val testFile = TestFile(project, testClassPath, productionClassPath)
         val tempFile: TestFile = testSmellDetector.detectSmells(testFile)
 
         val smellLists: List<String> = testSmellDetector.testSmellNames
-        val smellValues: List<Int> = tempFile.testSmells.map { getSmellValue.invoke(it) }
+        val smellValues: List<Any> = tempFile.testSmells.map { getSmellValue.invoke(it) }
 
-        val outputs: List<Pair<String, Int>> = smellLists.zip(smellValues)
+        val outputs: List<Pair<String, String>> = smellLists.zip(smellValues.map { e -> e.toString() })
 
         return DetectionResult(
                 application = project,
