@@ -21,6 +21,7 @@ class DetectorRunner : CliktCommand() {
             .choice("default", "spadini").default("default")
     private val granularity: String by option("-g", "--granularity", help = "Boolean value of numerical for the detection")
             .choice("boolean", "numerical").default("boolean")
+    private val output: String by option("-o", "--output", help = "").default("test-smells.csv")
 
     override fun run() {
         val thresholdStrategy: Thresholds = if (thresholds == "default") DefaultThresholds() else SpadiniThresholds()
@@ -34,7 +35,7 @@ class DetectorRunner : CliktCommand() {
 
         inputFile?.let {
             val inputData: List<InputData> = readInputFile()
-            val writer = CSVWriter("test-smells.csv")
+            val writer = CSVWriter(output)
             for (input in inputData) {
                 val detection = Detection(
                         project = input.application,
