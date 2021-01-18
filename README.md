@@ -36,4 +36,6 @@ Options:
   -g, --granularity [boolean|numerical]
                                    Boolean value of numerical for the
                                    detection
+  -o, --output TEXT
+  -h, --help                       Show this message and exit
 ```
