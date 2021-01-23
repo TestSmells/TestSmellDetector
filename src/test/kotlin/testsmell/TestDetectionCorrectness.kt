@@ -94,7 +94,7 @@ class TestDetectionCorrectness {
     @Test
     fun `Test number of methods detected`() {
         val declaration = testCompilationUnit.types[0]
-        Assertions.assertEquals(26, declaration.methods.size)
+        Assertions.assertEquals(25, declaration.methods.size)
     }
 
     private val fractionSource = """
@@ -2112,12 +2112,6 @@ class TestDetectionCorrectness {
                 assertEquals("-2147483648/2147483647", f.toString());
             }
             
-            @Test
-            public void testNoEager() {
-                Fraction f;
-                f = Fraction.getFraction(3, 5);
-            }
-
             @Test
             public void testToProperString() {
                 Fraction f;
