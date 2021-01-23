@@ -6,7 +6,6 @@ import thresholds.Thresholds;
 import java.io.FileNotFoundException;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 public abstract class AbstractSmell {
     protected Thresholds thresholds;
