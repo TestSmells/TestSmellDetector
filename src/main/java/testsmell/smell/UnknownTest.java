@@ -11,6 +11,7 @@ import testsmell.AbstractSmell;
 import testsmell.SmellyElement;
 import testsmell.TestMethod;
 import testsmell.Util;
+import thresholds.Thresholds;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -19,10 +20,8 @@ import java.util.Optional;
 
 public class UnknownTest extends AbstractSmell {
 
-    private List<SmellyElement> smellyElementList;
-
-    public UnknownTest() {
-        smellyElementList = new ArrayList<>();
+    public UnknownTest(Thresholds thresholds) {
+        super(thresholds);
     }
 
     /**
@@ -31,14 +30,6 @@ public class UnknownTest extends AbstractSmell {
     @Override
     public String getSmellName() {
         return "Unknown Test";
-    }
-
-    /**
-     * Returns true if any of the elements has a smell
-     */
-    @Override
-    public boolean getHasSmell() {
-        return smellyElementList.stream().filter(x -> x.getHasSmell()).count() >= 1;
     }
 
     /**
@@ -51,22 +42,12 @@ public class UnknownTest extends AbstractSmell {
         classVisitor.visit(testFileCompilationUnit, null);
     }
 
-    /**
-     * Returns the set of analyzed elements (i.e. test methods)
-     */
-    @Override
-    public List<SmellyElement> getSmellyElements() {
-        return smellyElementList;
-    }
-
-
     private class ClassVisitor extends VoidVisitorAdapter<Void> {
         private MethodDeclaration currentMethod = null;
         TestMethod testMethod;
         List<String> assertMessage = new ArrayList<>();
         boolean hasAssert = false;
         boolean hasExceptionAnnotation = false;
-
 
         // examine all methods in the test class
         @Override
@@ -86,14 +67,14 @@ public class UnknownTest extends AbstractSmell {
                 }
                 currentMethod = n;
                 testMethod = new TestMethod(n.getNameAsString());
-                testMethod.setHasSmell(false); //default value is false (i.e. no smell)
+                testMethod.setSmell(false); //default value is false (i.e. no smell)
                 super.visit(n, arg);
 
-                // if there are duplicate messages, then the smell exists
+                // no assertions and no annotation
                 if (!hasAssert && !hasExceptionAnnotation)
-                    testMethod.setHasSmell(true);
+                    testMethod.setSmell(true);
 
-                smellyElementList.add(testMethod);
+                smellyElementsSet.add(testMethod);
 
                 //reset values for next method
                 currentMethod = null;

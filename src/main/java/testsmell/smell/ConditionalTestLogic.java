@@ -9,19 +9,18 @@ import testsmell.AbstractSmell;
 import testsmell.SmellyElement;
 import testsmell.TestMethod;
 import testsmell.Util;
+import thresholds.Thresholds;
 
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
 import java.util.List;
 
 /*
 This class check a test method for the existence of loops and conditional statements in the methods body
  */
 public class ConditionalTestLogic extends AbstractSmell {
-    private List<SmellyElement> smellyElementList;
 
-    public ConditionalTestLogic() {
-        smellyElementList = new ArrayList<>();
+    public ConditionalTestLogic(Thresholds thresholds) {
+        super(thresholds);
     }
 
     /**
@@ -30,14 +29,6 @@ public class ConditionalTestLogic extends AbstractSmell {
     @Override
     public String getSmellName() {
         return "Conditional Test Logic";
-    }
-
-    /**
-     * Returns true if any of the elements has a smell
-     */
-    @Override
-    public boolean getHasSmell() {
-        return smellyElementList.stream().filter(x -> x.getHasSmell()).count() >= 1;
     }
 
     /**
@@ -50,15 +41,6 @@ public class ConditionalTestLogic extends AbstractSmell {
         classVisitor.visit(testFileCompilationUnit, null);
     }
 
-    /**
-     * Returns the set of analyzed elements (i.e. test methods)
-     */
-    @Override
-    public List<SmellyElement> getSmellyElements() {
-        return smellyElementList;
-    }
-
-
     private class ClassVisitor extends VoidVisitorAdapter<Void> {
         private MethodDeclaration currentMethod = null;
         private int conditionCount, ifCount, switchCount, forCount, foreachCount, whileCount = 0;
@@ -70,10 +52,17 @@ public class ConditionalTestLogic extends AbstractSmell {
             if (Util.isValidTestMethod(n)) {
                 currentMethod = n;
                 testMethod = new TestMethod(n.getNameAsString());
-                testMethod.setHasSmell(false); //default value is false (i.e. no smell)
+                testMethod.setSmell(false); //default value is false (i.e. no smell)
                 super.visit(n, arg);
 
-                testMethod.setHasSmell(conditionCount > 0 | ifCount > 0 | switchCount > 0 | foreachCount > 0 | forCount > 0 | whileCount > 0);
+                boolean isSmelly = conditionCount > thresholds.getConditionalTestLogic() |
+                        ifCount > thresholds.getConditionalTestLogic() |
+                        switchCount > thresholds.getConditionalTestLogic() |
+                        foreachCount > thresholds.getConditionalTestLogic() |
+                        forCount > thresholds.getConditionalTestLogic() |
+                        whileCount > thresholds.getConditionalTestLogic();
+
+                testMethod.setSmell(isSmelly);
 
                 testMethod.addDataItem("ConditionCount", String.valueOf(conditionCount));
                 testMethod.addDataItem("IfCount", String.valueOf(ifCount));
@@ -82,7 +71,7 @@ public class ConditionalTestLogic extends AbstractSmell {
                 testMethod.addDataItem("ForCount", String.valueOf(forCount));
                 testMethod.addDataItem("WhileCount", String.valueOf(whileCount));
 
-                smellyElementList.add(testMethod);
+                smellyElementsSet.add(testMethod);
 
                 //reset values for next method
                 currentMethod = null;

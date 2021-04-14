@@ -5,8 +5,8 @@ import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
 import testsmell.AbstractSmell;
-import testsmell.SmellyElement;
 import testsmell.Util;
+import thresholds.Thresholds;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -14,12 +14,10 @@ import java.util.List;
 
 public class DependentTest extends AbstractSmell {
 
-    private List<SmellyElement> smellyElementList;
     private List<TestMethod> testMethods;
 
-
-    public DependentTest() {
-        smellyElementList = new ArrayList<>();
+    public DependentTest(Thresholds thresholds) {
+        super(thresholds);
         testMethods = new ArrayList<>();
     }
 
@@ -32,14 +30,6 @@ public class DependentTest extends AbstractSmell {
     }
 
     /**
-     * Returns true if any of the elements has a smell
-     */
-    @Override
-    public boolean getHasSmell() {
-        return smellyElementList.stream().filter(x -> x.getHasSmell()).count() >= 1;
-    }
-
-    /**
      * Analyze the test file for test methods that call other test methods
      */
     @Override
@@ -49,8 +39,8 @@ public class DependentTest extends AbstractSmell {
         classVisitor.visit(testFileCompilationUnit, null);
 
         for (TestMethod testMethod : testMethods) {
-            if (testMethod.getCalledMethods().stream().anyMatch(x -> x.getName().equals(testMethods.stream().map(z -> z.getMethodDeclaration().getNameAsString())))){
-                smellyElementList.add(new testsmell.TestMethod(testMethod.getMethodDeclaration().getNameAsString()));
+            if (testMethod.getCalledMethods().stream().anyMatch(x -> x.getName().equals(testMethods.stream().map(z -> z.getMethodDeclaration().getNameAsString())))) {
+                smellyElementsSet.add(new testsmell.TestMethod(testMethod.getMethodDeclaration().getNameAsString()));
             }
         }
 
@@ -62,14 +52,6 @@ public class DependentTest extends AbstractSmell {
                 }
             }
         }*/
-    }
-
-    /**
-     * Returns the set of analyzed elements (i.e. test methods)
-     */
-    @Override
-    public List<SmellyElement> getSmellyElements() {
-        return smellyElementList;
     }
 
     private class ClassVisitor extends VoidVisitorAdapter<Void> {

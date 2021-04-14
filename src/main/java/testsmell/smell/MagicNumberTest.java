@@ -7,20 +7,16 @@ import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
 import testsmell.AbstractSmell;
-import testsmell.SmellyElement;
 import testsmell.TestMethod;
 import testsmell.Util;
+import thresholds.Thresholds;
 
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
-import java.util.List;
 
-public class MagicNumberTest  extends AbstractSmell {
+public class MagicNumberTest extends AbstractSmell {
 
-    private List<SmellyElement> smellyElementList;
-
-    public MagicNumberTest() {
-        smellyElementList = new ArrayList<>();
+    public MagicNumberTest(Thresholds thresholds) {
+        super(thresholds);
     }
 
     /**
@@ -29,14 +25,6 @@ public class MagicNumberTest  extends AbstractSmell {
     @Override
     public String getSmellName() {
         return "Magic Number Test";
-    }
-
-    /**
-     * Returns true if any of the elements has a smell
-     */
-    @Override
-    public boolean getHasSmell() {
-        return smellyElementList.stream().filter(x -> x.getHasSmell()).count() >= 1;
     }
 
     /**
@@ -49,16 +37,9 @@ public class MagicNumberTest  extends AbstractSmell {
         classVisitor.visit(testFileCompilationUnit, null);
     }
 
-    /**
-     * Returns the set of analyzed elements (i.e. test methods)
-     */
-    @Override
-    public List<SmellyElement> getSmellyElements() {
-        return smellyElementList;
-    }
-
     private class ClassVisitor extends VoidVisitorAdapter<Void> {
         private MethodDeclaration currentMethod = null;
+        private MagicNumberTest magicNumberTest;
         TestMethod testMethod;
         private int magicCount = 0;
 
@@ -68,13 +49,12 @@ public class MagicNumberTest  extends AbstractSmell {
             if (Util.isValidTestMethod(n)) {
                 currentMethod = n;
                 testMethod = new TestMethod(n.getNameAsString());
-                testMethod.setHasSmell(false); //default value is false (i.e. no smell)
+                testMethod.setSmell(false); //default value is false (i.e. no smell)
                 super.visit(n, arg);
 
-                testMethod.setHasSmell(magicCount >= 1);
+                testMethod.setSmell(magicCount >= thresholds.getMagicNumberTest());
                 testMethod.addDataItem("MagicNumberCount", String.valueOf(magicCount));
-
-                smellyElementList.add(testMethod);
+                smellyElementsSet.add(testMethod);
 
                 //reset values for next method
                 currentMethod = null;
@@ -96,27 +76,27 @@ public class MagicNumberTest  extends AbstractSmell {
                         n.getNameAsString().equals("assertNotNull") ||
                         n.getNameAsString().equals("assertNull")) {
                     // checks all arguments of the assert method
-                    for (Expression argument:n.getArguments()) {
+                    for (Expression argument : n.getArguments()) {
                         // if the argument is a number
-                        if(Util.isNumber(argument.toString())){
-                           magicCount++;
-                       }
-                       // if the argument contains an ObjectCreationExpr (e.g. assertEquals(new Integer(2),...)
-                       else if(argument instanceof ObjectCreationExpr){
-                           for (Expression objectArguments:((ObjectCreationExpr) argument).getArguments()){
-                               if(Util.isNumber(objectArguments.toString())){
-                                   magicCount++;
-                               }
-                           }
-                       }
-                       // if the argument contains an MethodCallExpr (e.g. assertEquals(someMethod(2),...)
-                       else if(argument instanceof MethodCallExpr){
-                           for (Expression objectArguments:((MethodCallExpr) argument).getArguments()){
-                               if(Util.isNumber(objectArguments.toString())){
-                                   magicCount++;
-                               }
-                           }
-                       }
+                        if (Util.isNumber(argument.toString())) {
+                            magicCount++;
+                        }
+                        // if the argument contains an ObjectCreationExpr (e.g. assertEquals(new Integer(2),...)
+                        else if (argument instanceof ObjectCreationExpr) {
+                            for (Expression objectArguments : ((ObjectCreationExpr) argument).getArguments()) {
+                                if (Util.isNumber(objectArguments.toString())) {
+                                    magicCount++;
+                                }
+                            }
+                        }
+                        // if the argument contains an MethodCallExpr (e.g. assertEquals(someMethod(2),...)
+                        else if (argument instanceof MethodCallExpr) {
+                            for (Expression objectArguments : ((MethodCallExpr) argument).getArguments()) {
+                                if (Util.isNumber(objectArguments.toString())) {
+                                    magicCount++;
+                                }
+                            }
+                        }
                     }
                 }
             }

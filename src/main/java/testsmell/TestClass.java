@@ -28,7 +28,7 @@ public class TestClass extends SmellyElement {
     }
 
     @Override
-    public boolean getHasSmell() {
+    public boolean isSmelly() {
         return hasSmell;
     }
 

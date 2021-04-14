@@ -14,7 +14,7 @@ public class TestMethod extends SmellyElement {
         data = new HashMap<>();
     }
 
-    public void setHasSmell(boolean hasSmell) {
+    public void setSmell(boolean hasSmell) {
         this.hasSmell = hasSmell;
     }
 
@@ -28,7 +28,7 @@ public class TestMethod extends SmellyElement {
     }
 
     @Override
-    public boolean getHasSmell() {
+    public boolean isSmelly() {
         return hasSmell;
     }
 

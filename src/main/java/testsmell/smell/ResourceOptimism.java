@@ -4,12 +4,13 @@ import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.FieldDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.body.VariableDeclarator;
-import com.github.javaparser.ast.expr.*;
+import com.github.javaparser.ast.expr.MethodCallExpr;
+import com.github.javaparser.ast.expr.NameExpr;
+import com.github.javaparser.ast.expr.ObjectCreationExpr;
+import com.github.javaparser.ast.expr.VariableDeclarationExpr;
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
-import testsmell.AbstractSmell;
-import testsmell.SmellyElement;
-import testsmell.TestMethod;
-import testsmell.Util;
+import testsmell.*;
+import thresholds.Thresholds;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -17,10 +18,8 @@ import java.util.List;
 
 public class ResourceOptimism extends AbstractSmell {
 
-    private List<SmellyElement> smellyElementList;
-
-    public ResourceOptimism() {
-        smellyElementList = new ArrayList<>();
+    public ResourceOptimism(Thresholds thresholds) {
+        super(thresholds);
     }
 
     /**
@@ -32,14 +31,6 @@ public class ResourceOptimism extends AbstractSmell {
     }
 
     /**
-     * Returns true if any of the elements has a smell
-     */
-    @Override
-    public boolean getHasSmell() {
-        return smellyElementList.stream().filter(x -> x.getHasSmell()).count() >= 1;
-    }
-
-    /**
      * Analyze the test file for the 'ResourceOptimism' smell
      */
     @Override
@@ -48,15 +39,6 @@ public class ResourceOptimism extends AbstractSmell {
         classVisitor = new ResourceOptimism.ClassVisitor();
         classVisitor.visit(testFileCompilationUnit, null);
     }
-
-    /**
-     * Returns the set of analyzed elements (i.e. test methods)
-     */
-    @Override
-    public List<SmellyElement> getSmellyElements() {
-        return smellyElementList;
-    }
-
 
     private class ClassVisitor extends VoidVisitorAdapter<Void> {
         private MethodDeclaration currentMethod = null;
@@ -73,13 +55,13 @@ public class ResourceOptimism extends AbstractSmell {
             if (Util.isValidTestMethod(n) || Util.isValidSetupMethod(n)) {
                 currentMethod = n;
                 testMethod = new TestMethod(n.getNameAsString());
-                testMethod.setHasSmell(false); //default value is false (i.e. no smell)
+                testMethod.setSmell(false); //default value is false (i.e. no smell)
                 super.visit(n, arg);
 
-                testMethod.setHasSmell(methodVariables.size() >= 1 || hasSmell==true);
+                testMethod.setSmell(methodVariables.size() > thresholds.getResourceOptimism() || hasSmell == true);
                 testMethod.addDataItem("ResourceOptimismCount", String.valueOf(resourceOptimismCount));
 
-                smellyElementList.add(testMethod);
+                smellyElementsSet.add(testMethod);
 
                 //reset values for next method
                 currentMethod = null;
@@ -150,7 +132,7 @@ public class ResourceOptimism extends AbstractSmell {
                         n.getNameAsString().equals("isFile") ||
                         n.getNameAsString().equals("notExists")) {
                     if (n.getScope().isPresent()) {
-                        if(n.getScope().get() instanceof NameExpr) {
+                        if (n.getScope().get() instanceof NameExpr) {
                             if (methodVariables.contains(((NameExpr) n.getScope().get()).getNameAsString())) {
                                 methodVariables.remove(((NameExpr) n.getScope().get()).getNameAsString());
                             }
@@ -159,11 +141,7 @@ public class ResourceOptimism extends AbstractSmell {
                 }
             }
         }
-
-
     }
-
-
 }
 
 
