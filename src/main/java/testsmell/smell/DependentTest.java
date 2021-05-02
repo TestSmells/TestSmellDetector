@@ -54,7 +54,7 @@ public class DependentTest extends AbstractSmell {
             }
         }
 
-/*
+        /*
         for (int i = 0; i < testMethods.get(i).getCalledMethods().size(); i++) {
             for (TestMethod testMethod : testMethods) {
                 if (testMethods.get(i).getCalledMethods().stream().anyMatch(x -> x.getName().equals(testMethod.getMethodDeclaration().getNameAsString()))) {
