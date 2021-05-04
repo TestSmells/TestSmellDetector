@@ -9,6 +9,7 @@ import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.FieldDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.expr.AssignExpr;
+import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.ExpressionStmt;
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
@@ -26,12 +27,15 @@ public class LackOfCohesion extends AbstractSmell {
     private MethodDeclaration setupMethod;
     private List<FieldDeclaration> testFields;
     private List<String> setupFields;
+    private int fieldsInMethods = 0;
+    private List<String> currentFields;
 
     public LackOfCohesion() {
         smellyElementList = new ArrayList<>();
         testMethods = new ArrayList<>();
         testFields = new ArrayList<>();
         setupFields = new ArrayList<>();
+        currentFields = new ArrayList<>();
     }
 
     @Override
@@ -70,6 +74,11 @@ public class LackOfCohesion extends AbstractSmell {
                 }
             }
         }
+
+        for (MethodDeclaration method : testMethods) {
+            classVisitor.visit(method, null);
+        }
+
     }
 
     @Override
@@ -113,6 +122,26 @@ public class LackOfCohesion extends AbstractSmell {
             if (Util.isValidTestMethod(n)) {
                 currentMethod = n;
                 super.visit(n, arg);
+
+                testMethod = new TestMethod(n.getNameAsString());
+                getAllChildNodes(n);
+                
+            }
+        }
+
+        //Get all NameExpr inside of testMethod
+        public void getAllChildNodes(Node n){
+            List<Node> children = n.getChildNodes();
+            children.stream().forEach(x -> {
+                if(x instanceof NameExpr)  currentFields.add(((NameExpr) x).getName().toString());
+                else getAllChildNodes(x);
+            });
+        }
+
+        @Override
+        public void visit(NameExpr n, Void args) {
+            if(currentMethod != null) {
+
             }
         }
 

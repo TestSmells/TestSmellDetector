@@ -34,6 +34,7 @@ public class TestSmellDetector {
         testSmells.add(new EmptyTest());
         testSmells.add(new ExceptionCatchingThrowing());
         testSmells.add(new GeneralFixture());
+        testSmells.add(new LackOfCohesion());
         testSmells.add(new MysteryGuest());
         testSmells.add(new PrintStatement());
         testSmells.add(new RedundantAssertion());
