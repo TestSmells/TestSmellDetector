@@ -45,10 +45,7 @@ public class LackOfCohesion extends AbstractSmell {
     public String getSmellName() { return "Lack of Cohesion"; }
 
     @Override
-    public boolean getHasSmell() {
-        if(smelly) System.out.println("smelly");
-        return smelly;
-    }
+    public boolean getHasSmell() { return smelly; }
 
     @Override
     public void runAnalysis(CompilationUnit testFileCompilationUnit, CompilationUnit productionFileCompilationUnit, String testFileName, String productionFileName) throws FileNotFoundException {
@@ -60,24 +57,7 @@ public class LackOfCohesion extends AbstractSmell {
         if(setupMethod != null) {
             //Get all fields that are initialized in the setup method
             //May not be needed, depending on smell variant chosen
-            Optional<BlockStmt> blockStmt = setupMethod.getBody();
-            NodeList nodeList = blockStmt.get().getStatements();
-            for(int i = 0; i < nodeList.size(); i ++){
-                for(int j = 0; j < testFields.size(); j ++){
-                    for(int k = 0; k < testFields.get(j).getVariables().size(); k ++){
-                        if(nodeList.get(i) instanceof ExpressionStmt) {
-                            ExpressionStmt expressionStmt = (ExpressionStmt) nodeList.get(i);
-                            if(expressionStmt.getExpression() instanceof AssignExpr) {
-                                AssignExpr assignExpr = (AssignExpr) expressionStmt.getExpression();
-                                strTestFields.add(testFields.get(j).getVariable(k).getNameAsString());
-                                if(testFields.get(j).getVariable(k).getNameAsString().equals(assignExpr.getTarget().toString())) {
-                                    setupFields.add(assignExpr.getTarget().toString());
-                                }
-                            }
-                        }
-                    }
-                }
-            }
+            initialiseSetupFields();
         }
 
         strTestFields = strTestFields.stream().distinct().collect(Collectors.toList());
@@ -86,12 +66,37 @@ public class LackOfCohesion extends AbstractSmell {
             classVisitor.visit(method, null);
         }
 
+        calculateCohesion();
+
+
+    }
+
+    private void initialiseSetupFields() {
+        Optional<BlockStmt> blockStmt = setupMethod.getBody();
+        NodeList nodeList = blockStmt.get().getStatements();
+        for(int i = 0; i < nodeList.size(); i ++){
+            for(int j = 0; j < testFields.size(); j ++){
+                for(int k = 0; k < testFields.get(j).getVariables().size(); k ++){
+                    if(nodeList.get(i) instanceof ExpressionStmt) {
+                        ExpressionStmt expressionStmt = (ExpressionStmt) nodeList.get(i);
+                        if(expressionStmt.getExpression() instanceof AssignExpr) {
+                            AssignExpr assignExpr = (AssignExpr) expressionStmt.getExpression();
+                            strTestFields.add(testFields.get(j).getVariable(k).getNameAsString());
+                            if(testFields.get(j).getVariable(k).getNameAsString().equals(assignExpr.getTarget().toString())) {
+                                setupFields.add(assignExpr.getTarget().toString());
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private void calculateCohesion(){
         float cohesion;
         if(testMethods.size() == 1) cohesion = (1.f / (float) strTestFields.size()) * (float) fieldsInMethods - (float) testMethods.size();
         else cohesion = ((1.f / (float) strTestFields.size()) * (float) fieldsInMethods - (float) testMethods.size()) / (1.f - (float) testMethods.size());
-        System.out.println(cohesion);
         if(cohesion > 0.4f) smelly = true;
-
     }
 
     @Override
@@ -140,6 +145,7 @@ public class LackOfCohesion extends AbstractSmell {
                 currentFields.stream().forEach(x -> {
                     if(strTestFields.contains(x)) fieldsInMethods++;
                 });
+
                 currentFields.clear();
             }
         }
@@ -151,13 +157,6 @@ public class LackOfCohesion extends AbstractSmell {
                 if(x instanceof NameExpr)  currentFields.add(((NameExpr) x).getName().toString());
                 else getAllChildNodes(x);
             });
-        }
-
-        @Override
-        public void visit(NameExpr n, Void args) {
-            if(currentMethod != null) {
-
-            }
         }
 
     }
