@@ -1,7 +1,6 @@
 package testsmell.smell;
 
 import com.github.javaparser.ast.CompilationUnit;
-import com.github.javaparser.ast.Modifier;
 import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.BodyDeclaration;
@@ -17,6 +16,7 @@ import testsmell.*;
 
 import java.io.FileNotFoundException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 
 public class LackOfCohesion extends AbstractSmell {
@@ -27,8 +27,10 @@ public class LackOfCohesion extends AbstractSmell {
     private MethodDeclaration setupMethod;
     private List<FieldDeclaration> testFields;
     private List<String> setupFields;
+    private List<String> strTestFields;
     private int fieldsInMethods = 0;
     private List<String> currentFields;
+    private boolean smelly = false;
 
     public LackOfCohesion() {
         smellyElementList = new ArrayList<>();
@@ -36,6 +38,7 @@ public class LackOfCohesion extends AbstractSmell {
         testFields = new ArrayList<>();
         setupFields = new ArrayList<>();
         currentFields = new ArrayList<>();
+        strTestFields = new ArrayList<>();
     }
 
     @Override
@@ -43,7 +46,8 @@ public class LackOfCohesion extends AbstractSmell {
 
     @Override
     public boolean getHasSmell() {
-        return smellyElementList.stream().filter(x -> x.getHasSmell()).count() >= 1;
+        if(smelly) System.out.println("smelly");
+        return smelly;
     }
 
     @Override
@@ -65,6 +69,7 @@ public class LackOfCohesion extends AbstractSmell {
                             ExpressionStmt expressionStmt = (ExpressionStmt) nodeList.get(i);
                             if(expressionStmt.getExpression() instanceof AssignExpr) {
                                 AssignExpr assignExpr = (AssignExpr) expressionStmt.getExpression();
+                                strTestFields.add(testFields.get(j).getVariable(k).getNameAsString());
                                 if(testFields.get(j).getVariable(k).getNameAsString().equals(assignExpr.getTarget().toString())) {
                                     setupFields.add(assignExpr.getTarget().toString());
                                 }
@@ -75,17 +80,24 @@ public class LackOfCohesion extends AbstractSmell {
             }
         }
 
+        strTestFields = strTestFields.stream().distinct().collect(Collectors.toList());
+
         for (MethodDeclaration method : testMethods) {
             classVisitor.visit(method, null);
         }
+
+        float cohesion;
+        if(testMethods.size() == 1) cohesion = (1.f / (float) strTestFields.size()) * (float) fieldsInMethods - (float) testMethods.size();
+        else cohesion = ((1.f / (float) strTestFields.size()) * (float) fieldsInMethods - (float) testMethods.size()) / (1.f - (float) testMethods.size());
+        System.out.println(cohesion);
+        if(cohesion > 0.4f) smelly = true;
 
     }
 
     @Override
     public List<SmellyElement> getSmellyElements() {
-        return smellyElementList;
+        return null;
     }
-
 
     private class ClassVisitor extends VoidVisitorAdapter<Void> {
 
@@ -125,7 +137,10 @@ public class LackOfCohesion extends AbstractSmell {
 
                 testMethod = new TestMethod(n.getNameAsString());
                 getAllChildNodes(n);
-                
+                currentFields.stream().forEach(x -> {
+                    if(strTestFields.contains(x)) fieldsInMethods++;
+                });
+                currentFields.clear();
             }
         }
 
