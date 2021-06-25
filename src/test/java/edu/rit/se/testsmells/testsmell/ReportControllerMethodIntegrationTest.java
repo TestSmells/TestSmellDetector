@@ -68,16 +68,16 @@ class ReportControllerMethodIntegrationTest {
         List<String> entries = new BufferedReader(new FileReader(outputFile)).lines().collect(Collectors.toList());
 
 
-        assertEquals("Element Name,WhileCount,ConditionCount,RedundantCount,AssertCount,IfCount,ExceptionCount,ForeachCount,PrintCount,SwitchCount,MysteryCount,ForCount,VerboseCount,ResourceOptimismCount,ThreadSleepCount,SensitiveCount,MagicNumberCount,Assertion Roulette,Eager Test,Mystery Guest,Sleepy Test,Unknown Test,Redundant Assertion,Dependent Test,Magic Number Test,Conditional Test Logic,EmptyTest,General Fixture,Sensitive Equality,Verbose Test,IgnoredTest,Resource Optimism,Duplicate Assert,Exception Catching Throwing,Print Statement,Lazy Test", entries.get(0));
-        assertEquals("com.github.marmaladesky.tests.CryptographerTest.testDecrypt,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,true,false,true", entries.get(1));
-        assertEquals("com.github.marmaladesky.tests.CryptographerTest.testEncrypt,0,0,0,1,0,1,0,0,0,0,0,0,0,0,0,0,false,true,false,false,false,false,false,false,false,false,false,false,false,false,false,false,true,false,true", entries.get(2));
+        assertEquals("Element Name,WhileCount,ConditionCount,RedundantCount,IfCount,ExceptionCount,ForeachCount,PrintCount,TotalAssertCount,SwitchCount,MysteryCount,ForCount,VerboseCount,ResourceOptimismCount,ThreadSleepCount,BadAssertCount,SensitiveCount,MagicNumberCount,Assertion Roulette,Eager Test,Mystery Guest,Sleepy Test,Unknown Test,Redundant Assertion,Dependent Test,Magic Number Test,Conditional Test Logic,EmptyTest,General Fixture,Sensitive Equality,Verbose Test,IgnoredTest,Resource Optimism,Duplicate Assert,Exception Catching Throwing,Print Statement,Lazy Test", entries.get(0));
+        assertEquals("com.github.marmaladesky.tests.CryptographerTest.testDecrypt,0,0,0,0,1,0,0,1,0,0,0,0,0,0,0,0,0,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,true,false,true", entries.get(1));
+        assertEquals("com.github.marmaladesky.tests.CryptographerTest.testEncrypt,0,0,0,0,1,0,0,1,0,0,0,0,0,0,1,0,0,false,true,false,false,false,false,false,false,false,false,false,false,false,false,false,false,true,false,true", entries.get(2));
     }
 
     @Test
     void testHeader_METHOD() throws IOException {
         List<String> headerEntries = Arrays.asList(new BufferedReader(new FileReader(outputFile)).readLine().split(","));
 
-        assertEquals("Element Name,WhileCount,ConditionCount,RedundantCount,AssertCount,IfCount,ExceptionCount,ForeachCount,PrintCount,SwitchCount,MysteryCount,ForCount,VerboseCount,ResourceOptimismCount,ThreadSleepCount,SensitiveCount,MagicNumberCount,Assertion Roulette,Eager Test,Mystery Guest,Sleepy Test,Unknown Test,Redundant Assertion,Dependent Test,Magic Number Test,Conditional Test Logic,EmptyTest,General Fixture,Sensitive Equality,Verbose Test,IgnoredTest,Resource Optimism,Duplicate Assert,Exception Catching Throwing,Print Statement,Lazy Test", String.join(",", headerEntries)/*, String.join(",",expectedEntries)*/);
+        assertEquals("Element Name,WhileCount,ConditionCount,RedundantCount,IfCount,ExceptionCount,ForeachCount,PrintCount,TotalAssertCount,SwitchCount,MysteryCount,ForCount,VerboseCount,ResourceOptimismCount,ThreadSleepCount,BadAssertCount,SensitiveCount,MagicNumberCount,Assertion Roulette,Eager Test,Mystery Guest,Sleepy Test,Unknown Test,Redundant Assertion,Dependent Test,Magic Number Test,Conditional Test Logic,EmptyTest,General Fixture,Sensitive Equality,Verbose Test,IgnoredTest,Resource Optimism,Duplicate Assert,Exception Catching Throwing,Print Statement,Lazy Test", String.join(",", headerEntries));
     }
 
     @Test

@@ -76,7 +76,8 @@ public class AssertionRoulette extends AbstractSmell {
                 else if (assertNoMessageCount >= 1) //if there is more than one assert statement, then all the asserts need to have an explanation message
                     testMethod.setHasSmell(true);
 
-                testMethod.addDataItem("AssertCount", String.valueOf(assertNoMessageCount));
+                testMethod.addDataItem("BadAssertCount", String.valueOf(assertNoMessageCount));
+                testMethod.addDataItem("TotalAssertCount", String.valueOf(assertCount));
 
                 addSmellyElement(testMethod);
 

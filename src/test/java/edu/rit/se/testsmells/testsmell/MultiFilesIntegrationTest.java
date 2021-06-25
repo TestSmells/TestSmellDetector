@@ -12,7 +12,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @IntegrationTest
 public class MultiFilesIntegrationTest {
@@ -151,7 +152,7 @@ public class MultiFilesIntegrationTest {
 
         assertEquals(3, outputFiles.size(), "Not generated all three reports");
 
-        String expectedMethodHeader = "Element Name,WhileCount,ConditionCount,RedundantCount,AssertCount,IfCount,ExceptionCount,ForeachCount,PrintCount,SwitchCount,MysteryCount,ForCount,VerboseCount,ResourceOptimismCount,ThreadSleepCount,SensitiveCount,MagicNumberCount,Assertion Roulette,Mystery Guest,Sleepy Test,Unknown Test,Redundant Assertion,Dependent Test,Magic Number Test,Conditional Test Logic,EmptyTest,General Fixture,Sensitive Equality,Verbose Test,IgnoredTest,Resource Optimism,Duplicate Assert,Exception Catching Throwing,Print Statement";
+        String expectedMethodHeader = "Element Name,WhileCount,ConditionCount,RedundantCount,BadAssertCount,TotalAssertCount,IfCount,ExceptionCount,ForeachCount,PrintCount,SwitchCount,MysteryCount,ForCount,VerboseCount,ResourceOptimismCount,ThreadSleepCount,SensitiveCount,MagicNumberCount,Assertion Roulette,Mystery Guest,Sleepy Test,Unknown Test,Redundant Assertion,Dependent Test,Magic Number Test,Conditional Test Logic,EmptyTest,General Fixture,Sensitive Equality,Verbose Test,IgnoredTest,Resource Optimism,Duplicate Assert,Exception Catching Throwing,Print Statement";
         String expectedFileHeader = "App,ProductionFileName,TestFilePath,TestFileName,RelativeProductionFilePath,RelativeTestFilePath,ProductionFilePath,Assertion Roulette,Conditional Test Logic,Constructor Initialization,Default Test,EmptyTest,Exception Catching Throwing,General Fixture,Print Statement,Redundant Assertion,Mystery Guest,Sensitive Equality,Verbose Test,Sleepy Test,Eager Test,Lazy Test,Duplicate Assert,Unknown Test,IgnoredTest,Resource Optimism,Magic Number Test,Dependent Test";
         String expectedClassHeader = "Element Name,IgnoredTest,Constructor Initialization,Default Test";
 
