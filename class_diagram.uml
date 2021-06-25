@@ -3,510 +3,176 @@
   <ID>JAVA</ID>
   <OriginalElement>testsmell</OriginalElement>
   <nodes>
-    <node x="6492.0" y="788.0">testsmell.smell.ExceptionCatchingThrowing</node>
-    <node x="7806.0" y="788.0">testsmell.smell.ConstructorInitialization</node>
-    <node x="6054.0" y="788.0">testsmell.smell.MagicNumberTest</node>
-    <node x="0.0" y="1332.0">testsmell.Util</node>
-    <node x="3942.0" y="788.0">testsmell.smell.AssertionRoulette</node>
-    <node x="1314.0" y="788.0">testsmell.smell.EmptyTest</node>
-    <node x="0.0" y="788.0">testsmell.smell.UnknownTest</node>
-    <node x="4408.29428794992" y="368.5">testsmell.AbstractSmell</node>
-    <node x="2190.0" y="788.0">testsmell.smell.DuplicateAssert</node>
-    <node x="438.0" y="788.0">testsmell.smell.ResourceOptimism</node>
-    <node x="876.0" y="788.0">testsmell.smell.EagerTest</node>
-    <node x="3504.0" y="788.0">testsmell.smell.PrintStatement</node>
-    <node x="1752.0" y="788.0">testsmell.smell.SensitiveEquality</node>
-    <node x="4740.0" y="788.0">testsmell.smell.DefaultTest</node>
-    <node x="4575.265234741785" y="1168.0">testsmell.TestSmellDetector</node>
-    <node x="5616.0" y="788.0">testsmell.smell.MysteryGuest</node>
-    <node x="8973.265946791866" y="346.0">testsmell.TestMethod</node>
-    <node x="4899.666666666666" y="0.0">testsmell.SmellyElement</node>
-    <node x="8244.0" y="788.0">testsmell.smell.RedundantAssertion</node>
-    <node x="3066.0" y="788.0">testsmell.smell.IgnoredTest</node>
-    <node x="5178.0" y="788.0">testsmell.smell.VerboseTest</node>
-    <node x="8682.0" y="788.0">testsmell.smell.LazyTest</node>
-    <node x="2628.0" y="788.0">testsmell.smell.SleepyTest</node>
-    <node x="374.0" y="1332.0">testsmell.ResultsWriter</node>
-    <node x="4380.0" y="689.0">testsmell.TestFile</node>
-    <node x="7368.0" y="788.0">testsmell.smell.GeneralFixture</node>
-    <node x="1591.2556181533687" y="346.0">testsmell.TestClass</node>
-    <node x="9120.0" y="788.0">testsmell.smell.DependentTest</node>
-    <node x="6930.0" y="788.0">testsmell.smell.ConditionalTestLogic</node>
+    <node x="0.0" y="266.0">testsmell.smell.ExceptionCatchingThrowing</node>
+    <node x="8298.0" y="266.0">testsmell.smell.ConstructorInitialization</node>
+    <node x="2766.0" y="266.0">testsmell.smell.MagicNumberTest</node>
+    <node x="1295.0" y="472.0">testsmell.Util</node>
+    <node x="5071.0" y="254.0">testsmell.smell.AssertionRoulette</node>
+    <node x="9220.0" y="266.0">testsmell.smell.EmptyTest</node>
+    <node x="8759.0" y="266.0">testsmell.smell.UnknownTest</node>
+    <node x="4610.0" y="0.0">testsmell.AbstractSmell</node>
+    <node x="7837.0" y="266.0">testsmell.smell.DuplicateAssert</node>
+    <node x="1383.0" y="266.0">testsmell.smell.ResourceOptimism</node>
+    <node x="3688.0" y="254.0">testsmell.smell.EagerTest</node>
+    <node x="5993.0" y="266.0">testsmell.smell.PrintStatement</node>
+    <node x="4149.0" y="266.0">testsmell.smell.SensitiveEquality</node>
+    <node x="1844.0" y="266.0">testsmell.smell.DefaultTest</node>
+    <node x="937.0" y="472.0">testsmell.TestSmellDetector</node>
+    <node x="6915.0" y="266.0">testsmell.smell.MysteryGuest</node>
+    <node x="390.0" y="622.0">testsmell.TestMethod</node>
+    <node x="528.5" y="472.0">testsmell.SmellyElement</node>
+    <node x="6454.0" y="266.0">testsmell.smell.RedundantAssertion</node>
+    <node x="7376.0" y="266.0">testsmell.smell.IgnoredTest</node>
+    <node x="4610.0" y="266.0">testsmell.smell.VerboseTest</node>
+    <node x="5532.0" y="266.0">testsmell.smell.SleepyTest</node>
+    <node x="3227.0" y="266.0">testsmell.smell.LazyTest</node>
+    <node x="1684.0" y="472.0">testsmell.ResultsWriter</node>
+    <node x="0.0" y="472.0">testsmell.TestFile</node>
+    <node x="461.0" y="266.0">testsmell.smell.GeneralFixture</node>
+    <node x="651.0" y="622.0">testsmell.TestClass</node>
+    <node x="922.0" y="266.0">testsmell.smell.DependentTest</node>
+    <node x="2305.0" y="266.0">testsmell.smell.ConditionalTestLogic</node>
   </nodes>
   <notes />
   <edges>
-    <edge source="testsmell.smell.GeneralFixture" target="testsmell.SmellyElement">
-      <point x="0.0" y="-70.5" />
-      <point x="7577.0" y="669.0" />
-      <point x="7641.166666666667" y="669.0" />
-      <point x="7641.166666666667" y="216.0" />
-      <point x="5073.700000000001" y="216.0" />
-      <point x="60.53333333333376" y="48.0" />
-    </edge>
-    <edge source="testsmell.smell.LazyTest" target="testsmell.TestMethod">
-      <point x="83.60000000000002" y="-70.5" />
-      <point x="8974.6" y="669.0" />
-      <point x="9012.765946791866" y="669.0" />
-      <point x="-79.0" y="81.5" />
-    </edge>
-    <edge source="testsmell.smell.MagicNumberTest" target="testsmell.SmellyElement">
-      <point x="139.33333333333303" y="-70.5" />
-      <point x="6402.333333333333" y="669.0" />
-      <point x="6387.509616588417" y="669.0" />
-      <point x="6387.509616588417" y="266.0" />
-      <point x="5048.477777777778" y="266.0" />
-      <point x="35.31111111111113" y="48.0" />
-    </edge>
-    <edge source="testsmell.smell.MysteryGuest" target="testsmell.SmellyElement">
-      <point x="139.33333333333303" y="-70.5" />
-      <point x="5964.333333333333" y="669.0" />
-      <point x="5949.509616588417" y="669.0" />
-      <point x="5949.509616588417" y="286.0" />
-      <point x="5038.388888888889" y="286.0" />
-      <point x="25.222222222221717" y="48.0" />
-    </edge>
-    <edge source="testsmell.smell.VerboseTest" target="testsmell.SmellyElement">
-      <point x="139.33333333333394" y="-70.5" />
-      <point x="5526.333333333334" y="669.0" />
-      <point x="5511.509616588417" y="669.0" />
-      <point x="5511.509616588417" y="306.0" />
-      <point x="5028.299999999999" y="306.0" />
-      <point x="15.133333333333212" y="48.0" />
-    </edge>
     <edge source="testsmell.smell.ConstructorInitialization" target="testsmell.AbstractSmell">
-      <point x="-139.33333333333303" y="-70.5" />
-      <point x="7875.666666666667" y="569.0" />
-      <point x="4767.77428794992" y="569.0" />
-      <point x="150.48000000000047" y="59.0" />
-    </edge>
-    <edge source="testsmell.TestSmellDetector" target="testsmell.smell.ResourceOptimism">
-      <point x="-132.125" y="-59.5" />
-      <point x="4594.140234741785" y="1138.0" />
-      <point x="647.0" y="1138.0" />
-      <point x="0.0" y="70.5" />
-    </edge>
-    <edge source="testsmell.smell.DependentTest" target="testsmell.TestMethod">
-      <point x="-52.25" y="-70.5" />
-      <point x="9276.75" y="529.0" />
-      <point x="9170.765946791866" y="529.0" />
-      <point x="79.0" y="81.5" />
+      <point x="0.0" y="-74.5" />
+      <point x="8518.5" y="164.0" />
+      <point x="4998.5" y="164.0" />
+      <point x="168.0" y="62.0" />
     </edge>
     <edge source="testsmell.smell.DuplicateAssert" target="testsmell.AbstractSmell">
-      <point x="139.33333333333348" y="-70.5" />
-      <point x="2538.3333333333335" y="619.0" />
-      <point x="4500.25428794992" y="619.0" />
-      <point x="-117.03999999999996" y="59.0" />
-    </edge>
-    <edge source="testsmell.TestSmellDetector" target="testsmell.smell.EagerTest">
-      <point x="-119.54166666666697" y="-59.5" />
-      <point x="4606.723568075118" y="1128.0" />
-      <point x="1085.0" y="1128.0" />
-      <point x="0.0" y="70.5" />
+      <point x="0.0" y="-74.5" />
+      <point x="8057.5" y="174.0" />
+      <point x="4977.5" y="174.0" />
+      <point x="147.0" y="62.0" />
     </edge>
     <edge source="testsmell.smell.EmptyTest" target="testsmell.AbstractSmell">
-      <point x="139.33333333333303" y="-70.5" />
-      <point x="1662.333333333333" y="599.0" />
-      <point x="4466.81428794992" y="599.0" />
-      <point x="-150.47999999999956" y="59.0" />
+      <point x="0.0" y="-74.5" />
+      <point x="9440.5" y="144.0" />
+      <point x="5040.5" y="144.0" />
+      <point x="210.0" y="62.0" />
     </edge>
     <edge source="testsmell.smell.SleepyTest" target="testsmell.AbstractSmell">
-      <point x="139.33333333333348" y="-70.5" />
-      <point x="2976.3333333333335" y="629.0" />
-      <point x="4516.97428794992" y="629.0" />
-      <point x="-100.31999999999971" y="59.0" />
+      <point x="0.0" y="-74.5" />
+      <point x="5752.5" y="224.0" />
+      <point x="4872.5" y="224.0" />
+      <point x="42.0" y="62.0" />
     </edge>
     <edge source="testsmell.smell.AssertionRoulette" target="testsmell.AbstractSmell">
-      <point x="139.33333333333394" y="-70.5" />
-      <point x="4290.333333333334" y="659.0" />
-      <point x="4567.13428794992" y="659.0" />
-      <point x="-50.159999999999854" y="59.0" />
-    </edge>
-    <edge source="testsmell.TestSmellDetector" target="testsmell.smell.DuplicateAssert">
-      <point x="-81.79166666666697" y="-59.5" />
-      <point x="4644.473568075118" y="1098.0" />
-      <point x="2399.0" y="1098.0" />
-      <point x="0.0" y="70.5" />
+      <point x="0.0" y="-86.5" />
+      <point x="5291.5" y="234.0" />
+      <point x="4851.5" y="234.0" />
+      <point x="21.0" y="62.0" />
     </edge>
     <edge source="testsmell.smell.IgnoredTest" target="testsmell.AbstractSmell">
-      <point x="139.33333333333348" y="-70.5" />
-      <point x="3414.3333333333335" y="639.0" />
-      <point x="4533.694287949919" y="639.0" />
-      <point x="-83.60000000000036" y="59.0" />
-    </edge>
-    <edge source="testsmell.smell.ResourceOptimism" target="testsmell.SmellyElement">
-      <point x="-139.33333333333394" y="-70.5" />
-      <point x="507.66666666666606" y="559.0" />
-      <point x="524.7556181533682" y="559.0" />
-      <point x="524.7556181533682" y="136.0" />
-      <point x="4912.277777777777" y="136.0" />
-      <point x="-100.88888888888869" y="48.0" />
+      <point x="0.0" y="-74.5" />
+      <point x="7596.5" y="184.0" />
+      <point x="4956.5" y="184.0" />
+      <point x="126.0" y="62.0" />
     </edge>
     <edge source="testsmell.TestClass" target="testsmell.SmellyElement">
-      <point x="0.0" y="-81.5" />
-      <point x="1709.7556181533687" y="196.0" />
-      <point x="4942.544444444444" y="196.0" />
-      <point x="-70.62222222222226" y="48.0" />
-    </edge>
-    <edge source="testsmell.smell.RedundantAssertion" target="testsmell.SmellyElement">
-      <point x="139.33333333333303" y="-70.5" />
-      <point x="8592.333333333332" y="669.0" />
-      <point x="8577.509616588417" y="669.0" />
-      <point x="8577.509616588417" y="166.0" />
-      <point x="5098.9222222222215" y="166.0" />
-      <point x="85.75555555555547" y="48.0" />
+      <point x="0.0" y="-86.5" />
+      <point x="771.5" y="597.0" />
+      <point x="697.25" y="597.0" />
+      <point x="56.25" y="50.0" />
     </edge>
     <edge source="testsmell.TestMethod" target="testsmell.SmellyElement">
-      <point x="0.0" y="-81.5" />
-      <point x="9091.765946791866" y="136.0" />
-      <point x="5114.055555555555" y="136.0" />
-      <point x="100.88888888888869" y="48.0" />
-    </edge>
-    <edge source="testsmell.smell.EagerTest" target="testsmell.SmellyElement">
-      <point x="-139.33333333333303" y="-70.5" />
-      <point x="945.666666666667" y="559.0" />
-      <point x="962.7556181533687" y="559.0" />
-      <point x="962.7556181533687" y="156.0" />
-      <point x="4922.366666666667" y="156.0" />
-      <point x="-90.80000000000018" y="48.0" />
-    </edge>
-    <edge source="testsmell.smell.ConditionalTestLogic" target="testsmell.SmellyElement">
-      <point x="139.33333333333303" y="-70.5" />
-      <point x="7278.333333333333" y="669.0" />
-      <point x="7263.509616588417" y="669.0" />
-      <point x="7263.509616588417" y="226.0" />
-      <point x="5068.655555555555" y="226.0" />
-      <point x="55.48888888888905" y="48.0" />
-    </edge>
-    <edge source="testsmell.TestFile" target="testsmell.AbstractSmell">
-      <point x="82.0" y="-169.5" />
-      <point x="4626.0" y="669.0" />
-      <point x="4600.574287949919" y="669.0" />
-      <point x="-16.720000000000255" y="59.0" />
-    </edge>
-    <edge source="testsmell.smell.DuplicateAssert" target="testsmell.SmellyElement">
-      <point x="-139.33333333333348" y="-70.5" />
-      <point x="2259.6666666666665" y="559.0" />
-      <point x="2276.7556181533687" y="559.0" />
-      <point x="2276.7556181533687" y="226.0" />
-      <point x="4957.677777777777" y="226.0" />
-      <point x="-55.48888888888905" y="48.0" />
+      <point x="0.0" y="-86.5" />
+      <point x="510.5" y="597.0" />
+      <point x="584.75" y="597.0" />
+      <point x="-56.25" y="50.0" />
     </edge>
     <edge source="testsmell.smell.PrintStatement" target="testsmell.AbstractSmell">
-      <point x="139.33333333333303" y="-70.5" />
-      <point x="3852.333333333333" y="649.0" />
-      <point x="4550.4142879499195" y="649.0" />
-      <point x="-66.88000000000011" y="59.0" />
-    </edge>
-    <edge source="testsmell.smell.ExceptionCatchingThrowing" target="testsmell.AbstractSmell">
-      <point x="-139.33333333333348" y="-70.5" />
-      <point x="6561.666666666666" y="599.0" />
-      <point x="4717.614287949919" y="599.0" />
-      <point x="100.31999999999971" y="59.0" />
+      <point x="0.0" y="-74.5" />
+      <point x="6213.5" y="214.0" />
+      <point x="4893.5" y="214.0" />
+      <point x="63.0" y="62.0" />
     </edge>
     <edge source="testsmell.smell.MagicNumberTest" target="testsmell.AbstractSmell">
-      <point x="-139.33333333333303" y="-70.5" />
-      <point x="6123.666666666667" y="609.0" />
-      <point x="4700.89428794992" y="609.0" />
-      <point x="83.60000000000036" y="59.0" />
+      <point x="0.0" y="-74.5" />
+      <point x="2986.5" y="204.0" />
+      <point x="4746.5" y="204.0" />
+      <point x="-84.0" y="62.0" />
     </edge>
-    <edge source="testsmell.TestSmellDetector" target="testsmell.smell.DependentTest">
-      <point x="144.70833333333303" y="-59.5" />
-      <point x="4870.973568075118" y="1148.0" />
-      <point x="9329.0" y="1148.0" />
-      <point x="0.0" y="70.5" />
-    </edge>
-    <edge source="testsmell.TestSmellDetector" target="testsmell.AbstractSmell">
-      <point x="6.29166666666697" y="-59.5" />
-      <point x="4732.556901408452" y="1148.0" />
-      <point x="4729.5" y="1148.0" />
-      <point x="4729.5" y="649.0" />
-      <point x="4634.01428794992" y="649.0" />
-      <point x="16.720000000000255" y="59.0" />
-    </edge>
-    <edge source="testsmell.TestSmellDetector" target="testsmell.smell.AssertionRoulette">
-      <point x="-31.45833333333303" y="-59.5" />
-      <point x="4694.806901408452" y="1058.0" />
-      <point x="4151.0" y="1058.0" />
-      <point x="0.0" y="70.5" />
+    <edge source="testsmell.smell.ExceptionCatchingThrowing" target="testsmell.AbstractSmell">
+      <point x="0.0" y="-74.5" />
+      <point x="220.5" y="144.0" />
+      <point x="4620.5" y="144.0" />
+      <point x="-210.0" y="62.0" />
     </edge>
     <edge source="testsmell.smell.DefaultTest" target="testsmell.AbstractSmell">
-      <point x="-139.33333333333348" y="-70.5" />
-      <point x="4809.666666666666" y="639.0" />
-      <point x="4650.734287949919" y="639.0" />
-      <point x="33.4399999999996" y="59.0" />
-    </edge>
-    <edge source="testsmell.smell.AssertionRoulette" target="testsmell.SmellyElement">
-      <point x="-139.33333333333394" y="-70.5" />
-      <point x="4011.666666666666" y="559.0" />
-      <point x="4028.7556181533687" y="559.0" />
-      <point x="4028.7556181533687" y="306.0" />
-      <point x="4998.033333333333" y="306.0" />
-      <point x="-15.133333333333212" y="48.0" />
+      <point x="0.0" y="-74.5" />
+      <point x="2064.5" y="184.0" />
+      <point x="4704.5" y="184.0" />
+      <point x="-126.0" y="62.0" />
     </edge>
     <edge source="testsmell.smell.VerboseTest" target="testsmell.AbstractSmell">
-      <point x="-139.33333333333394" y="-70.5" />
-      <point x="5247.666666666666" y="629.0" />
-      <point x="4667.4542879499195" y="629.0" />
-      <point x="50.159999999999854" y="59.0" />
-    </edge>
-    <edge source="testsmell.AbstractSmell" target="testsmell.SmellyElement">
-      <point x="0.0" y="-59.0" />
-      <point x="4617.29428794992" y="326.0" />
-      <point x="5008.122222222222" y="326.0" />
-      <point x="-5.044444444444707" y="48.0" />
-    </edge>
-    <edge source="testsmell.TestSmellDetector" target="testsmell.smell.EmptyTest">
-      <point x="-106.95833333333394" y="-59.5" />
-      <point x="4619.306901408451" y="1118.0" />
-      <point x="1523.0" y="1118.0" />
-      <point x="0.0" y="70.5" />
-    </edge>
-    <edge source="testsmell.smell.SleepyTest" target="testsmell.SmellyElement">
-      <point x="-139.33333333333348" y="-70.5" />
-      <point x="2697.6666666666665" y="559.0" />
-      <point x="2714.7556181533687" y="559.0" />
-      <point x="2714.7556181533687" y="246.0" />
-      <point x="4967.766666666666" y="246.0" />
-      <point x="-45.399999999999636" y="48.0" />
-    </edge>
-    <edge source="testsmell.TestSmellDetector" target="testsmell.smell.GeneralFixture">
-      <point x="94.375" y="-59.5" />
-      <point x="4820.640234741785" y="1108.0" />
-      <point x="7577.0" y="1108.0" />
-      <point x="0.0" y="70.5" />
-    </edge>
-    <edge source="testsmell.smell.EmptyTest" target="testsmell.SmellyElement">
-      <point x="0.0" y="-70.5" />
-      <point x="1523.0" y="559.0" />
-      <point x="1458.8333333333335" y="559.0" />
-      <point x="1458.8333333333335" y="186.0" />
-      <point x="4937.5" y="186.0" />
-      <point x="-75.66666666666697" y="48.0" />
-    </edge>
-    <edge source="testsmell.TestSmellDetector" target="testsmell.smell.DefaultTest">
-      <point x="18.875" y="-59.5" />
-      <point x="4745.140234741785" y="1048.0" />
-      <point x="4949.0" y="1048.0" />
-      <point x="0.0" y="70.5" />
+      <point x="0.0" y="-74.5" />
+      <point x="0.0" y="62.0" />
     </edge>
     <edge source="testsmell.smell.LazyTest" target="testsmell.AbstractSmell">
-      <point x="-167.20000000000005" y="-70.5" />
-      <point x="8723.8" y="549.0" />
-      <point x="4801.21428794992" y="549.0" />
-      <point x="183.92000000000007" y="59.0" />
-    </edge>
-    <edge source="testsmell.TestSmellDetector" target="testsmell.smell.PrintStatement">
-      <point x="-44.04166666666697" y="-59.5" />
-      <point x="4682.223568075118" y="1068.0" />
-      <point x="3713.0" y="1068.0" />
-      <point x="0.0" y="70.5" />
-    </edge>
-    <edge source="testsmell.smell.DefaultTest" target="testsmell.SmellyElement">
-      <point x="139.33333333333326" y="-70.5" />
-      <point x="5088.333333333333" y="669.0" />
-      <point x="5073.509616588417" y="669.0" />
-      <point x="5073.509616588417" y="326.0" />
-      <point x="5018.211111111112" y="326.0" />
-      <point x="5.044444444444707" y="48.0" />
+      <point x="0.0" y="-74.5" />
+      <point x="3447.5" y="214.0" />
+      <point x="4767.5" y="214.0" />
+      <point x="-63.0" y="62.0" />
     </edge>
     <edge source="testsmell.smell.ConditionalTestLogic" target="testsmell.AbstractSmell">
-      <point x="-139.33333333333348" y="-70.5" />
-      <point x="6999.666666666666" y="589.0" />
-      <point x="4734.33428794992" y="589.0" />
-      <point x="117.03999999999996" y="59.0" />
-    </edge>
-    <edge source="testsmell.TestSmellDetector" target="testsmell.smell.MysteryGuest">
-      <point x="44.04166666666697" y="-59.5" />
-      <point x="4770.306901408452" y="1068.0" />
-      <point x="5825.0" y="1068.0" />
-      <point x="0.0" y="70.5" />
-    </edge>
-    <edge source="testsmell.smell.SensitiveEquality" target="testsmell.SmellyElement">
-      <point x="0.0" y="-70.5" />
-      <point x="1961.0" y="559.0" />
-      <point x="1896.8333333333335" y="559.0" />
-      <point x="1896.8333333333335" y="216.0" />
-      <point x="4952.633333333333" y="216.0" />
-      <point x="-60.53333333333376" y="48.0" />
-    </edge>
-    <edge source="testsmell.smell.IgnoredTest" target="testsmell.SmellyElement">
-      <point x="-139.33333333333348" y="-70.5" />
-      <point x="3135.6666666666665" y="559.0" />
-      <point x="3152.7556181533687" y="559.0" />
-      <point x="3152.7556181533687" y="266.0" />
-      <point x="4977.855555555556" y="266.0" />
-      <point x="-35.31111111111113" y="48.0" />
-    </edge>
-    <edge source="testsmell.smell.UnknownTest" target="testsmell.SmellyElement">
-      <point x="0.0" y="-70.5" />
-      <point x="209.0" y="669.0" />
-      <point x="144.83333333333303" y="669.0" />
-      <point x="144.83333333333303" y="126.0" />
-      <point x="4907.233333333334" y="126.0" />
-      <point x="-105.9333333333334" y="48.0" />
-    </edge>
-    <edge source="testsmell.TestSmellDetector" target="testsmell.smell.ExceptionCatchingThrowing">
-      <point x="69.20833333333303" y="-59.5" />
-      <point x="4795.473568075118" y="1088.0" />
-      <point x="6701.0" y="1088.0" />
-      <point x="0.0" y="70.5" />
-    </edge>
-    <edge source="testsmell.TestSmellDetector" target="testsmell.TestFile">
-      <point x="-18.875" y="-59.5" />
-      <point x="4707.390234741785" y="1048.0" />
-      <point x="4544.0" y="1048.0" />
-      <point x="0.0" y="169.5" />
-    </edge>
-    <edge source="testsmell.smell.ConstructorInitialization" target="testsmell.SmellyElement">
-      <point x="0.0" y="-70.5" />
-      <point x="8015.0" y="669.0" />
-      <point x="8079.166666666666" y="669.0" />
-      <point x="8079.166666666666" y="196.0" />
-      <point x="5083.788888888888" y="196.0" />
-      <point x="70.62222222222226" y="48.0" />
+      <point x="0.0" y="-74.5" />
+      <point x="2525.5" y="194.0" />
+      <point x="4725.5" y="194.0" />
+      <point x="-105.0" y="62.0" />
     </edge>
     <edge source="testsmell.smell.DependentTest" target="testsmell.AbstractSmell">
-      <point x="-156.75" y="-70.5" />
-      <point x="9172.25" y="539.0" />
-      <point x="4817.93428794992" y="539.0" />
-      <point x="200.64000000000033" y="59.0" />
-    </edge>
-    <edge source="testsmell.smell.DependentTest" target="testsmell.SmellyElement">
-      <point x="52.25" y="-70.5" />
-      <point x="9381.25" y="669.0" />
-      <point x="9411.07428794992" y="669.0" />
-      <point x="9411.07428794992" y="126.0" />
-      <point x="5119.1" y="126.0" />
-      <point x="105.9333333333334" y="48.0" />
-    </edge>
-    <edge source="testsmell.TestSmellDetector" target="testsmell.smell.SensitiveEquality">
-      <point x="-94.375" y="-59.5" />
-      <point x="4631.890234741785" y="1108.0" />
-      <point x="1961.0" y="1108.0" />
-      <point x="0.0" y="70.5" />
+      <point x="0.0" y="-74.5" />
+      <point x="1142.5" y="164.0" />
+      <point x="4662.5" y="164.0" />
+      <point x="-168.0" y="62.0" />
     </edge>
     <edge source="testsmell.smell.SensitiveEquality" target="testsmell.AbstractSmell">
-      <point x="139.33333333333303" y="-70.5" />
-      <point x="2100.333333333333" y="609.0" />
-      <point x="4483.534287949919" y="609.0" />
-      <point x="-133.76000000000022" y="59.0" />
-    </edge>
-    <edge source="testsmell.TestSmellDetector" target="testsmell.smell.MagicNumberTest">
-      <point x="56.625" y="-59.5" />
-      <point x="4782.890234741785" y="1078.0" />
-      <point x="6263.0" y="1078.0" />
-      <point x="0.0" y="70.5" />
-    </edge>
-    <edge source="testsmell.TestSmellDetector" target="testsmell.smell.LazyTest">
-      <point x="132.125" y="-59.5" />
-      <point x="4858.390234741785" y="1138.0" />
-      <point x="8891.0" y="1138.0" />
-      <point x="0.0" y="70.5" />
+      <point x="0.0" y="-74.5" />
+      <point x="4369.5" y="234.0" />
+      <point x="4809.5" y="234.0" />
+      <point x="-21.0" y="62.0" />
     </edge>
     <edge source="testsmell.smell.GeneralFixture" target="testsmell.AbstractSmell">
-      <point x="-139.33333333333303" y="-70.5" />
-      <point x="7437.666666666667" y="579.0" />
-      <point x="4751.05428794992" y="579.0" />
-      <point x="133.76000000000022" y="59.0" />
-    </edge>
-    <edge source="testsmell.TestSmellDetector" target="testsmell.smell.VerboseTest">
-      <point x="31.45833333333303" y="-59.5" />
-      <point x="4757.723568075118" y="1058.0" />
-      <point x="5387.0" y="1058.0" />
-      <point x="0.0" y="70.5" />
-    </edge>
-    <edge source="testsmell.TestSmellDetector" target="testsmell.smell.SleepyTest">
-      <point x="-69.20833333333303" y="-59.5" />
-      <point x="4657.056901408452" y="1088.0" />
-      <point x="2837.0" y="1088.0" />
-      <point x="0.0" y="70.5" />
-    </edge>
-    <edge source="testsmell.smell.LazyTest" target="testsmell.SmellyElement">
-      <point x="0.0" y="-70.5" />
-      <point x="8891.0" y="669.0" />
-      <point x="8873.8" y="669.0" />
-      <point x="8873.8" y="146.0" />
-      <point x="5109.011111111111" y="146.0" />
-      <point x="95.84444444444489" y="48.0" />
+      <point x="0.0" y="-74.5" />
+      <point x="681.5" y="154.0" />
+      <point x="4641.5" y="154.0" />
+      <point x="-189.0" y="62.0" />
     </edge>
     <edge source="testsmell.smell.MysteryGuest" target="testsmell.AbstractSmell">
-      <point x="-139.33333333333303" y="-70.5" />
-      <point x="5685.666666666667" y="619.0" />
-      <point x="4684.17428794992" y="619.0" />
-      <point x="66.88000000000011" y="59.0" />
-    </edge>
-    <edge source="testsmell.TestSmellDetector" target="testsmell.smell.IgnoredTest">
-      <point x="-56.625" y="-59.5" />
-      <point x="4669.640234741785" y="1078.0" />
-      <point x="3275.0" y="1078.0" />
-      <point x="0.0" y="70.5" />
+      <point x="0.0" y="-74.5" />
+      <point x="7135.5" y="194.0" />
+      <point x="4935.5" y="194.0" />
+      <point x="105.0" y="62.0" />
     </edge>
     <edge source="testsmell.smell.ResourceOptimism" target="testsmell.AbstractSmell">
-      <point x="139.33333333333394" y="-70.5" />
-      <point x="786.3333333333339" y="579.0" />
-      <point x="4433.37428794992" y="579.0" />
-      <point x="-183.92000000000007" y="59.0" />
+      <point x="0.0" y="-74.5" />
+      <point x="1603.5" y="174.0" />
+      <point x="4683.5" y="174.0" />
+      <point x="-147.0" y="62.0" />
     </edge>
     <edge source="testsmell.smell.RedundantAssertion" target="testsmell.AbstractSmell">
-      <point x="-139.33333333333303" y="-70.5" />
-      <point x="8313.666666666668" y="559.0" />
-      <point x="4784.494287949919" y="559.0" />
-      <point x="167.19999999999982" y="59.0" />
-    </edge>
-    <edge source="testsmell.TestSmellDetector" target="testsmell.smell.RedundantAssertion">
-      <point x="119.54166666666697" y="-59.5" />
-      <point x="4845.806901408452" y="1128.0" />
-      <point x="8453.0" y="1128.0" />
-      <point x="0.0" y="70.5" />
-    </edge>
-    <edge source="testsmell.TestSmellDetector" target="testsmell.smell.ConditionalTestLogic">
-      <point x="81.79166666666697" y="-59.5" />
-      <point x="4808.056901408452" y="1098.0" />
-      <point x="7139.0" y="1098.0" />
-      <point x="0.0" y="70.5" />
+      <point x="0.0" y="-74.5" />
+      <point x="6674.5" y="204.0" />
+      <point x="4914.5" y="204.0" />
+      <point x="84.0" y="62.0" />
     </edge>
     <edge source="testsmell.smell.EagerTest" target="testsmell.AbstractSmell">
-      <point x="139.33333333333303" y="-70.5" />
-      <point x="1224.333333333333" y="589.0" />
-      <point x="4450.09428794992" y="589.0" />
-      <point x="-167.19999999999982" y="59.0" />
-    </edge>
-    <edge source="testsmell.smell.ExceptionCatchingThrowing" target="testsmell.SmellyElement">
-      <point x="0.0" y="-70.5" />
-      <point x="6701.0" y="669.0" />
-      <point x="6765.166666666667" y="669.0" />
-      <point x="6765.166666666667" y="256.0" />
-      <point x="5053.522222222222" y="256.0" />
-      <point x="40.35555555555584" y="48.0" />
-    </edge>
-    <edge source="testsmell.smell.PrintStatement" target="testsmell.SmellyElement">
-      <point x="0.0" y="-70.5" />
-      <point x="3713.0" y="559.0" />
-      <point x="3648.8333333333335" y="559.0" />
-      <point x="3648.8333333333335" y="296.0" />
-      <point x="4992.988888888889" y="296.0" />
-      <point x="-20.17777777777792" y="48.0" />
-    </edge>
-    <edge source="testsmell.TestSmellDetector" target="testsmell.smell.ConstructorInitialization">
-      <point x="106.95833333333303" y="-59.5" />
-      <point x="4833.223568075118" y="1118.0" />
-      <point x="8015.0" y="1118.0" />
-      <point x="0.0" y="70.5" />
-    </edge>
-    <edge source="testsmell.TestSmellDetector" target="testsmell.smell.UnknownTest">
-      <point x="-144.70833333333303" y="-59.5" />
-      <point x="4581.556901408452" y="1148.0" />
-      <point x="209.0" y="1148.0" />
-      <point x="0.0" y="70.5" />
+      <point x="0.0" y="-86.5" />
+      <point x="3908.5" y="224.0" />
+      <point x="4788.5" y="224.0" />
+      <point x="-42.0" y="62.0" />
     </edge>
     <edge source="testsmell.smell.UnknownTest" target="testsmell.AbstractSmell">
-      <point x="139.33333333333348" y="-70.5" />
-      <point x="348.33333333333394" y="569.0" />
-      <point x="4416.654287949919" y="569.0" />
-      <point x="-200.64000000000033" y="59.0" />
+      <point x="0.0" y="-74.5" />
+      <point x="8979.5" y="154.0" />
+      <point x="5019.5" y="154.0" />
+      <point x="189.0" y="62.0" />
     </edge>
   </edges>
-  <settings layout="Hierarchic Group" zoom="1.0" x="4376.5" y="674.0" />
+  <settings layout="Hierarchic Group" zoom="1.0" x="4537.0" y="355.5" />
   <SelectedNodes />
   <Categories>
     <Category>Constructors</Category>
