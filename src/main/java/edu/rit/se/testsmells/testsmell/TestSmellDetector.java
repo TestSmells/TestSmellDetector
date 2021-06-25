@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-public class TestSmellDetector {
+public final class TestSmellDetector {
 
     private List<InputStream> inputStreams;
     private List<AbstractSmell> testSmells;
