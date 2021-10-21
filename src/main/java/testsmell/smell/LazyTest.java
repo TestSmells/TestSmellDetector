@@ -8,12 +8,12 @@ import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.body.VariableDeclarator;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
-import com.github.javaparser.ast.expr.VariableDeclarationExpr;
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
 import testsmell.AbstractSmell;
 import testsmell.SmellyElement;
 import testsmell.TestMethod;
 import testsmell.Util;
+import thresholds.Thresholds;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -25,13 +25,12 @@ public class LazyTest extends AbstractSmell {
     private static final String TEST_FILE = "Test";
     private static final String PRODUCTION_FILE = "Production";
     private String productionClassName;
-    private List<SmellyElement> smellyElementList;
     private List<MethodUsage> calledProductionMethods;
     private List<MethodDeclaration> productionMethods;
 
-    public LazyTest() {
+    public LazyTest(Thresholds thresholds) {
+        super(thresholds);
         productionMethods = new ArrayList<>();
-        smellyElementList = new ArrayList<>();
         calledProductionMethods = new ArrayList<>();
     }
 
@@ -41,14 +40,6 @@ public class LazyTest extends AbstractSmell {
     @Override
     public String getSmellName() {
         return "Lazy Test";
-    }
-
-    /**
-     * Returns true if any of the elements has a smell
-     */
-    @Override
-    public boolean getHasSmell() {
-        return smellyElementList.stream().filter(x -> x.getHasSmell()).count() >= 1;
     }
 
     /**
@@ -75,19 +66,11 @@ public class LazyTest extends AbstractSmell {
                     // If counts don not match, this production method is used by multiple test methods. Hence, there is a Lazy Test smell.
                     // If the counts were equal it means that the production method is only used (called from) inside one test method
                     TestMethod testClass = new TestMethod(method.getTestMethod());
-                    testClass.setHasSmell(true);
-                    smellyElementList.add(testClass);
+                    testClass.setSmell(true);
+                    smellyElementsSet.add(testClass);
                 }
             }
         }
-    }
-
-    /**
-     * Returns the set of analyzed elements (i.e. test methods)
-     */
-    @Override
-    public List<SmellyElement> getSmellyElements() {
-        return smellyElementList;
     }
 
     private class MethodUsage {
@@ -146,7 +129,7 @@ public class LazyTest extends AbstractSmell {
                 if (Util.isValidTestMethod(n)) {
                     currentMethod = n;
                     testMethod = new TestMethod(currentMethod.getNameAsString());
-                    testMethod.setHasSmell(false); //default value is false (i.e. no smell)
+                    testMethod.setSmell(false); //default value is false (i.e. no smell)
                     super.visit(n, arg);
 
                     //reset values for next method

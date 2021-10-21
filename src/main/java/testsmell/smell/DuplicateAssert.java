@@ -8,16 +8,18 @@ import testsmell.AbstractSmell;
 import testsmell.SmellyElement;
 import testsmell.TestMethod;
 import testsmell.Util;
+import thresholds.Thresholds;
 
 import java.io.FileNotFoundException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 public class DuplicateAssert extends AbstractSmell {
 
-    private List<SmellyElement> smellyElementList;
-
-    public DuplicateAssert() {
-        smellyElementList = new ArrayList<>();
+    public DuplicateAssert(Thresholds thresholds) {
+        super(thresholds);
     }
 
     /**
@@ -29,14 +31,6 @@ public class DuplicateAssert extends AbstractSmell {
     }
 
     /**
-     * Returns true if any of the elements has a smell
-     */
-    @Override
-    public boolean getHasSmell() {
-        return smellyElementList.stream().filter(x -> x.getHasSmell()).count() >= 1;
-    }
-
-    /**
      * Analyze the test file for test methods that have multiple assert statements with the same explanation message
      */
     @Override
@@ -45,15 +39,6 @@ public class DuplicateAssert extends AbstractSmell {
         classVisitor = new DuplicateAssert.ClassVisitor();
         classVisitor.visit(testFileCompilationUnit, null);
     }
-
-    /**
-     * Returns the set of analyzed elements (i.e. test methods)
-     */
-    @Override
-    public List<SmellyElement> getSmellyElements() {
-        return smellyElementList;
-    }
-
 
     private class ClassVisitor extends VoidVisitorAdapter<Void> {
         private MethodDeclaration currentMethod = null;
@@ -67,22 +52,22 @@ public class DuplicateAssert extends AbstractSmell {
             if (Util.isValidTestMethod(n)) {
                 currentMethod = n;
                 testMethod = new TestMethod(n.getNameAsString());
-                testMethod.setHasSmell(false); //default value is false (i.e. no smell)
+                testMethod.setSmell(false); //default value is false (i.e. no smell)
                 super.visit(n, arg);
 
                 // if there are duplicate messages, then the smell exists
-                Set<String> set1 = new HashSet<String>(assertMessage);
+                Set<String> set1 = new HashSet<>(assertMessage);
                 if (set1.size() < assertMessage.size()) {
-                    testMethod.setHasSmell(true);
+                    testMethod.setSmell(true);
                 }
 
                 // if there are duplicate assert methods, then the smell exists
-                Set<String> set2 = new HashSet<String>(assertMethod);
+                Set<String> set2 = new HashSet<>(assertMethod);
                 if (set2.size() < assertMethod.size()) {
-                    testMethod.setHasSmell(true);
+                    testMethod.setSmell(true);
                 }
 
-                smellyElementList.add(testMethod);
+                smellyElementsSet.add(testMethod);
 
                 //reset values for next method
                 currentMethod = null;

@@ -9,6 +9,7 @@ import testsmell.AbstractSmell;
 import testsmell.SmellyElement;
 import testsmell.TestMethod;
 import testsmell.Util;
+import thresholds.Thresholds;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -24,10 +25,8 @@ import java.util.List;
  */
 public class MysteryGuest extends AbstractSmell {
 
-    private List<SmellyElement> smellyElementList;
-
-    public MysteryGuest() {
-        smellyElementList = new ArrayList<>();
+    public MysteryGuest(Thresholds thresholds) {
+        super(thresholds);
     }
 
     /**
@@ -39,14 +38,6 @@ public class MysteryGuest extends AbstractSmell {
     }
 
     /**
-     * Returns true if any of the elements has a smell
-     */
-    @Override
-    public boolean getHasSmell() {
-        return smellyElementList.stream().filter(x -> x.getHasSmell()).count() >= 1;
-    }
-
-    /**
      * Analyze the test file for test methods that use external resources
      */
     @Override
@@ -54,14 +45,6 @@ public class MysteryGuest extends AbstractSmell {
         MysteryGuest.ClassVisitor classVisitor;
         classVisitor = new MysteryGuest.ClassVisitor();
         classVisitor.visit(testFileCompilationUnit, null);
-    }
-
-    /**
-     * Returns the set of analyzed elements (i.e. test methods)
-     */
-    @Override
-    public List<SmellyElement> getSmellyElements() {
-        return smellyElementList;
     }
 
     private class ClassVisitor extends VoidVisitorAdapter<Void> {
@@ -115,13 +98,14 @@ public class MysteryGuest extends AbstractSmell {
             if (Util.isValidTestMethod(n)) {
                 currentMethod = n;
                 testMethod = new TestMethod(n.getNameAsString());
-                testMethod.setHasSmell(false); //default value is false (i.e. no smell)
+                testMethod.setSmell(false); //default value is false (i.e. no smell)
                 super.visit(n, arg);
 
-                testMethod.setHasSmell(mysteryCount > 0);
+                boolean isSmelly = mysteryCount > thresholds.getMysteryGuest();
+                testMethod.setSmell(isSmelly);
                 testMethod.addDataItem("MysteryCount", String.valueOf(mysteryCount));
 
-                smellyElementList.add(testMethod);
+                smellyElementsSet.add(testMethod);
 
                 //reset values for next method
                 currentMethod = null;

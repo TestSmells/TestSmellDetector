@@ -8,9 +8,9 @@ import testsmell.AbstractSmell;
 import testsmell.SmellyElement;
 import testsmell.TestMethod;
 import testsmell.Util;
+import thresholds.Thresholds;
 
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -20,11 +20,10 @@ import java.util.List;
  */
 public class AssertionRoulette extends AbstractSmell {
 
-    private List<SmellyElement> smellyElementList;
     private int assertionsCount = 0;
 
-    public AssertionRoulette() {
-        smellyElementList = new ArrayList<>();
+    public AssertionRoulette(Thresholds thresholds) {
+        super(thresholds);
     }
 
     /**
@@ -33,14 +32,6 @@ public class AssertionRoulette extends AbstractSmell {
     @Override
     public String getSmellName() {
         return "Assertion Roulette";
-    }
-
-    /**
-     * Returns true if any of the elements has a smell
-     */
-    @Override
-    public boolean getHasSmell() {
-        return smellyElementList.stream().filter(x -> x.getHasSmell()).count() >= 1;
     }
 
     /**
@@ -58,15 +49,6 @@ public class AssertionRoulette extends AbstractSmell {
         return assertionsCount;
     }
 
-    /**
-     * Returns the set of analyzed elements (i.e. test methods)
-     */
-    @Override
-    public List<SmellyElement> getSmellyElements() {
-        return smellyElementList;
-    }
-
-
     private class ClassVisitor extends VoidVisitorAdapter<Void> {
         private MethodDeclaration currentMethod = null;
         private int assertNoMessageCount = 0;
@@ -80,19 +62,23 @@ public class AssertionRoulette extends AbstractSmell {
             if (Util.isValidTestMethod(n)) {
                 currentMethod = n;
                 testMethod = new TestMethod(n.getNameAsString());
-                testMethod.setHasSmell(false); //default value is false (i.e. no smell)
+                testMethod.setSmell(false); //default value is false (i.e. no smell)
                 super.visit(n, arg);
 
+                boolean isSmelly = assertNoMessageCount >= thresholds.getAssertionRoulette();
 
+                //the method has a smell if there is more than 1 call to production methods
+                testMethod.setSmell(isSmelly);
                 // if there is only 1 assert statement in the method, then a explanation message is not needed
                 if (assertCount == 1)
-                    testMethod.setHasSmell(false);
-                else if (assertNoMessageCount >= 1) //if there is more than one assert statement, then all the asserts need to have an explanation message
-                    testMethod.setHasSmell(true);
+                    testMethod.setSmell(false);
+                //if there is more than one assert statement, then all the asserts need to have an explanation message
+                else if (isSmelly) {
+                    testMethod.setSmell(true);
+                }
 
                 testMethod.addDataItem("AssertCount", String.valueOf(assertNoMessageCount));
-
-                smellyElementList.add(testMethod);
+                smellyElementsSet.add(testMethod);
 
                 //reset values for next method
                 currentMethod = null;

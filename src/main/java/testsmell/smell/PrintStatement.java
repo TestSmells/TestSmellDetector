@@ -7,13 +7,11 @@ import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
 import testsmell.AbstractSmell;
-import testsmell.SmellyElement;
 import testsmell.TestMethod;
 import testsmell.Util;
+import thresholds.Thresholds;
 
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
-import java.util.List;
 
 /*
 Test methods should not contain print statements as execution of unit tests is an automated process with little to no human intervention. Hence, print statements are redundant.
@@ -21,10 +19,8 @@ This code checks the body of each test method if System.out. print(), println(),
  */
 public class PrintStatement extends AbstractSmell {
 
-    private List<SmellyElement> smellyElementList;
-
-    public PrintStatement() {
-        smellyElementList = new ArrayList<>();
+    public PrintStatement(Thresholds thresholds) {
+        super(thresholds);
     }
 
     /**
@@ -36,14 +32,6 @@ public class PrintStatement extends AbstractSmell {
     }
 
     /**
-     * Returns true if any of the elements has a smell
-     */
-    @Override
-    public boolean getHasSmell() {
-        return smellyElementList.stream().filter(x -> x.getHasSmell()).count() >= 1;
-    }
-
-    /**
      * Analyze the test file for test methods that print output to the console
      */
     @Override
@@ -51,14 +39,6 @@ public class PrintStatement extends AbstractSmell {
         PrintStatement.ClassVisitor classVisitor;
         classVisitor = new PrintStatement.ClassVisitor();
         classVisitor.visit(testFileCompilationUnit, null);
-    }
-
-    /**
-     * Returns the set of analyzed elements (i.e. test methods)
-     */
-    @Override
-    public List<SmellyElement> getSmellyElements() {
-        return smellyElementList;
     }
 
     private class ClassVisitor extends VoidVisitorAdapter<Void> {
@@ -72,13 +52,14 @@ public class PrintStatement extends AbstractSmell {
             if (Util.isValidTestMethod(n)) {
                 currentMethod = n;
                 testMethod = new TestMethod(n.getNameAsString());
-                testMethod.setHasSmell(false); //default value is false (i.e. no smell)
+                testMethod.setSmell(false); //default value is false (i.e. no smell)
                 super.visit(n, arg);
 
-                testMethod.setHasSmell(printCount >= 1);
+                boolean isSmelly = printCount > thresholds.getPrintStatement();
+                testMethod.setSmell(isSmelly);
                 testMethod.addDataItem("PrintCount", String.valueOf(printCount));
 
-                smellyElementList.add(testMethod);
+                smellyElementsSet.add(testMethod);
 
                 //reset values for next method
                 currentMethod = null;

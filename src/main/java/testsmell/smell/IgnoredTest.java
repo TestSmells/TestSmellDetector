@@ -9,17 +9,15 @@ import testsmell.AbstractSmell;
 import testsmell.SmellyElement;
 import testsmell.TestClass;
 import testsmell.TestMethod;
+import thresholds.Thresholds;
 
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
 import java.util.List;
 
 public class IgnoredTest extends AbstractSmell {
 
-    private List<SmellyElement> smellyElementList;
-
-    public IgnoredTest() {
-        smellyElementList = new ArrayList<>();
+    public IgnoredTest(Thresholds thresholds) {
+        super(thresholds);
     }
 
     /**
@@ -31,14 +29,6 @@ public class IgnoredTest extends AbstractSmell {
     }
 
     /**
-     * Returns true if any of the elements has a smell
-     */
-    @Override
-    public boolean getHasSmell() {
-        return smellyElementList.stream().filter(x -> x.getHasSmell()).count() >= 1;
-    }
-
-    /**
      * Analyze the test file for test methods that contain Ignored test methods
      */
     @Override
@@ -46,14 +36,6 @@ public class IgnoredTest extends AbstractSmell {
         IgnoredTest.ClassVisitor classVisitor;
         classVisitor = new IgnoredTest.ClassVisitor();
         classVisitor.visit(testFileCompilationUnit, null);
-    }
-
-    /**
-     * Returns the set of analyzed elements (i.e. test methods)
-     */
-    @Override
-    public List<SmellyElement> getSmellyElements() {
-        return smellyElementList;
     }
 
     /**
@@ -71,7 +53,7 @@ public class IgnoredTest extends AbstractSmell {
             if (n.getAnnotationByName("Ignore").isPresent()) {
                 testClass = new TestClass(n.getNameAsString());
                 testClass.setHasSmell(true);
-                smellyElementList.add(testClass);
+                smellyElementsSet.add(testClass);
             }
             super.visit(n, arg);
         }
@@ -87,8 +69,8 @@ public class IgnoredTest extends AbstractSmell {
             if (n.getAnnotationByName("Test").isPresent()) {
                 if (n.getAnnotationByName("Ignore").isPresent()) {
                     testMethod = new TestMethod(n.getNameAsString());
-                    testMethod.setHasSmell(true);
-                    smellyElementList.add(testMethod);
+                    testMethod.setSmell(true);
+                    smellyElementsSet.add(testMethod);
                     return;
                 }
             }
@@ -98,8 +80,8 @@ public class IgnoredTest extends AbstractSmell {
             if (n.getNameAsString().toLowerCase().startsWith("test")) {
                 if (!n.getModifiers().contains(Modifier.PUBLIC)) {
                     testMethod = new TestMethod(n.getNameAsString());
-                    testMethod.setHasSmell(true);
-                    smellyElementList.add(testMethod);
+                    testMethod.setSmell(true);
+                    smellyElementsSet.add(testMethod);
                     return;
                 }
             }

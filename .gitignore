@@ -27,3 +27,4 @@ Output_TestSmellDetection*
 target/
 TestSmellDetector.iml
 files-smell.csv
+test-smells.csv

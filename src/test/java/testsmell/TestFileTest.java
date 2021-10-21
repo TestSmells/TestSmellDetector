@@ -10,8 +10,8 @@ import static org.junit.jupiter.api.Assertions.*;
 class TestFileTest {
 
     private String fileTest = "commons-lang," +
-            "/Users/grano/projects/commons-lang/src/test/java/org/apache/commons/lang3/RandomStringUtilsTest.java," +
-            "/Users/grano/projects/commons-lang/src/main/java/org/apache/commons/lang3/RandomStringUtils.java";
+            "/Users/giograno/projects/commons-lang/src/test/java/org/apache/commons/lang3/RandomStringUtilsTest.java," +
+            "/Users/giograno/projects/commons-lang/src/main/java/org/apache/commons/lang3/RandomStringUtils.java";
     private String fileTestWindows = "myCoolApp," +
             "F:\\Apps\\myCoolApp\\code\\test\\GraphTest.java," +
             "F:\\Apps\\myCoolApp\\code\\src\\Graph.java";
