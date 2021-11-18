@@ -11,7 +11,7 @@ import java.util.List;
  */
 public class ResultsWriter {
 
-    private String outputFile;
+    private final String outputFile;
     private FileWriter writer;
 
     /**

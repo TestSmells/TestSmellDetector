@@ -7,8 +7,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TestFile {
-    private String app, testFilePath, productionFilePath;
-    private List<AbstractSmell> testSmells;
+    private final String app, testFilePath, productionFilePath;
+    private final List<AbstractSmell> testSmells;
     private int numberOfTestMethods = 0;
 
     public String getApp() {

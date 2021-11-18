@@ -5,9 +5,9 @@ import java.util.Map;
 
 public class TestClass extends SmellyElement {
 
-    private String className;
+    private final String className;
     private boolean hasSmell;
-    private Map<String, String> data;
+    private final Map<String, String> data;
 
     public TestClass(String className) {
         this.className = className;

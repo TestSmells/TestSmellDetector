@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 public class TestSmellDetector {
 
     private List<AbstractSmell> testSmells;
-    private Thresholds thresholds;
+    private final Thresholds thresholds;
 
     /**
      * Instantiates the various test smell analyzer classes and loads the objects into an list.
@@ -27,11 +27,11 @@ public class TestSmellDetector {
      */
     public TestSmellDetector(Thresholds thresholds) {
         this.thresholds = thresholds;
-        initializeSmells();
+        testSmells = createTestSmells();
     }
 
-    private void initializeSmells() {
-        testSmells = new ArrayList<>();
+    private List<AbstractSmell> createTestSmells() {
+        List<AbstractSmell> testSmells = new ArrayList<>();
         testSmells.add(new AssertionRoulette(thresholds));
         testSmells.add(new ConditionalTestLogic(thresholds));
         testSmells.add(new ConstructorInitialization(thresholds));
@@ -53,6 +53,7 @@ public class TestSmellDetector {
         testSmells.add(new ResourceOptimism(thresholds));
         testSmells.add(new MagicNumberTest(thresholds));
         testSmells.add(new DependentTest(thresholds));
+        return testSmells;
     }
 
     public void setTestSmells(List<AbstractSmell> testSmells) {
