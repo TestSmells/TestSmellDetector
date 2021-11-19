@@ -10,37 +10,48 @@ import java.util.List;
 
 public class MainApplication {
 
-    public static void main(String[] args)  {
-        if (args == null || args.length==0||args[0].isEmpty()) {
+    public static void main(String[] args) {
+        if (args == null || args.length == 0 || args[0].isEmpty()) {
             System.out.println("Please provide the file containing the paths to the collection of test files");
             return;
         }
         File inputFile = new File(args[0]);
-
-        new MainApplication().processProjectCsvFile(inputFile);
-
+        MainApplication application = new MainApplication();
+        if (!inputFile.isFile()) {
+            throw new RuntimeException("Please provide a valid file containing the paths to the collection of test files");
+        }
+        if (inputFile.isDirectory()) {
+            application.processProject(inputFile);
+        } else {
+            application.processProjectViaCsvFile(inputFile);
+        }
     }
 
-    public boolean processProjectCsvFile(File file) {
-        if (!file.isFile()) {
-            System.out.println("Please provide a valid file containing the paths to the collection of test files");
-            return false;
+    public void processProject(File directory) {
+        try {
+            ProjectMonitoringInputGenerator inputGenerator = new ProjectMonitoringInputGenerator(directory);
+            ResultsWriter writer = createProcessedResultsWriter(inputGenerator.getInputList());
+            writer.save();
+        } catch (Exception ex) {
+            throw new RuntimeException("Error: " + ex.getMessage());
         }
+    }
+
+    public void processProjectViaCsvFile(File file) {
         try {
             ResultsWriter writer = createProcessedResultsWriter(Files.readAllLines(file.toPath()));
             writer.save();
             System.out.println("processed: " + file);
-            return true;
         } catch (Exception ex) {
-            System.err.println("Error: " + ex.getMessage());
-            return false;
+            throw new RuntimeException("Error: " + ex.getMessage());
         }
     }
-    public List<TestFile> createTestFilesFromLines(List<String> lines) {
+
+    List<TestFile> createTestFilesFromLines(List<String> lines) {
         return new ProjectsCsvReader(lines).getTestFiles();
     }
 
-    public ResultsWriter createProcessedResultsWriter(List<String> lines)  throws IOException {
+    ResultsWriter createProcessedResultsWriter(List<String> lines)  throws IOException {
         return new SmellDetectionWriter(createTestFilesFromLines(lines)).createProcessedResultsWriter();
     }
 }
