@@ -14,13 +14,14 @@ import java.util.List;
 public class QualityMonitoringApplication {
 
     public static void main(String[] args) {
-        if (args == null || args.length == 0 || args[0].isEmpty()) {
-            System.out.println("Please provide the file containing the paths to the collection of test files");
-            return;
+        File inputFile = new File(".");
+        boolean isArgumentWithTargetName = args != null && args.length > 0 && args[0].isEmpty();
+        if (isArgumentWithTargetName) {
+            inputFile = new File(args[0]);
         }
-        File inputFile = new File(args[0]);
+
         QualityMonitoringApplication application = new QualityMonitoringApplication();
-        if (!inputFile.isFile()) {
+        if (!inputFile.exists()) {
             throw new RuntimeException("Please provide a valid file containing the paths to the collection of test files");
         }
         if (inputFile.isDirectory()) {

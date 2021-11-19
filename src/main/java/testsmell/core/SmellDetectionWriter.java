@@ -18,7 +18,7 @@ import java.util.List;
  * Can save output to a file
  */
 public class SmellDetectionWriter {
-    private static final DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+    private static final DateFormat dateFormatForOutput = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss");
 
     private final TestSmellDetector testSmellDetector ;
     private final List<TestFile> monitoredJavaFiles;
@@ -62,7 +62,7 @@ public class SmellDetectionWriter {
 
     private List<String> createColumnValues(TestFile file) throws IOException{
         Date date = new Date();
-        System.out.println(dateFormat.format(date) + " Processing: " + file.getTestFilePath());
+        System.out.println(dateFormatForOutput.format(date) + " Processing: " + file.getTestFilePath());
         System.out.println("Processing: " + file.getTestFilePath());
 
         //detect smells

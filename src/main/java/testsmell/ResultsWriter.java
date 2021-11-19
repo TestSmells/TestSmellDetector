@@ -1,8 +1,11 @@
 package testsmell;
 
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.text.DateFormat;
 import java.text.MessageFormat;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
 
@@ -10,8 +13,9 @@ import java.util.List;
  * This class is utilized to write output to a CSV file
  */
 public class ResultsWriter {
+    private static final DateFormat dateFormatForOutput = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss");
 
-    private final String outputFile;
+    private final File outputFile;
     private final StringBuilder output = new StringBuilder();
 
 
@@ -20,17 +24,16 @@ public class ResultsWriter {
      * @throws IOException
      */
     private ResultsWriter()  {
-        String time =  String.valueOf(Calendar.getInstance().getTimeInMillis());
-        outputFile = MessageFormat.format("{0}_{1}_{2}.{3}", "Output","TestSmellDetection",time, "csv");
-
+        String time =  dateFormatForOutput.format(Calendar.getInstance().getTime());
+        outputFile = new File(".", MessageFormat.format("{0}_{1}_{2}.{3}", "Output","TestSmellDetection",time, "csv"));
     }
 
     public void save(){
-        try {
-            FileWriter writer = new FileWriter(outputFile,false);
+
+        try (FileWriter writer = new FileWriter(outputFile,false)){
             writer.write(output.toString());
             writer.flush();
-            writer.close();
+            System.out.println("saved: " + outputFile.getCanonicalPath());
         } catch (Exception ex) {
             ex.printStackTrace();
         }
