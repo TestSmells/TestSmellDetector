@@ -12,16 +12,28 @@ import java.util.List;
 public class ResultsWriter {
 
     private final String outputFile;
-    private FileWriter writer;
+    private final StringBuilder output = new StringBuilder();
+
 
     /**
      * Creates the file into which output it to be written into. Results from each file will be stored in a new file
      * @throws IOException
      */
-    private ResultsWriter() throws IOException {
+    private ResultsWriter()  {
         String time =  String.valueOf(Calendar.getInstance().getTimeInMillis());
         outputFile = MessageFormat.format("{0}_{1}_{2}.{3}", "Output","TestSmellDetection",time, "csv");
-        writer = new FileWriter(outputFile,false);
+
+    }
+
+    public void save(){
+        try {
+            FileWriter writer = new FileWriter(outputFile,false);
+            writer.write(output.toString());
+            writer.flush();
+            writer.close();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
 
     /**
@@ -57,18 +69,19 @@ public class ResultsWriter {
      * @throws IOException
      */
     private void writeOutput(List<String> dataValues)throws IOException {
-        writer = new FileWriter(outputFile,true);
 
         for (int i=0; i<dataValues.size(); i++) {
-            writer.append(String.valueOf(dataValues.get(i)));
+            output.append(String.valueOf(dataValues.get(i)));
 
             if(i!=dataValues.size()-1)
-                writer.append(",");
+                output.append(",");
             else
-                writer.append(System.lineSeparator());
+                output.append(System.lineSeparator());
 
         }
-        writer.flush();
-        writer.close();
+    }
+
+    public String getOutput() {
+        return output.toString();
     }
 }

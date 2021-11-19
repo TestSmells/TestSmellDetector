@@ -26,7 +26,7 @@ Provided below are examples of test smells that were detected in open source And
 
 - [Sensitive Equality](#sensitive-equality)
 
-- [Unknown Test](#unknown-test) TODO: repleace with: net.cyclestreets / libraries/cyclestreets-core/src/test/java/net/cyclestreets/api/client/RetrofitApiClientIntegrationTest.java
+- [Unknown Test](#unknown-test) TODO: repleace with: net.cyclestreets / libraries/cyclestreets-testsmell.core/src/test/java/net/cyclestreets/api/client/RetrofitApiClientIntegrationTest.java
 
 - [Verbose Test (Long Test)](#verbose-test-long-test)
 
@@ -34,7 +34,7 @@ Provided below are examples of test smells that were detected in open source And
 
 - TODO: Default Test (com.app.missednotificationsreminder / app/src/test/java/com/app/missednotificationsreminder/ExampleUnitTest.java)
 
-- TODO: Constructor Initialization (org.briarproject.briar.beta / bramble-core/src/test/java/org/briarproject/bramble/crypto/TagEncodingTest.java)
+- TODO: Constructor Initialization (org.briarproject.briar.beta / bramble-testsmell.core/src/test/java/org/briarproject/bramble/crypto/TagEncodingTest.java)
 
 - TODO: Ignored Test
 
@@ -369,9 +369,9 @@ The test method, `testTrue()`, will always pass as since the assert statement co
 
 App: [com.liveplayergames.finneypoker](https://github.com/liveplayergames/UFP)
 
-Test File: [RLPTest.java](https://github.com/liveplayergames/UFP/blob/master/android/ethereumj-core/src/test/java/org/ethereum/util/RLPTest.java)
+Test File: [RLPTest.java](https://github.com/liveplayergames/UFP/blob/master/android/ethereumj-testsmell.core/src/test/java/org/ethereum/util/RLPTest.java)
 
-Production File: [RLP.java](https://github.com/liveplayergames/UFP/blob/master/android/ethereumj-core/src/main/java/org/ethereum/util/RLP.java)
+Production File: [RLP.java](https://github.com/liveplayergames/UFP/blob/master/android/ethereumj-testsmell.core/src/main/java/org/ethereum/util/RLP.java)
 
 ##### Code Snippet
 
