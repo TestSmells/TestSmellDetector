@@ -12,9 +12,9 @@ import java.util.List;
 import java.util.logging.Logger;
 
 
-public class MainApplicationTest {
+public class QualityMonitoringApplicationTest {
     private Logger logger = Logger.getAnonymousLogger();
-    private MainApplication mainApplication = new MainApplication();
+    private QualityMonitoringApplication mainApplication = new QualityMonitoringApplication();
 
     @Test
     public void whenInvalidInputNoCsvProcessing() {

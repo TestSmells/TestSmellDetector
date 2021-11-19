@@ -13,6 +13,10 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * Iterates through all given test files to detect smells
+ * Can save output to a file
+ */
 public class SmellDetectionWriter {
     private static final DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 
@@ -43,13 +47,11 @@ public class SmellDetectionWriter {
     }
 
     public ResultsWriter createProcessedResultsWriter() throws IOException {
-                  /*
-          Initialize the output file - Create the unique output file and add the column names
-         */
+
         ResultsWriter resultsWriter = createStartingResultsWriter();
 
         /*
-          Iterate through all test files to detect smells and then write the output
+          Iterate through all test files to detect smells
         */
 
         for (TestFile file : monitoredJavaFiles) {

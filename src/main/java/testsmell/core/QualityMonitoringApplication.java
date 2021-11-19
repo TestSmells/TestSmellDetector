@@ -8,7 +8,10 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.util.List;
 
-public class MainApplication {
+/**
+ * Application generates a CSV report with data on the code smells in the unit tests of a selected project.
+ */
+public class QualityMonitoringApplication {
 
     public static void main(String[] args) {
         if (args == null || args.length == 0 || args[0].isEmpty()) {
@@ -16,7 +19,7 @@ public class MainApplication {
             return;
         }
         File inputFile = new File(args[0]);
-        MainApplication application = new MainApplication();
+        QualityMonitoringApplication application = new QualityMonitoringApplication();
         if (!inputFile.isFile()) {
             throw new RuntimeException("Please provide a valid file containing the paths to the collection of test files");
         }

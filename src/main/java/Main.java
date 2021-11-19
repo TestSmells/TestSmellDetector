@@ -1,15 +1,13 @@
-import testsmell.core.MainApplication;
+import testsmell.core.QualityMonitoringApplication;
 
 import java.io.IOException;
 
+/**
+ * entry point when executing via command line
+ */
 public class Main {
 
-
-
-
     public static void main(String[] args) throws IOException {
-        MainApplication.main(args);
+        QualityMonitoringApplication.main(args);
     }
-
-
 }

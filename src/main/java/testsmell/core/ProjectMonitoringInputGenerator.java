@@ -7,6 +7,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * can generate input for monitoring from any given project root directory (assuming default Java project structure)
+ */
 public class ProjectMonitoringInputGenerator {
     private final List<File> sourceFileList = new ArrayList<>();
     private final List<String> inputList = new ArrayList<>();
