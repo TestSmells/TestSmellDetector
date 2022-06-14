@@ -73,6 +73,7 @@ public class TestSmellDetector {
      * test smells
      */
     public TestFile detectSmells(TestFile testFile) throws IOException {
+        initializeSmells();
         CompilationUnit testFileCompilationUnit = null;
         CompilationUnit productionFileCompilationUnit = null;
         FileInputStream testFileInputStream, productionFileInputStream;
