@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 
 public class TestSmellDetector {
 
-    private List<AbstractSmell> testSmells;
+    private List<SmellFactory> testSmells;
     private Thresholds thresholds;
 
     /**
@@ -31,30 +31,30 @@ public class TestSmellDetector {
 
     private void initializeSmells() {
         testSmells = new ArrayList<>();
-        testSmells.add(new AssertionRoulette(thresholds));
-        testSmells.add(new ConditionalTestLogic(thresholds));
-        testSmells.add(new ConstructorInitialization(thresholds));
-        testSmells.add(new DefaultTest(thresholds));
-        testSmells.add(new EmptyTest(thresholds));
-        testSmells.add(new ExceptionCatchingThrowing(thresholds));
-        testSmells.add(new GeneralFixture(thresholds));
-        testSmells.add(new MysteryGuest(thresholds));
-        testSmells.add(new PrintStatement(thresholds));
-        testSmells.add(new RedundantAssertion(thresholds));
-        testSmells.add(new SensitiveEquality(thresholds));
-        testSmells.add(new VerboseTest(thresholds));
-        testSmells.add(new SleepyTest(thresholds));
-        testSmells.add(new EagerTest(thresholds));
-        testSmells.add(new LazyTest(thresholds));
-        testSmells.add(new DuplicateAssert(thresholds));
-        testSmells.add(new UnknownTest(thresholds));
-        testSmells.add(new IgnoredTest(thresholds));
-        testSmells.add(new ResourceOptimism(thresholds));
-        testSmells.add(new MagicNumberTest(thresholds));
-        testSmells.add(new DependentTest(thresholds));
+        testSmells.add(AssertionRoulette::new);
+        testSmells.add(ConditionalTestLogic::new);
+        testSmells.add(ConstructorInitialization::new);
+        testSmells.add(DefaultTest::new);
+        testSmells.add(EmptyTest::new);
+        testSmells.add(ExceptionCatchingThrowing::new);
+        testSmells.add(GeneralFixture::new);
+        testSmells.add(MysteryGuest::new);
+        testSmells.add(PrintStatement::new);
+        testSmells.add(RedundantAssertion::new);
+        testSmells.add(SensitiveEquality::new);
+        testSmells.add(VerboseTest::new);
+        testSmells.add(SleepyTest::new);
+        testSmells.add(EagerTest::new);
+        testSmells.add(LazyTest::new);
+        testSmells.add(DuplicateAssert::new);
+        testSmells.add(UnknownTest::new);
+        testSmells.add(IgnoredTest::new);
+        testSmells.add(ResourceOptimism::new);
+        testSmells.add(MagicNumberTest::new);
+        testSmells.add(DependentTest::new);
     }
 
-    public void setTestSmells(List<AbstractSmell> testSmells) {
+    public void setTestSmells(List<SmellFactory> testSmells) {
         this.testSmells = testSmells;
     }
 
@@ -64,7 +64,10 @@ public class TestSmellDetector {
      * @return list of smell names
      */
     public List<String> getTestSmellNames() {
-        return testSmells.stream().map(AbstractSmell::getSmellName).collect(Collectors.toList());
+        return testSmells.stream()
+            .map(factory -> factory.createInstance(thresholds))
+            .map(AbstractSmell::getSmellName)
+            .collect(Collectors.toList());
     }
 
     /**
@@ -72,7 +75,6 @@ public class TestSmellDetector {
      * test smells
      */
     public TestFile detectSmells(TestFile testFile) throws IOException {
-        initializeSmells();
         CompilationUnit testFileCompilationUnit = null;
         CompilationUnit productionFileCompilationUnit = null;
         FileInputStream testFileInputStream, productionFileInputStream;
@@ -89,7 +91,8 @@ public class TestSmellDetector {
             productionFileCompilationUnit = Util.parseJava(productionFileInputStream);
         }
 
-        for (AbstractSmell smell : testSmells) {
+        for (SmellFactory smellFactory : testSmells) {
+            AbstractSmell smell = smellFactory.createInstance(thresholds);
             try {
                 smell.runAnalysis(testFileCompilationUnit, productionFileCompilationUnit,
                         testFile.getTestFileNameWithoutExtension(),
