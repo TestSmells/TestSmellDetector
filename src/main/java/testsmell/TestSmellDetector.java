@@ -1,6 +1,5 @@
 package testsmell;
 
-import com.github.javaparser.JavaParser;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.TypeDeclaration;
 import org.apache.commons.lang3.StringUtils;
@@ -80,14 +79,14 @@ public class TestSmellDetector {
 
         if (!StringUtils.isEmpty(testFile.getTestFilePath())) {
             testFileInputStream = new FileInputStream(testFile.getTestFilePath());
-            testFileCompilationUnit = JavaParser.parse(testFileInputStream);
+            testFileCompilationUnit = Util.parseJava(testFileInputStream);
             TypeDeclaration typeDeclaration = testFileCompilationUnit.getTypes().get(0);
             testFile.setNumberOfTestMethods(typeDeclaration.getMethods().size());
         }
 
         if (!StringUtils.isEmpty(testFile.getProductionFilePath())) {
             productionFileInputStream = new FileInputStream(testFile.getProductionFilePath());
-            productionFileCompilationUnit = JavaParser.parse(productionFileInputStream);
+            productionFileCompilationUnit = Util.parseJava(productionFileInputStream);
         }
 
         for (AbstractSmell smell : testSmells) {

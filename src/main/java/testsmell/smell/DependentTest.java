@@ -11,6 +11,8 @@ import thresholds.Thresholds;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class DependentTest extends AbstractSmell {
 
@@ -38,8 +40,14 @@ public class DependentTest extends AbstractSmell {
         classVisitor = new DependentTest.ClassVisitor();
         classVisitor.visit(testFileCompilationUnit, null);
 
+        Set<String> testMethodNames = testMethods.stream()
+            .map(method -> method.getMethodDeclaration().getNameAsString())
+            .collect(Collectors.toSet());
+
         for (TestMethod testMethod : testMethods) {
-            if (testMethod.getCalledMethods().stream().anyMatch(x -> x.getName().equals(testMethods.stream().map(z -> z.getMethodDeclaration().getNameAsString())))) {
+            boolean match = testMethod.getCalledMethods()
+                .stream().anyMatch(method -> testMethodNames.contains(method.getName()));
+            if (match) {
                 smellyElementsSet.add(new testsmell.TestMethod(testMethod.getMethodDeclaration().getNameAsString()));
             }
         }
