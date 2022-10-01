@@ -78,7 +78,7 @@ public class IgnoredTest extends AbstractSmell {
             //JUnit 3
             //check if test method is not public
             if (n.getNameAsString().toLowerCase().startsWith("test")) {
-                if (!n.getModifiers().contains(Modifier.PUBLIC)) {
+                if (n.getModifiers().stream().noneMatch(m -> m.getKeyword() == Modifier.Keyword.PUBLIC)) {
                     testMethod = new TestMethod(n.getNameAsString());
                     testMethod.setSmell(true);
                     smellyElementsSet.add(testMethod);

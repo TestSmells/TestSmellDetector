@@ -1,6 +1,7 @@
 package testsmell.smell;
 
 import com.github.javaparser.ast.CompilationUnit;
+import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.expr.AnnotationExpr;
@@ -55,14 +56,14 @@ public class UnknownTest extends AbstractSmell {
             if (Util.isValidTestMethod(n)) {
                 Optional<AnnotationExpr> assertAnnotation = n.getAnnotationByName("Test");
                 if (assertAnnotation.isPresent()) {
-                    for (int i = 0; i < assertAnnotation.get().getNodeLists().size(); i++) {
-                        NodeList<?> c = assertAnnotation.get().getNodeLists().get(i);
-                        for (int j = 0; j < c.size(); j++)
-                            if (c.get(j) instanceof MemberValuePair) {
-                                if (((MemberValuePair) c.get(j)).getName().equals("expected") && ((MemberValuePair) c.get(j)).getValue().toString().contains("Exception"))
-                                    ;
+                    for (Node node : assertAnnotation.get().getChildNodes()) {
+                        if (node instanceof MemberValuePair) {
+                            MemberValuePair pair = (MemberValuePair) node;
+                            if (pair.getName().getIdentifier().equals("expected")
+                                    && pair.getValue().toString().contains("Exception")) {
                                 hasExceptionAnnotation = true;
                             }
+                        }
                     }
                 }
                 currentMethod = n;

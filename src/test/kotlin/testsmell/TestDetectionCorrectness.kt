@@ -1,6 +1,5 @@
 package testsmell
 
-import com.github.javaparser.JavaParser
 import com.github.javaparser.ast.CompilationUnit
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeEach
@@ -10,6 +9,7 @@ import org.mockito.Mockito.`when`
 import org.mockito.Mockito.mock
 import testsmell.smell.AssertionRoulette
 import testsmell.smell.EagerTest
+import testsmell.Util;
 import thresholds.DefaultThresholds
 import thresholds.SpadiniThresholds
 
@@ -24,8 +24,8 @@ class TestDetectionCorrectness {
 
     @BeforeEach
     fun setup() {
-        testCompilationUnit = JavaParser.parse(fractionTest)
-        productionCompilationUnit = JavaParser.parse(fractionSource)
+        testCompilationUnit = Util.parseJava(fractionTest)
+        productionCompilationUnit = Util.parseJava(fractionSource)
         testFile = mock(TestFile::class.java)
         `when`(testFile.testFileNameWithoutExtension).thenReturn("fake/path")
         `when`(testFile.productionFileNameWithoutExtension).thenReturn("fake/path")
@@ -2111,7 +2111,7 @@ class TestDetectionCorrectness {
                 f = Fraction.getFraction(-1, 1, Integer.MAX_VALUE);
                 assertEquals("-2147483648/2147483647", f.toString());
             }
-            
+
             @Test
             public void testToProperString() {
                 Fraction f;

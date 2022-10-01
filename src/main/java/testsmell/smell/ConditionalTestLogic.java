@@ -121,7 +121,7 @@ public class ConditionalTestLogic extends AbstractSmell {
         }
 
         @Override
-        public void visit(ForeachStmt n, Void arg) {
+        public void visit(ForEachStmt n, Void arg) {
             super.visit(n, arg);
             if (currentMethod != null) {
                 foreachCount++;

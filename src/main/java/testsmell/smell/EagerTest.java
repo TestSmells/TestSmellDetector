@@ -122,7 +122,7 @@ public class EagerTest extends AbstractSmell {
                 }
             } else { //collect a list of all public/protected members of the production class
                 for (Modifier modifier : n.getModifiers()) {
-                    if (modifier.name().toLowerCase().equals("public") || modifier.name().toLowerCase().equals("protected")) {
+                    if (modifier.getKeyword() == Modifier.Keyword.PUBLIC || modifier.getKeyword() == Modifier.Keyword.PROTECTED) {
                         productionMethods.add(n);
                     }
                 }
