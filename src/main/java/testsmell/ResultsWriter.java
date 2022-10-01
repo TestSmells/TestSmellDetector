@@ -1,8 +1,11 @@
 package testsmell;
 
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.text.DateFormat;
 import java.text.MessageFormat;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
 
@@ -10,18 +13,30 @@ import java.util.List;
  * This class is utilized to write output to a CSV file
  */
 public class ResultsWriter {
+    private static final DateFormat dateFormatForOutput = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss");
 
-    private String outputFile;
-    private FileWriter writer;
+    private final File outputFile;
+    private final StringBuilder output = new StringBuilder();
+
 
     /**
      * Creates the file into which output it to be written into. Results from each file will be stored in a new file
      * @throws IOException
      */
-    private ResultsWriter() throws IOException {
-        String time =  String.valueOf(Calendar.getInstance().getTimeInMillis());
-        outputFile = MessageFormat.format("{0}_{1}_{2}.{3}", "Output","TestSmellDetection",time, "csv");
-        writer = new FileWriter(outputFile,false);
+    private ResultsWriter()  {
+        String time =  dateFormatForOutput.format(Calendar.getInstance().getTime());
+        outputFile = new File(".", MessageFormat.format("{0}_{1}_{2}.{3}", "Output","TestSmellDetection",time, "csv"));
+    }
+
+    public void save(){
+
+        try (FileWriter writer = new FileWriter(outputFile,false)){
+            writer.write(output.toString());
+            writer.flush();
+            System.out.println("saved: " + outputFile.getCanonicalPath());
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
 
     /**
@@ -57,18 +72,19 @@ public class ResultsWriter {
      * @throws IOException
      */
     private void writeOutput(List<String> dataValues)throws IOException {
-        writer = new FileWriter(outputFile,true);
 
         for (int i=0; i<dataValues.size(); i++) {
-            writer.append(String.valueOf(dataValues.get(i)));
+            output.append(String.valueOf(dataValues.get(i)));
 
             if(i!=dataValues.size()-1)
-                writer.append(",");
+                output.append(",");
             else
-                writer.append(System.lineSeparator());
+                output.append(System.lineSeparator());
 
         }
-        writer.flush();
-        writer.close();
+    }
+
+    public String getOutput() {
+        return output.toString();
     }
 }

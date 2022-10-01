@@ -6,13 +6,13 @@ package testsmell;
  */
 public class DetectionThresholds {
 
-    public static int EAGER_TEST = 4;
-    public static int ASSERTION_ROULETTE = 3;
-    public static int VERBOSE_TEST = 13;
-    public static int CONDITIONAL_TEST_LOGIC = 0;
-    public static int MAGIC_NUMBER_TEST = 0;
-    public static int GENERAL_FIXTURE = 0;
-    public static int MYSTERY_GUEST = 0;
-    public static int RESOURCE_OPTIMISM = 0;
-    public static int SLEEPY_TEST = 0;
+    public static final int EAGER_TEST = 4;
+    public static final int ASSERTION_ROULETTE = 3;
+    public static final int VERBOSE_TEST = 13;
+    public static final int CONDITIONAL_TEST_LOGIC = 0;
+    public static final int MAGIC_NUMBER_TEST = 0;
+    public static final int GENERAL_FIXTURE = 0;
+    public static final int MYSTERY_GUEST = 0;
+    public static final int RESOURCE_OPTIMISM = 0;
+    public static final int SLEEPY_TEST = 0;
 }

@@ -1,9 +1,12 @@
 package testsmell;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledOnOs;
 import org.junit.jupiter.api.condition.OS;
+
+import java.io.File;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -88,5 +91,36 @@ class TestFileTest {
         String oracle = "code\\test\\GraphTest.java";
         String output = testFileWindows.getRelativeTestFilePath();
         assertEquals(oracle, output);
+    }
+
+    @Test
+    public void testWhenTestFileCreated() {
+        // given
+        String mainJava = TestFile.class.getName().replace(".","/") + ".java";
+        String testJava = TestFileTest.class.getName().replace(".","/")+ ".java";
+        String inputMain = "./src/main/java/" +mainJava;
+        String inputTest =  "./src/test/java/" +testJava;
+        String relativeMainPath = inputMain.replace("./","").replace("/",File.separator);
+        String relativeTestPath = inputTest.replace("./","").replace("/",File.separator);
+
+        // when
+        TestFile testFile = new TestFile(".", inputTest, inputMain );
+
+        // then
+        File actualProdFile = new File(testFile.getProductionFilePath());
+        File actualTestFile = new File(testFile.getTestFilePath());
+        Assertions.assertTrue(actualProdFile.exists());
+        Assertions.assertTrue(actualTestFile.exists());
+        Assertions.assertNotEquals(testFile.getApp(),".");
+        Assertions.assertTrue(testFile.getHasProductionFile());
+        Assertions.assertEquals(testFile.getNumberOfTestMethods(), 0);
+        Assertions.assertEquals(testFile.getTestSmells().size(),0);
+        Assertions.assertEquals(testFile.getTestFileNameWithoutExtension(),TestFileTest.class.getSimpleName());
+        Assertions.assertEquals(testFile.getProductionFileNameWithoutExtension(),TestFile.class.getSimpleName());
+        Assertions.assertEquals(testFile.getProductionFileName(),actualProdFile.getName());
+        Assertions.assertEquals(testFile.getTestFileName(),actualTestFile.getName());
+        Assertions.assertEquals(testFile.getRelativeProductionFilePath(),relativeMainPath);
+        Assertions.assertEquals(testFile.getRelativeTestFilePath(),relativeTestPath);
+
     }
 }

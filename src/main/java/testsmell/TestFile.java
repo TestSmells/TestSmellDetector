@@ -7,10 +7,30 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TestFile {
-    private String app, testFilePath, productionFilePath;
-    private List<AbstractSmell> testSmells;
+    private final String app, testFilePath, productionFilePath;
+    private final List<AbstractSmell> testSmells;
     private int numberOfTestMethods = 0;
 
+    public TestFile(String app, String testFilePath) {
+        this(app, testFilePath, "");
+    }
+    public TestFile(String app, String testFilePath, String productionFilePath) {
+        if (new File(app).exists()) {
+            File appFile = createFromExistingFile(new File(app));
+            this.app = appFile.getName();
+            this.testFilePath = createFromExistingFile(new File(appFile,  testFilePath)).getPath();
+            if (productionFilePath.isEmpty()) {
+                this.productionFilePath = "";
+            } else {
+                this.productionFilePath = createFromExistingFile(new File(appFile ,  productionFilePath)).getPath();
+            }
+        } else {
+            this.app = app;
+            this.testFilePath = testFilePath;
+            this.productionFilePath = productionFilePath;
+        }
+        this.testSmells = new ArrayList<>();
+    }
     public String getApp() {
         return app;
     }
@@ -31,11 +51,14 @@ public class TestFile {
         return ((productionFilePath != null && !productionFilePath.isEmpty()));
     }
 
-    public TestFile(String app, String testFilePath, String productionFilePath) {
-        this.app = app;
-        this.testFilePath = testFilePath;
-        this.productionFilePath = productionFilePath;
-        this.testSmells = new ArrayList<>();
+
+    private static File createFromExistingFile(File file) {
+        try {
+            return file.getCanonicalFile();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            throw new RuntimeException("should not occur");
+        }
     }
 
     public void addSmell(AbstractSmell smell) {

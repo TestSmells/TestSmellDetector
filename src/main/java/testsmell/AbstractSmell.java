@@ -8,8 +8,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 public abstract class AbstractSmell {
-    protected Thresholds thresholds;
-    protected Set<SmellyElement> smellyElementsSet;
+    protected final Thresholds thresholds;
+    protected final Set<SmellyElement> smellyElementsSet;
 
     public AbstractSmell(Thresholds thresholds) {
         this.thresholds = thresholds;
